@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Sparkles, FileQuestion, MessageSquare, Briefcase, ArrowRight, Compass, Target, TrendingUp } from "lucide-react";
+import { useAuth } from "../hooks/use-auth";
 
 const features = [
   { icon: Sparkles, title: "AI Recommendations", desc: "Get personalized field suggestions based on your unique profile and test results." },
@@ -22,6 +23,19 @@ const steps = [
 ];
 
 const Landing = () => {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  const handleProtectedClick = (path: string) => {
+    if (isAuthenticated) {
+      navigate(path);
+    } else {
+      // Store the intended destination and redirect to login
+      localStorage.setItem("intendedDestination", path);
+      navigate("/login");
+    }
+  };
+
   return (
     <div className="bg-background">
       <section id="home" className="relative overflow-hidden px-6 md:px-12 pt-8 pb-28">
@@ -38,12 +52,12 @@ const Landing = () => {
             Massarek uses AI to analyze your skills, interests, and personality to recommend the best academic fields and career paths for you.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.3s" }}>
-            <Link to="/test" className="inline-flex items-center justify-center gap-2 gradient-primary text-primary-foreground font-semibold px-8 py-3.5 rounded-2xl hover:opacity-90 transition-opacity text-base shadow-elevated">
+            <button onClick={() => handleProtectedClick("/test")} className="inline-flex items-center justify-center gap-2 gradient-primary text-primary-foreground font-semibold px-8 py-3.5 rounded-2xl hover:opacity-90 transition-opacity text-base shadow-elevated">
               Start your orientation test <ArrowRight size={18} />
-            </Link>
-            <Link to="/careers" className="inline-flex items-center justify-center gap-2 border border-border bg-card font-semibold px-8 py-3.5 rounded-2xl hover:bg-accent transition-colors text-base">
+            </button>
+            <button onClick={() => handleProtectedClick("/careers")} className="inline-flex items-center justify-center gap-2 border border-border bg-card font-semibold px-8 py-3.5 rounded-2xl hover:bg-accent transition-colors text-base">
               Explore careers
-            </Link>
+            </button>
           </div>
         </div>
 

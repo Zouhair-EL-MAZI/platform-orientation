@@ -1,11 +1,64 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 import MassarekLogo from "@/components/MassarekLogo";
 import GoogleButton from "@/components/GoogleButton";
+import { toast } from "@/hooks/use-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      toast({
+        title: "Error",
+        description: "Please fill in both email and password fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/login", {
+        email,
+        password,
+      });
+
+      const { user, token } = response.data;
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
+
+      toast({
+        title: "Welcome back",
+        description: "You have successfully signed in.",
+      });
+
+      // Check if there's an intended destination
+      const intendedDestination = localStorage.getItem("intendedDestination");
+      if (intendedDestination) {
+        localStorage.removeItem("intendedDestination");
+        navigate(intendedDestination);
+      } else {
+        navigate("/dashboard");
+      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+      toast({
+        title: "Sign in failed",
+        description: error.response?.data?.message || "Invalid email or password.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="bg-background px-4 py-16 min-h-[calc(100vh-96px)]">
@@ -19,7 +72,7 @@ const Login = () => {
         </div>
 
         <div className="rounded-3xl border border-border bg-card p-8 shadow-card">
-          <div className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="text-sm font-medium mb-2 block">Email</label>
               <input
@@ -28,6 +81,7 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
                 className="w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-all"
+                required
               />
             </div>
             <div>
@@ -38,16 +92,19 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-all"
+                required
               />
             </div>
             <div className="pt-4">
-              <Link to="/dashboard">
-                <button className="w-full rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90">
-                  Sign in
-                </button>
-              </Link>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "Signing in..." : "Sign In"}
+              </button>
             </div>
-          </div>
+          </form>
 
           <div className="relative my-8">
             <div className="absolute inset-0 flex items-center">

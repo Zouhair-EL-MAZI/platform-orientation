@@ -7,8 +7,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import AppLayout from "./components/AppLayout";
 import MainLayout from "./components/MainLayout";
 import Landing from "./pages/Landing";
+import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Logout from "./pages/Logout";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import TestInterface from "./pages/TestInterface";
@@ -39,6 +41,8 @@ const App = () => (
           <Route path="/" element={<PublicLayout><Landing /></PublicLayout>} />
           <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
           <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
+          <Route path="/logout" element={<PublicLayout><Logout /></PublicLayout>} />
+          <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
           <Route path="/dashboard" element={<WithLayout><Dashboard /></WithLayout>} />
           <Route path="/profile" element={<WithLayout><Profile /></WithLayout>} />
           <Route path="/test" element={<WithLayout><TestInterface /></WithLayout>} />

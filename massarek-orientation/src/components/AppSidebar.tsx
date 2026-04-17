@@ -28,12 +28,14 @@ import {
 } from "@/components/ui/sidebar";
 
 export function AppSidebar() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
   const navigate = useNavigate();
   const isActive = (path: string) => location.pathname === path;
+  const isRtl = i18n.dir() === "rtl";
+  const iconMargin = isRtl ? "ml-2" : "mr-2";
 
   const mainItems = [
     { title: t("sidebar.home"), url: "/", icon: Home },
@@ -55,7 +57,7 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar side={isRtl ? "right" : "left"} collapsible="icon">
       <SidebarHeader className="p-4 border-b border-border">
         <MassarekLogo collapsed={collapsed} />
       </SidebarHeader>
@@ -68,7 +70,7 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={isActive(item.url)}>
                     <NavLink to={item.url} end className="hover:bg-accent/50" activeClassName="bg-accent text-accent-foreground font-medium">
-                      <item.icon className="mr-2 h-4 w-4" />
+                      <item.icon className={`${iconMargin} h-4 w-4`} />
                       {!collapsed && <span>{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
@@ -90,14 +92,14 @@ export function AppSidebar() {
                         onClick={handleLogout}
                         className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-foreground transition hover:bg-accent/50"
                       >
-                        <item.icon className="mr-2 h-4 w-4" />
+                        <item.icon className={`${iconMargin} h-4 w-4`} />
                         {!collapsed && <span>{item.title}</span>}
                       </button>
                     </SidebarMenuButton>
                   ) : (
                     <SidebarMenuButton asChild isActive={isActive(item.url)}>
                       <NavLink to={item.url} end className="hover:bg-accent/50" activeClassName="bg-accent text-accent-foreground font-medium">
-                        <item.icon className="mr-2 h-4 w-4" />
+                        <item.icon className={`${iconMargin} h-4 w-4`} />
                         {!collapsed && <span>{item.title}</span>}
                       </NavLink>
                     </SidebarMenuButton>

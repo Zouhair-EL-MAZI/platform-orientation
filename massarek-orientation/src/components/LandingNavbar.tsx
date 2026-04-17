@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import MassarekLogo from "./MassarekLogo";
 import LanguageSwitcher from "./LanguageSwitcher";
+import ThemeToggle from "./ThemeToggle";
 import { cn } from "@/lib/utils";
 
 const LandingNavbar = () => {
@@ -73,6 +74,7 @@ const LandingNavbar = () => {
 
         <div className="flex items-center gap-2 md:gap-4">
           <LanguageSwitcher />
+          <ThemeToggle />
           <div className="hidden md:flex items-center gap-3">
             <Link
               to="/login"

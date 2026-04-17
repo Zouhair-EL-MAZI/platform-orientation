@@ -1,11 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 import MassarekLogo from "@/components/MassarekLogo";
 import GoogleButton from "@/components/GoogleButton";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { toast } from "@/hooks/use-toast";
 
 const Login = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -16,8 +19,8 @@ const Login = () => {
 
     if (!email || !password) {
       toast({
-        title: "Error",
-        description: "Please fill in both email and password fields.",
+        title: t("auth.login.errorEmpty", "Error"),
+        description: t("auth.login.errorEmpty"),
         variant: "destructive",
       });
       return;
@@ -36,8 +39,8 @@ const Login = () => {
       localStorage.setItem("token", token);
 
       toast({
-        title: "Welcome back",
-        description: "You have successfully signed in.",
+        title: t("auth.login.successTitle"),
+        description: t("auth.login.successMessage"),
       });
 
       // Check if there's an intended destination
@@ -51,8 +54,8 @@ const Login = () => {
     } catch (error: any) {
       console.error("Login error:", error);
       toast({
-        title: "Sign in failed",
-        description: error.response?.data?.message || "Invalid email or password.",
+        title: t("auth.login.failedTitle"),
+        description: error.response?.data?.message || t("auth.login.failedMessage"),
         variant: "destructive",
       });
     } finally {
@@ -62,35 +65,38 @@ const Login = () => {
 
   return (
     <div className="bg-background px-4 py-16 min-h-[calc(100vh-96px)]">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
       <div className="mx-auto flex w-full max-w-md flex-col gap-8">
         <div className="text-center">
           <div className="flex justify-center mb-4">
             <MassarekLogo size="lg" />
           </div>
-          <h1 className="text-2xl font-bold">Welcome back</h1>
-          <p className="text-muted-foreground text-sm mt-2">Sign in to your account to continue</p>
+          <h1 className="text-2xl font-bold">{t("auth.login.title")}</h1>
+          <p className="text-muted-foreground text-sm mt-2">{t("auth.login.subtitle")}</p>
         </div>
 
         <div className="rounded-3xl border border-border bg-card p-8 shadow-card">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="text-sm font-medium mb-2 block">Email</label>
+              <label className="text-sm font-medium mb-2 block">{t("auth.login.emailLabel")}</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@example.com"
+                placeholder={t("auth.login.emailPlaceholder")}
                 className="w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-all"
                 required
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Password</label>
+              <label className="text-sm font-medium mb-2 block">{t("auth.login.passwordLabel")}</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder={t("auth.login.passwordPlaceholder")}
                 className="w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-all"
                 required
               />
@@ -101,7 +107,7 @@ const Login = () => {
                 disabled={isLoading}
                 className="w-full rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading ? t("auth.login.loading") : t("auth.login.submit")}
               </button>
             </div>
           </form>
@@ -111,7 +117,7 @@ const Login = () => {
               <div className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-card text-muted-foreground">OR</span>
+              <span className="px-2 bg-card text-muted-foreground">{t("common.or")}</span>
             </div>
           </div>
 
@@ -119,7 +125,7 @@ const Login = () => {
         </div>
 
         <p className="text-center text-sm text-muted-foreground">
-          Don&apos;t have an account? <Link to="/register" className="text-primary font-medium hover:underline">Sign up</Link>
+          {t("auth.login.noAccount")} <Link to="/register" className="text-primary font-medium hover:underline">{t("auth.login.signUpLink")}</Link>
         </p>
       </div>
     </div>

@@ -28,47 +28,47 @@ const benefits = [
 const About = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-7xl px-6 pb-20 pt-24 sm-8 lg-10">
-        <section className="overflow-hidden rounded-[2rem] border border-border bg-card p-8 shadow-card transition duration-300 sm-10">
-          <div className="flex flex-col gap-10 lg-row lg-center lg-between">
+      <div className="mx-auto max-w-7xl px-6 pb-20 pt-24 sm:px-8 lg:px-10">
+        <section className="overflow-hidden rounded-[2rem] border border-border bg-card p-8 shadow-card transition duration-300 sm:p-10">
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-3xl">
               <div className="inline-flex items-center gap-3 rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
                 <MassarekLogo size="sm" />
                 <span>About Massarek</span>
               </div>
-              <h1 className="mt-8 text-4xl font-bold tracking-tight text-foreground sm-5xl lg-6xl">
+              <h1 className="mt-8 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                 AI-powered student orientation for clearer academic decisions.
               </h1>
               <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">
                 Massarek helps students discover the best academic and career path using intelligent recommendations, in-depth insights, and a simple platform designed for the next generation of learners.
               </p>
-              <div className="mt-8 flex flex-col gap-3 sm-row">
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link
                   to="/register"
-                  className="inline-flex items-center justify-center rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/10 transition duration-300 hover:-translate-y-0.5 hover-xl"
+                  className="inline-flex items-center justify-center rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/10 transition duration-300 hover:-translate-y-0.5 hover:shadow-xl"
                 >
                   Start your orientation
                 </Link>
                 <Link
                   to="/careers"
-                  className="inline-flex items-center justify-center rounded-2xl border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground transition duration-300 hover-muted"
+                  className="inline-flex items-center justify-center rounded-2xl border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground transition duration-300 hover:bg-muted"
                 >
                   Explore career paths
                 </Link>
               </div>
             </div>
 
-            <div className="group relative overflow-hidden rounded-[2rem] border border-border bg-background p-8 shadow-xl transition duration-300 hover:-translate-y-1 hover-2xl sm-10">
+            <div className="group relative overflow-hidden rounded-[2rem] border border-border bg-background p-8 shadow-xl transition duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-10">
               <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary/80 opacity-30" />
               <div className="relative">
                 <p className="text-sm uppercase tracking-[0.35em] text-primary font-semibold">Project insight</p>
-                <h2 className="mt-4 text-2xl font-semibold text-foreground sm-3xl">
+                <h2 className="mt-4 text-2xl font-semibold text-foreground sm:text-3xl">
                   Crafted to remove uncertainty and bring clarity to student orientation.
                 </h2>
                 <p className="mt-5 text-muted-foreground leading-7">
                   Designed with modern students in mind, Massarek combines AI analysis with easy-to-read career intelligence so learners can choose their future with confidence.
                 </p>
-                <div className="mt-8 grid gap-4 sm-cols-2">
+                <div className="mt-8 grid gap-4 sm:grid-cols-2">
                   <div className="rounded-3xl bg-primary/5 px-4 py-4">
                     <p className="text-sm font-semibold text-primary">Smart guidance</p>
                     <p className="mt-2 text-sm text-muted-foreground">Focused recommendations for every student journey.</p>
@@ -83,8 +83,8 @@ const About = () => {
           </div>
         </section>
 
-        <section className="mt-12 grid gap-8 lg-cols-[1.1fr_0.9fr]">
-          <div className="rounded-[2rem] border border-border bg-card p-8 shadow-card transition duration-300 hover:-translate-y-1 hover-xl">
+        <section className="mt-12 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="rounded-[2rem] border border-border bg-card p-8 shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-xl">
             <div className="flex items-center gap-3 text-primary">
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">1</span>
               <h2 className="text-xl font-semibold">Project Idea</h2>
@@ -95,7 +95,7 @@ const About = () => {
           </div>
 
           <div className="space-y-6">
-            <div className="rounded-[2rem] border border-border bg-card p-8 shadow-card transition duration-300 hover:-translate-y-1 hover-xl">
+            <div className="rounded-[2rem] border border-border bg-card p-8 shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-xl">
               <div className="flex items-center gap-3 text-secondary">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-secondary/10 text-secondary">2</span>
                 <h2 className="text-xl font-semibold">Why We Built This</h2>
@@ -105,7 +105,7 @@ const About = () => {
               </p>
             </div>
 
-            <div className="rounded-[2rem] border border-border bg-card p-8 shadow-card transition duration-300 hover:-translate-y-1 hover-xl">
+            <div className="rounded-[2rem] border border-border bg-card p-8 shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-xl">
               <div className="flex items-center gap-3 text-primary">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">3</span>
                 <h2 className="text-xl font-semibold">Our Mission</h2>
@@ -125,15 +125,15 @@ const About = () => {
             </div>
             <Link
               to="/test"
-              className="rounded-2xl border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground transition hover-muted"
+              className="rounded-2xl border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
             >
               Try the orientation test
             </Link>
           </div>
 
-          <div className="mt-8 grid gap-4 sm-cols-2">
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {benefits.map((item) => (
-              <div key={item.title} className="rounded-3xl border border-border bg-background p-6 shadow-card transition duration-300 hover:-translate-y-1 hover-xl">
+              <div key={item.title} className="rounded-3xl border border-border bg-background p-6 shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-xl">
                 <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
                 <p className="mt-3 text-sm leading-7 text-muted-foreground">{item.description}</p>
               </div>
@@ -143,7 +143,7 @@ const About = () => {
 
         <section className="mt-12">
           <div className="rounded-[2rem] border border-border bg-card p-8 shadow-card">
-            <div className="flex flex-col gap-6 md-row md-end md-between">
+            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <div>
                 <p className="text-sm uppercase tracking-[0.35em] text-primary font-semibold">Team</p>
                 <h2 className="mt-4 text-3xl font-bold">Created by students, built for students</h2>
@@ -153,9 +153,9 @@ const About = () => {
               </div>
             </div>
 
-            <div className="mt-10 grid gap-6 md-cols-2">
+            <div className="mt-10 grid gap-6 md:grid-cols-2">
               {team.map((member) => (
-                <div key={member.name} className="group rounded-3xl border border-border bg-background p-6 shadow-card transition duration-300 hover:-translate-y-1 hover-xl">
+                <div key={member.name} className="group rounded-3xl border border-border bg-background p-6 shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-xl">
                   <div className="flex items-center gap-4">
                     <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-primary/10 text-xl font-semibold text-primary">
                       {member.name

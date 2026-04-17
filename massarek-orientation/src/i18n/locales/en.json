@@ -1,0 +1,361 @@
+{
+  "common": {
+    "home": "Home",
+    "features": "Features",
+    "about": "About",
+    "contact": "Contact",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "getStarted": "Get Started",
+    "signOut": "Sign Out",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "searchPlaceholder": "Search...",
+    "searchCareers": "Search careers...",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full name",
+    "step": "Step",
+    "educationLevel": "Education Level",
+    "age": "Age",
+    "saveProfile": "Save Profile",
+    "continueWithGoogle": "Continue with Google",
+    "noResults": "No results found.",
+    "all": "All",
+    "or": "OR",
+    "returnHome": "Return to Home",
+    "poweredByAI": "Powered by AI"
+  },
+  "navbar": {
+    "searchPlaceholder": "Search..."
+  },
+  "landing": {
+    "hero": {
+      "label": "Powered by AI",
+      "title": "Find your perfect",
+      "highlight": "academic path",
+      "subtitle": "Massarek uses AI to analyze your skills, interests, and personality to recommend the best academic fields and career paths for you.",
+      "startTest": "Start your orientation test",
+      "exploreCareers": "Explore careers"
+    },
+    "stats": [
+      { "value": "10K+", "label": "Students guided" },
+      { "value": "95%", "label": "Satisfaction rate" },
+      { "value": "200+", "label": "Career paths" },
+      { "value": "50+", "label": "Test modules" }
+    ],
+    "features": [
+      { "title": "AI Recommendations", "desc": "Get personalized field suggestions based on your unique profile and test results." },
+      { "title": "Smart Tests", "desc": "Take orientation tests designed to uncover your strengths and interests." },
+      { "title": "AI Chatbot", "desc": "Chat with our AI assistant for guidance on academic and career decisions." },
+      { "title": "Career Explorer", "desc": "Explore hundreds of career paths with detailed insights and compatibility scores." }
+    ],
+    "featuresSection": {
+      "title": "Everything you need to choose your future",
+      "subtitle": "Our AI-powered platform provides comprehensive tools to help you make the best academic and career decisions."
+    },
+    "howItWorks": {
+      "label": "How it works",
+      "title": "A smarter orientation experience in three steps",
+      "steps": [
+        { "title": "Answer the orientation test", "desc": "Complete a short and adaptive quiz that identifies your academic strengths and preferences." },
+        { "title": "Receive AI insights", "desc": "Our engine analyzes your profile and suggests fields, majors, and career paths that match you." },
+        { "title": "Move forward with confidence", "desc": "Use tailored recommendations, career resources, and next-step guidance to plan your future." }
+      ]
+    },
+    "about": {
+      "label": "About Massarek",
+      "title": "A platform built to empower academic decisions",
+      "description": "Massarek brings together AI-powered guidance, career insights, and personalized recommendations to help students choose the right field with confidence. We focus on clarity, accuracy, and a delightful experience for every learner.",
+      "missionLabel": "Our mission",
+      "mission": "Help students discover their strengths and turn them into a meaningful academic path, while removing uncertainty from career planning."
+    },
+    "contact": {
+      "label": "Contact",
+      "title": "Let’s answer your questions",
+      "description": "Reach out if you need help getting started, want to learn more about our tests, or want a demo of Massarek.",
+      "emailLabel": "Email us",
+      "email": "contact@massarek.ai"
+    },
+    "cta": {
+      "readyTitle": "Ready to discover your path?",
+      "readySubtitle": "Join thousands of students who found their ideal academic field with Massarek.",
+      "start": "Get started for free"
+    }
+  },
+  "aboutPage": {
+    "hero": {
+      "intro": "About Massarek",
+      "headline": "AI-powered student orientation for clearer academic decisions.",
+      "subtitle": "Massarek helps students discover the best academic and career path using intelligent recommendations, in-depth insights, and a simple platform designed for the next generation of learners.",
+      "ctaStart": "Start your orientation",
+      "ctaExplore": "Explore career paths"
+    },
+    "insight": {
+      "label": "Project insight",
+      "title": "Crafted to remove uncertainty and bring clarity to student orientation.",
+      "description": "Designed with modern students in mind, Massarek combines AI analysis with easy-to-read career intelligence so learners can choose their future with confidence.",
+      "cardA": {
+        "title": "Smart guidance",
+        "description": "Focused recommendations for every student journey."
+      },
+      "cardB": {
+        "title": "Data-driven clarity",
+        "description": "Insights based on tests, interests, and academic goals."
+      }
+    },
+    "sections": [
+      { "title": "Project Idea", "description": "Massarek is an AI-powered platform that helps students find the best academic and career paths based on their skills, interests, and test results. It brings meaningful guidance into the orientation process using modern intelligence." },
+      { "title": "Why We Built This", "description": "Many students struggle to choose the right academic path due to lack of guidance and clear information. Massarek was created to bridge that gap and provide intelligent, data-driven support for academic decision-making." },
+      { "title": "Our Mission", "description": "To help students make smarter decisions using intelligent AI recommendations. We empower learners to choose the academic path that truly aligns with their strengths and aspirations." }
+    ],
+    "benefits": {
+      "label": "Benefits",
+      "headline": "Why students love Massarek",
+      "cta": "Try the orientation test",
+      "items": [
+        { "title": "Personalized orientation", "description": "Tailored guidance based on your unique skills, interests, and test results." },
+        { "title": "AI-powered recommendations", "description": "Intelligent suggestions that match you with the best academic fields and career paths." },
+        { "title": "Better decision-making", "description": "Clear, data-driven insights to help you choose with confidence and clarity." },
+        { "title": "Easy access to career information", "description": "Fast, comprehensive access to details about majors, careers, and future opportunities." }
+      ]
+    },
+    "team": {
+      "label": "Team",
+      "headline": "Created by students, built for students",
+      "description": "Massarek was developed by a focused team of student-oriented engineers who care about accessibility, transparency, and helping learners choose the right academic journey.",
+      "members": [
+        { "name": "Zouhair El Mazi", "role": "Full-Stack Developer", "description": "Bringing experience, creativity, and an AI-first mindset to every part of the Massarek experience." },
+        { "name": "Aymane El Asri", "role": "Full-Stack Developer", "description": "Bringing experience, creativity, and an AI-first mindset to every part of the Massarek experience." }
+      ]
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to your account to continue",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "emailPlaceholder": "name@example.com",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Sign In",
+      "loading": "Signing in...",
+      "errorEmpty": "Please fill in both email and password fields.",
+      "successTitle": "Welcome back",
+      "successMessage": "You have successfully signed in.",
+      "failedTitle": "Sign in failed",
+      "failedMessage": "Invalid email or password.",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up"
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "Start your orientation journey today",
+      "nameLabel": "Full name",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "namePlaceholder": "John Doe",
+      "emailPlaceholder": "name@example.com",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Get Started",
+      "loading": "Creating account...",
+      "errorEmpty": "Please fill in all fields.",
+      "errorPasswordLength": "Password must be at least 8 characters long.",
+      "successTitle": "Success",
+      "successMessage": "Account created successfully! Welcome to Massarek.",
+      "alreadyAccount": "Already have an account?",
+      "signInLink": "Sign in"
+    },
+    "logout": {
+      "title": "Signed out",
+      "description": "You have been logged out successfully."
+    }
+  },
+  "dashboard": {
+    "welcomeTitle": "Welcome back, Student! 👋",
+    "welcomeSubtitle": "Continue your orientation journey and discover the perfect path for your future.",
+    "quickActions": [
+      { "title": "Take Test", "desc": "Start orientation test", "to": "/test" },
+      { "title": "AI Results", "desc": "View recommendations", "to": "/recommendations" },
+      { "title": "Careers", "desc": "Explore career paths", "to": "/careers" },
+      { "title": "Chatbot", "desc": "Ask AI assistant", "to": "/chatbot" }
+    ],
+    "progress": {
+      "profileCompletion": "Profile completion",
+      "testsCompleted": "Tests completed",
+      "careerExploration": "Career exploration"
+    },
+    "recommendationsSection": {
+      "title": "AI Recommendations",
+      "previewLink": "View →"
+    },
+    "activity": {
+      "title": "Recent Activity",
+      "completedTest": "Completed Personality Test",
+      "exploredCareer": "Explored Computer Science career path",
+      "newRecommendations": "New AI recommendations available"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "educationOptions": ["High School", "Bachelor's", "Master's"],
+    "skills": ["Problem Solving", "Critical Thinking", "Communication", "Mathematics", "Creativity", "Leadership", "Teamwork", "Research"],
+    "interests": ["Technology", "Science", "Arts", "Business", "Medicine", "Engineering", "Education", "Law"],
+    "saveProfile": "Save Profile"
+  },
+  "careerExplorer": {
+    "title": "Career Explorer",
+    "subtitle": "Discover career paths that match your skills and interests.",
+    "searchPlaceholder": "Search careers...",
+    "fieldAll": "All",
+    "careers": [
+      {
+        "title": "Software Engineer",
+        "field": "Technology",
+        "salary": "$95K–$180K",
+        "growth": "25%",
+        "education": "Bachelor's",
+        "desc": "Design, develop, and maintain software systems and applications."
+      },
+      {
+        "title": "Data Scientist",
+        "field": "Technology",
+        "salary": "$90K–$160K",
+        "growth": "35%",
+        "education": "Master's",
+        "desc": "Analyze complex data to help organizations make better decisions."
+      },
+      {
+        "title": "UX Designer",
+        "field": "Design",
+        "salary": "$75K–$130K",
+        "growth": "13%",
+        "education": "Bachelor's",
+        "desc": "Create intuitive and engaging user experiences for digital products."
+      },
+      {
+        "title": "Biomedical Engineer",
+        "field": "Engineering",
+        "salary": "$70K–$120K",
+        "growth": "6%",
+        "education": "Bachelor's",
+        "desc": "Develop medical devices and equipment to improve healthcare."
+      },
+      {
+        "title": "Financial Analyst",
+        "field": "Business",
+        "salary": "$65K–$110K",
+        "growth": "9%",
+        "education": "Bachelor's",
+        "desc": "Evaluate financial data and provide investment recommendations."
+      },
+      {
+        "title": "Clinical Psychologist",
+        "field": "Healthcare",
+        "salary": "$80K–$130K",
+        "growth": "6%",
+        "education": "Doctorate",
+        "desc": "Diagnose and treat mental health disorders through therapy."
+      },
+      {
+        "title": "Environmental Scientist",
+        "field": "Science",
+        "salary": "$55K–$95K",
+        "growth": "8%",
+        "education": "Bachelor's",
+        "desc": "Study the environment and develop solutions for environmental problems."
+      },
+      {
+        "title": "Product Manager",
+        "field": "Business",
+        "salary": "$100K–$170K",
+        "growth": "10%",
+        "education": "Bachelor's",
+        "desc": "Lead product strategy and development from concept to launch."
+      }
+    ],
+    "noResults": "No careers found matching your criteria."
+  },
+  "chatbot": {
+    "title": "AI Assistant",
+    "subtitle": "Powered by AI",
+    "initialMessage": "Hi! I'm your AI orientation assistant. 🎓 I can help you explore career paths, understand your test results, or answer any questions about academic fields. What would you like to know?",
+    "responseMessage": "That's a great question! Based on your profile and test results, I'd recommend exploring fields that combine your analytical skills with your creative interests. Would you like me to go into more detail about specific programs?",
+    "inputPlaceholder": "Ask about careers, fields, or your results..."
+  },
+  "recommendations": {
+    "title": "AI Recommendations",
+    "subtitle": "Based on your test results and profile, here are your top matches.",
+    "chartTitle": "Compatibility Overview",
+    "viewMore": "View →"
+  },
+  "test": {
+    "progressLabel": "Question {{current}} of {{total}}",
+    "completePercent": "{{percent}}% complete",
+    "completedTitle": "Test Completed! 🎉",
+    "completedDescription": "Your answers have been analyzed by our AI. Check your personalized recommendations now.",
+    "viewRecommendations": "View Recommendations",
+    "previous": "Previous",
+    "next": "Next",
+    "finish": "Finish",
+    "questions": [
+      {
+        "question": "What type of activities do you enjoy the most?",
+        "options": ["Building & creating things", "Analyzing data & solving puzzles", "Helping & teaching others", "Designing & artistic expression"]
+      },
+      {
+        "question": "Which school subject interests you the most?",
+        "options": ["Mathematics", "Science", "Language & Literature", "Social Studies"]
+      },
+      {
+        "question": "How do you prefer to work?",
+        "options": ["Independently", "In small teams", "Leading a group", "Collaborating with many people"]
+      },
+      {
+        "question": "What matters most in a future career?",
+        "options": ["High salary", "Work-life balance", "Making an impact", "Creative freedom"]
+      },
+      {
+        "question": "Which environment appeals to you?",
+        "options": ["Office / Corporate", "Laboratory / Research", "Outdoors / Field work", "Remote / Digital"]
+      }
+    ]
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "stats": [
+      { "label": "Total Users", "value": "1,284", "change": "+12%" },
+      { "label": "Tests Taken", "value": "3,542", "change": "+8%" },
+      { "label": "Careers Explored", "value": "856", "change": "+15%" },
+      { "label": "Avg. Match Score", "value": "84%", "change": "+3%" }
+    ],
+    "recentUsers": "Recent Users",
+    "userStatusActive": "Active",
+    "userStatusInactive": "Inactive"
+  },
+  "footer": {
+    "quickLinks": "Quick links",
+    "contact": "Contact",
+    "support": "Need support?",
+    "email": "contact@massarek.ai",
+    "copyright": "© 2026 Massarek. All rights reserved."
+  },
+  "sidebar": {
+    "main": "Main",
+    "account": "Account",
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "orientationTest": "Orientation Test",
+    "recommendations": "AI Recommendations",
+    "careers": "Career Explorer",
+    "chatbot": "AI Chatbot",
+    "profile": "Profile",
+    "admin": "Admin",
+    "signOut": "Sign out"
+  },
+  "notFound": {
+    "title": "404",
+    "message": "Oops! Page not found",
+    "returnHome": "Return to Home"
+  }
+}

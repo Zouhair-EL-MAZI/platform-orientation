@@ -9,6 +9,7 @@ import {
   Home,
   LogOut,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import MassarekLogo from "./MassarekLogo";
@@ -26,27 +27,28 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const mainItems = [
-  { title: "Home", url: "/", icon: Home },
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Orientation Test", url: "/test", icon: FileQuestion },
-  { title: "AI Recommendations", url: "/recommendations", icon: Sparkles },
-  { title: "Career Explorer", url: "/careers", icon: Briefcase },
-  { title: "AI Chatbot", url: "/chatbot", icon: MessageSquare },
-];
-
-const accountItems = [
-  { title: "Profile", url: "/profile", icon: User },
-  { title: "Admin", url: "/admin", icon: Shield },
-  { title: "Sign out", url: "/logout", icon: LogOut, action: "logout" },
-];
-
 export function AppSidebar() {
+  const { t } = useTranslation();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
   const navigate = useNavigate();
   const isActive = (path: string) => location.pathname === path;
+
+  const mainItems = [
+    { title: t("sidebar.home"), url: "/", icon: Home },
+    { title: t("sidebar.dashboard"), url: "/dashboard", icon: LayoutDashboard },
+    { title: t("sidebar.orientationTest"), url: "/test", icon: FileQuestion },
+    { title: t("sidebar.recommendations"), url: "/recommendations", icon: Sparkles },
+    { title: t("sidebar.careers"), url: "/careers", icon: Briefcase },
+    { title: t("sidebar.chatbot"), url: "/chatbot", icon: MessageSquare },
+  ];
+
+  const accountItems = [
+    { title: t("sidebar.profile"), url: "/profile", icon: User },
+    { title: t("sidebar.admin"), url: "/admin", icon: Shield },
+    { title: t("sidebar.signOut"), url: "/logout", icon: LogOut, action: "logout" },
+  ];
 
   const handleLogout = () => {
     navigate("/logout");
@@ -59,7 +61,7 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Main</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("sidebar.main")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainItems.map((item) => (
@@ -76,7 +78,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Account</SidebarGroupLabel>
+          <SidebarGroupLabel>{t("sidebar.account")}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {accountItems.map((item) => (

@@ -1,21 +1,24 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import MassarekLogo from "./MassarekLogo";
+import LanguageSwitcher from "./LanguageSwitcher";
 import { cn } from "@/lib/utils";
 
-const navItems = [
-  { label: "Home", hash: "#home" },
-  { label: "Features", hash: "#features" },
-  { label: "How It Works", hash: "#how-it-works" },
-  { label: "About", hash: "#about" },
-  { label: "Contact", hash: "#contact" },
-];
-
 const LandingNavbar = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const navItems = [
+    { label: t("common.home"), hash: "#home" },
+    { label: t("common.features"), hash: "#features" },
+    { label: t("landing.howItWorks.label"), hash: "#how-it-works" },
+    { label: t("common.about"), hash: "#about" },
+    { label: t("common.contact"), hash: "#contact" },
+  ];
 
   const activeHash = location.pathname === "/" ? location.hash || "#home" : "";
 
@@ -69,18 +72,19 @@ const LandingNavbar = () => {
         </nav>
 
         <div className="flex items-center gap-2 md:gap-4">
+          <LanguageSwitcher />
           <div className="hidden md:flex items-center gap-3">
             <Link
               to="/login"
               className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors duration-200 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-              Sign In
+              {t("common.signIn")}
             </Link>
             <Link
               to="/register"
               className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-transform duration-200 hover:shadow-lg hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-              Get Started
+              {t("common.getStarted")}
             </Link>
           </div>
 
@@ -89,7 +93,7 @@ const LandingNavbar = () => {
             className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-border bg-card text-muted-foreground transition-colors duration-200 hover:bg-muted hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
             onClick={() => setIsOpen((prev) => !prev)}
             aria-expanded={isOpen}
-            aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-label={isOpen ? t("landing.closeMenu", "Close navigation menu") : t("landing.openMenu", "Open navigation menu")}
           >
             {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -124,14 +128,14 @@ const LandingNavbar = () => {
               onClick={() => setIsOpen(false)}
               className="rounded-full px-4 py-3 text-center text-sm font-medium text-muted-foreground transition-colors duration-200 hover:bg-muted/70 hover:text-foreground"
             >
-              Sign In
+              {t("common.signIn")}
             </Link>
             <Link
               to="/register"
               onClick={() => setIsOpen(false)}
               className="rounded-full bg-primary px-4 py-3 text-center text-sm font-semibold text-primary-foreground transition-transform duration-200 hover:shadow-lg hover:-translate-y-0.5"
             >
-              Get Started
+              {t("common.getStarted")}
             </Link>
           </div>
         </div>

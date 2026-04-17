@@ -1,11 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 import MassarekLogo from "@/components/MassarekLogo";
 import GoogleButton from "@/components/GoogleButton";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { toast } from "@/hooks/use-toast";
 
 const Register = () => {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,8 +20,8 @@ const Register = () => {
 
     if (!name || !email || !password) {
       toast({
-        title: "Error",
-        description: "Please fill in all fields",
+        title: t("auth.register.errorEmpty", "Error"),
+        description: t("auth.register.errorEmpty"),
         variant: "destructive",
       });
       return;
@@ -26,8 +29,8 @@ const Register = () => {
 
     if (password.length < 8) {
       toast({
-        title: "Error",
-        description: "Password must be at least 8 characters long",
+        title: t("auth.register.errorPasswordLength", "Error"),
+        description: t("auth.register.errorPasswordLength"),
         variant: "destructive",
       });
       return;
@@ -43,8 +46,8 @@ const Register = () => {
       });
 
       toast({
-        title: "Success",
-        description: "Account created successfully! Welcome to Massarek.",
+        title: t("auth.register.successTitle"),
+        description: t("auth.register.successMessage"),
       });
 
       localStorage.setItem("user", JSON.stringify(response.data.user));
@@ -54,8 +57,8 @@ const Register = () => {
     } catch (error: any) {
       console.error("Registration error:", error);
       toast({
-        title: "Error",
-        description: error.response?.data?.message || "Failed to create account. Please try again.",
+        title: t("auth.register.errorTitle", "Error"),
+        description: error.response?.data?.message || t("auth.register.errorDescription"),
         variant: "destructive",
       });
     } finally {
@@ -65,46 +68,49 @@ const Register = () => {
 
   return (
     <div className="bg-background px-4 py-16 min-h-[calc(100vh-96px)]">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
       <div className="mx-auto flex w-full max-w-md flex-col gap-8">
         <div className="text-center">
           <div className="flex justify-center mb-4">
             <MassarekLogo size="lg" />
           </div>
-          <h1 className="text-2xl font-bold">Create your account</h1>
-          <p className="text-muted-foreground text-sm mt-2">Start your orientation journey today</p>
+          <h1 className="text-2xl font-bold">{t("auth.register.title")}</h1>
+          <p className="text-muted-foreground text-sm mt-2">{t("auth.register.subtitle")}</p>
         </div>
 
         <div className="rounded-3xl border border-border bg-card p-8 shadow-card">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="text-sm font-medium mb-2 block">Full name</label>
+              <label className="text-sm font-medium mb-2 block">{t("auth.register.nameLabel")}</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="John Doe"
+                placeholder={t("auth.register.namePlaceholder")}
                 className="w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-all"
                 required
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Email</label>
+              <label className="text-sm font-medium mb-2 block">{t("auth.register.emailLabel")}</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@example.com"
+                placeholder={t("auth.register.emailPlaceholder")}
                 className="w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-all"
                 required
               />
             </div>
             <div>
-              <label className="text-sm font-medium mb-2 block">Password</label>
+              <label className="text-sm font-medium mb-2 block">{t("auth.register.passwordLabel")}</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder={t("auth.register.passwordPlaceholder")}
                 className="w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 transition-all"
                 required
                 minLength={8}
@@ -116,7 +122,7 @@ const Register = () => {
                 disabled={isLoading}
                 className="w-full rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLoading ? "Creating account..." : "Get Started"}
+                {isLoading ? t("auth.register.loading") : t("auth.register.submit")}
               </button>
             </div>
           </form>
@@ -126,7 +132,7 @@ const Register = () => {
               <div className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-card text-muted-foreground">OR</span>
+              <span className="px-2 bg-card text-muted-foreground">{t("common.or")}</span>
             </div>
           </div>
 
@@ -134,7 +140,7 @@ const Register = () => {
         </div>
 
         <p className="text-center text-sm text-muted-foreground">
-          Already have an account? <Link to="/login" className="text-primary font-medium hover:underline">Sign in</Link>
+          {t("auth.register.alreadyAccount")} <Link to="/login" className="text-primary font-medium hover:underline">{t("auth.register.signInLink")}</Link>
         </p>
       </div>
     </div>

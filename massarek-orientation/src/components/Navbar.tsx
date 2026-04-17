@@ -1,10 +1,14 @@
 import { Bell, Search } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import MassarekLogo from "./MassarekLogo";
 import { SidebarTrigger } from "./ui/sidebar";
 import ThemeToggle from "./ThemeToggle";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const Navbar = () => {
+  const { t } = useTranslation();
+
   return (
     <header className="h-14 border-b border-border bg-card flex items-center px-4 gap-4 sticky top-0 z-30">
       <SidebarTrigger className="mr-1" />
@@ -16,10 +20,11 @@ const Navbar = () => {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
         <input
           type="text"
-          placeholder="Search..."
+          placeholder={t("navbar.searchPlaceholder")}
           className="pl-9 pr-4 py-1.5 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring/20 w-56 transition-all"
         />
       </div>
+      <LanguageSwitcher />
       <ThemeToggle />
       <button className="p-2 rounded-lg hover:bg-accent transition-colors relative">
         <Bell size={18} className="text-muted-foreground" />

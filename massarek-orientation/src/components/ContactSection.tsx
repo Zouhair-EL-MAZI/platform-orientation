@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import emailjs from "@emailjs/browser";
 import { toast } from "@/hooks/use-toast";
 
 const ContactSection = () => {
@@ -8,15 +9,72 @@ const ContactSection = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [messageError, setMessageError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  useEffect(() => {
+    emailjs.init("3CPc9QqRcNYv29fG6");
+  }, []);
+
+  const validateInputs = () => {
+    let valid = true;
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedMessage = message.trim();
+
+    if (trimmedName.length < 2) {
+      setNameError(
+        trimmedName.length === 0
+          ? t("landing.contactForm.nameErrorRequired", "Name is required.")
+          : t("landing.contactForm.nameErrorMin", "Name must be at least 2 characters.")
+      );
+      valid = false;
+    } else {
+      setNameError("");
+    }
+
+    if (trimmedEmail.length === 0) {
+      setEmailError(t("landing.contactForm.emailErrorRequired", "Email is required."));
+      valid = false;
+    } else if (!emailPattern.test(trimmedEmail)) {
+      setEmailError(t("landing.contactForm.emailErrorInvalid", "Enter a valid email address."));
+      valid = false;
+    } else {
+      setEmailError("");
+    }
+
+    if (trimmedMessage.length < 10) {
+      setMessageError(
+        trimmedMessage.length === 0
+          ? t("landing.contactForm.messageErrorRequired", "Message is required.")
+          : t("landing.contactForm.messageErrorMin", "Message must be at least 10 characters.")
+      );
+      valid = false;
+    } else {
+      setMessageError("");
+    }
+
+    return valid;
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!name.trim() || !email.trim() || !message.trim()) {
+    if (isSubmitting) {
+      return;
+    }
+
+    if (!validateInputs()) {
       toast({
-        title: t("landing.contactForm.errorTitle", "Please complete all fields"),
-        description: t("landing.contactForm.errorMessage", "Fill in your name, email, and message before sending."),
+        title: t("landing.contactForm.errorValidationTitle", "Please fix the form errors"),
+        description: t(
+          "landing.contactForm.errorMessage",
+          "Fill in your name, email, and message before sending."
+        ),
         variant: "destructive",
       });
       return;
@@ -24,7 +82,19 @@ const ContactSection = () => {
 
     setIsSubmitting(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 700));
+      await emailjs.send(
+        "service_massarek",
+        "template_ob1mwco",
+        {
+          from_name: name.trim(),
+          from_email: email.trim(),
+          message: message.trim(),
+          email: email.trim(),
+          reply_to: email.trim(),
+          to_email: "massarek100@gmail.com",
+        }
+      );
+
       toast({
         title: t("landing.contactForm.successTitle", "Message sent"),
         description: t("landing.contactForm.successMessage", "We’ll get back to you shortly."),
@@ -32,10 +102,24 @@ const ContactSection = () => {
       setName("");
       setEmail("");
       setMessage("");
+      setNameError("");
+      setEmailError("");
+      setMessageError("");
     } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : typeof error === "string"
+          ? error
+          : JSON.stringify(error);
+
+      console.error("EmailJS send error:", error);
       toast({
-        title: t("landing.contactForm.errorTitle", "Submission failed"),
-        description: t("landing.contactForm.errorNetwork", "Please try again later."),
+        title: t("landing.contactForm.errorSubmitTitle", "Unable to send your message"),
+        description: t(
+          "landing.contactForm.errorNetwork",
+          "Please try again later."
+        ) + (errorMessage ? ` (${errorMessage})` : ""),
         variant: "destructive",
       });
     } finally {
@@ -114,20 +198,36 @@ const ContactSection = () => {
                 <input
                   type="text"
                   value={name}
-                  onChange={(event) => setName(event.target.value)}
+                  onChange={(event) => {
+                    setName(event.target.value);
+                    if (nameError) {
+                      setNameError("");
+                    }
+                  }}
                   placeholder={t("landing.contactForm.namePlaceholder")}
                   className="h-14 rounded-3xl border border-slate-200 bg-slate-50/95 px-4 text-sm text-foreground shadow-sm outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 dark:border-slate-800 dark:bg-slate-900/90 dark:text-white"
                 />
+                {nameError ? (
+                  <span className="text-xs text-destructive mt-1">{nameError}</span>
+                ) : null}
               </label>
               <label className="flex flex-col gap-2 text-sm text-foreground">
                 <span className="font-medium">{t("landing.contactForm.emailLabel")}</span>
                 <input
                   type="email"
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                    if (emailError) {
+                      setEmailError("");
+                    }
+                  }}
                   placeholder={t("landing.contactForm.emailPlaceholder")}
                   className="h-14 rounded-3xl border border-slate-200 bg-slate-50/95 px-4 text-sm text-foreground shadow-sm outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 dark:border-slate-800 dark:bg-slate-900/90 dark:text-white"
                 />
+                {emailError ? (
+                  <span className="text-xs text-destructive mt-1">{emailError}</span>
+                ) : null}
               </label>
             </div>
 
@@ -135,19 +235,27 @@ const ContactSection = () => {
               <span className="font-medium">{t("landing.contactForm.messageLabel")}</span>
               <textarea
                 value={message}
-                onChange={(event) => setMessage(event.target.value)}
+                onChange={(event) => {
+                  setMessage(event.target.value);
+                  if (messageError) {
+                    setMessageError("");
+                  }
+                }}
                 placeholder={t("landing.contactForm.messagePlaceholder")}
                 rows={6}
                 className="min-h-[170px] rounded-[2rem] border border-slate-200 bg-slate-50/95 px-4 py-4 text-sm text-foreground shadow-sm outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 dark:border-slate-800 dark:bg-slate-900/90 dark:text-white"
               />
+              {messageError ? (
+                <span className="text-xs text-destructive mt-1">{messageError}</span>
+              ) : null}
             </label>
 
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || name.trim().length < 2 || !emailPattern.test(email.trim()) || message.trim().length < 10}
               className="inline-flex w-full items-center justify-center rounded-3xl bg-gradient-to-r from-sky-500 to-cyan-400 px-6 py-4 text-sm font-semibold text-white shadow-[0_20px_50px_-25px_rgba(56,189,248,0.85)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_60px_-30px_rgba(56,189,248,0.9)] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isSubmitting ? t("landing.contactForm.sending") : t("landing.contactForm.sendButton")}
+              {isSubmitting ? t("landing.contactForm.sending", "Sending...") : t("landing.contactForm.sendButton")}
             </button>
           </form>
         </motion.div>

@@ -44,6 +44,17 @@
       { "value": "200+", "label": "Career paths" },
       { "value": "50+", "label": "Test modules" }
     ],
+    "statsSection": {
+      "badge": "Premium outcomes",
+      "title": "Actionable metrics that feel modern, trustworthy, and highly polished.",
+      "subtitle": "These numbers are intentionally static, but the presentation is designed to feel dynamic with glassmorphism, motion, and elegant SaaS refinement.",
+      "cards": [
+        { "label": "Students Guided" },
+        { "label": "Recommendation Accuracy" },
+        { "label": "Career Paths" },
+        { "label": "Orientation Modules" }
+      ]
+    },
     "features": [
       { "title": "AI Recommendations", "desc": "Get personalized field suggestions based on your unique profile and test results." },
       { "title": "Smart Tests", "desc": "Take orientation tests designed to uncover your strengths and interests." },
@@ -51,31 +62,131 @@
       { "title": "Career Explorer", "desc": "Explore hundreds of career paths with detailed insights and compatibility scores." }
     ],
     "featuresSection": {
-      "title": "Everything you need to choose your future",
-      "subtitle": "Our AI-powered platform provides comprehensive tools to help you make the best academic and career decisions."
+      "badge": "Features",
+      "title": "Powerful AI features designed for your future",
+      "subtitle": "Massarek combines intelligent guidance, immersive assessments, and conversational AI to help students choose the best path with confidence and clarity.",
+      "heroBullet1": "Adaptive support for every question.",
+      "heroBullet2": "Conversational recommendations and next-step clarity.",
+      "cards": {
+        "0": {
+          "title": "AI Recommendations",
+          "desc": "Smart course and career matches powered by adaptive AI analysis and student growth models."
+        },
+        "1": {
+          "title": "Orientation Tests",
+          "desc": "Precision diagnostics with guided assessments that reveal strengths, interests, and next-step clarity."
+        },
+        "2": {
+          "title": "Career Explorer",
+          "desc": "Interactive discovery tools that map high-growth paths, study options, and future-ready roles."
+        },
+        "3": {
+          "title": "AI Chatbot",
+          "desc": "Instant advice, friendly guidance, and real-time answers from a conversational assistant built for students."
+        },
+        "4": {
+          "title": "Personalized Guidance",
+          "desc": "Tailored plans, milestones, and recommendations that evolve with every academic decision."
+        }
+      }
     },
     "howItWorks": {
-      "label": "How it works",
-      "title": "A smarter orientation experience in three steps",
+      "badge": "How It Works",
+      "title": "Simple Steps Powered by Artificial Intelligence",
+      "subtitle": "Follow our streamlined process to discover your perfect academic path. From account creation to career exploration, every step is designed to guide you professionally.",
       "steps": [
-        { "title": "Answer the orientation test", "desc": "Complete a short and adaptive quiz that identifies your academic strengths and preferences." },
-        { "title": "Receive AI insights", "desc": "Our engine analyzes your profile and suggests fields, majors, and career paths that match you." },
-        { "title": "Move forward with confidence", "desc": "Use tailored recommendations, career resources, and next-step guidance to plan your future." }
-      ]
+        {
+          "title": "Create Account",
+          "desc": "Sign up in seconds and set up your student profile with your basic information."
+        },
+        {
+          "title": "Take Orientation Test",
+          "desc": "Complete an adaptive quiz that reveals your strengths, interests, and academic preferences."
+        },
+        {
+          "title": "AI Analyzes Responses",
+          "desc": "Our intelligent engine processes your answers to understand your unique profile and potential."
+        },
+        {
+          "title": "Receive Personalized Recommendations",
+          "desc": "Get tailored suggestions for fields, majors, and career paths that match your profile perfectly."
+        },
+        {
+          "title": "Explore Careers & Study Fields",
+          "desc": "Deep dive into detailed information about careers, salaries, education requirements, and growth paths."
+        }
+      ],
+      "next": "Next",
+      "start": "Start Now",
+      "cta": {
+        "label": "Ready to start?",
+        "title": "Begin Your Orientation Journey Today",
+        "subtitle": "Join thousands of students discovering their perfect academic path with Massarek's AI-powered guidance.",
+        "button": "Get Started Free"
+      }
     },
     "about": {
       "label": "About Massarek",
-      "title": "A platform built to empower academic decisions",
+      "title": "Empowering Students Through Artificial Intelligence",
+      "subtitle": "Massarek uses advanced AI to provide students with clear, personalized orientation and career guidance so they can make confident academic choices.",
       "description": "Massarek brings together AI-powered guidance, career insights, and personalized recommendations to help students choose the right field with confidence. We focus on clarity, accuracy, and a delightful experience for every learner.",
       "missionLabel": "Our mission",
-      "mission": "Help students discover their strengths and turn them into a meaningful academic path, while removing uncertainty from career planning."
+      "mission": "Help students discover their strengths and turn them into a meaningful academic path, while removing uncertainty from career planning.",
+      "educationLabel": "Educational Objective",
+      "education": "Provide students with actionable insights and study pathways grounded in data and personalized AI analysis.",
+      "visionLabel": "Vision & Innovation",
+      "vision": "Build the most trusted AI companion for students to plan their academic and professional futures.",
+      "howAI": "How AI Helps",
+      "howAIText": "Massarek analyzes test responses and profile signals to produce understandable recommendations and learning pathways tailored to each student.",
+      "personalized": "Personalized Insights",
+      "personalizedText": "Recommendations that evolve as students grow and learn.",
+      "humanCentered": "Human-Centered",
+      "humanCenteredText": "AI supports human decisions — we surface clear choices, not black boxes.",
+      "team": {
+        "title": "Team",
+        "subtitle": "Built by students, for students — small, focused, and passionate.",
+        "members": [
+          {
+            "name": "Zouhair El Mazi",
+            "role": "Full-Stack Developer",
+            "bio": "Bringing experience, creativity, and an AI-first mindset to every part of the Massarek experience."
+          },
+          {
+            "name": "Aymane El Asri",
+            "role": "Full-Stack Developer",
+            "bio": "Focused on elegant interfaces and robust backend systems to power student success."
+          }
+        ]
+      }
     },
     "contact": {
       "label": "Contact",
       "title": "Let’s answer your questions",
       "description": "Reach out if you need help getting started, want to learn more about our tests, or want a demo of Massarek.",
       "emailLabel": "Email us",
-      "email": "contact@massarek.ai"
+      "email": "contact@massarek.ma"
+    },
+    "contactForm": {
+      "sectionLabel": "Send a message",
+      "title": "Talk to our team",
+      "subtitle": "Share your question and our student success team will reply quickly.",
+      "nameLabel": "Your name",
+      "namePlaceholder": "Jane Doe",
+      "emailLabel": "Your email",
+      "emailPlaceholder": "you@example.com",
+      "messageLabel": "Your message",
+      "messagePlaceholder": "Tell us what you’d like help with...",
+      "sendButton": "Send message",
+      "sending": "Sending...",
+      "fastReply": "Fast reply",
+      "fastReplyDesc": "We respond within one business day.",
+      "support": "Trusted support",
+      "supportDesc": "Premium guidance for students and partners.",
+      "successTitle": "Message sent",
+      "successMessage": "We’ll get back to you shortly.",
+      "errorTitle": "Please complete all fields",
+      "errorMessage": "Fill in your name, email, and message before sending.",
+      "errorNetwork": "Please try again later."
     },
     "cta": {
       "readyTitle": "Ready to discover your path?",
@@ -338,7 +449,7 @@
     "description": "Massarek helps students discover the right academic path with AI-powered guidance, career exploration, and personalized recommendations.",
     "contact": "Contact",
     "support": "Need support?",
-    "email": "contact@massarek.ai",
+    "email": "contact@massarek.ma",
     "copyright": "© 2026 Massarek. All rights reserved."
   },
   "sidebar": {

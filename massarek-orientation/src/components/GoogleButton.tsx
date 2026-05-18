@@ -21,12 +21,12 @@ const GoogleButton = ({ onClick }: GoogleButtonProps) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={`
-        flex items-center justify-center gap-3 w-full px-4 py-3
-        bg-white border border-gray-300 rounded-xl
-        shadow-sm hover:shadow-md
-        transition-all duration-200 ease-in-out
-        focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-        ${isHovered ? 'transform scale-[1.02]' : ''}
+        flex items-center justify-center gap-3 w-full rounded-2xl border px-4 py-3 text-sm font-semibold
+        bg-white/95 text-slate-900 border-slate-300 shadow-sm backdrop-blur-sm
+        transition duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-md
+        focus:outline-none focus:ring-2 focus:ring-sky-400/40 focus:ring-offset-2
+        dark:bg-slate-950/85 dark:text-slate-100 dark:border-slate-700/80 dark:hover:bg-slate-900
+        ${isHovered ? 'scale-[1.02]' : ''}
       `}
     >
       <svg

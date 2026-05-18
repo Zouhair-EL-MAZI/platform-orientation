@@ -39,7 +39,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-[1fr_auto]">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-[1fr_auto]">
           <div className="space-y-3">
             <h3 className="text-sm font-semibold uppercase tracking-[0.24em] text-muted-foreground">{t("footer.quickLinks")}</h3>
             <div className="flex flex-col gap-3">

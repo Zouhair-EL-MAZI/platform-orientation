@@ -44,6 +44,17 @@
       { "value": "200+", "label": "Parcours professionnels" },
       { "value": "50+", "label": "Modules de test" }
     ],
+    "statsSection": {
+      "badge": "Résultats premium",
+      "title": "Des métriques exploitables, modernes et hautement soignées.",
+      "subtitle": "Ces chiffres sont intentionnellement statiques, mais la présentation est conçue pour paraître dynamique avec du glassmorphisme, du mouvement et un raffinement SaaS élégant.",
+      "cards": [
+        { "label": "Étudiants accompagnés" },
+        { "label": "Précision des recommandations" },
+        { "label": "Parcours professionnels" },
+        { "label": "Modules d'orientation" }
+      ]
+    },
     "features": [
       { "title": "Recommandations IA", "desc": "Recevez des suggestions de domaines personnalisées en fonction de votre profil et de vos résultats." },
       { "title": "Tests intelligents", "desc": "Passez des tests d'orientation conçus pour révéler vos forces et vos intérêts." },
@@ -51,31 +62,131 @@
       { "title": "Explorateur de carrières", "desc": "Explorez des centaines de carrières avec des informations détaillées et des scores de compatibilité." }
     ],
     "featuresSection": {
-      "title": "Tout ce dont vous avez besoin pour choisir votre avenir",
-      "subtitle": "Notre plateforme propulsée par l'IA offre des outils complets pour vous aider à prendre les meilleures décisions académiques et professionnelles."
+      "badge": "Fonctionnalités",
+      "title": "Fonctionnalités IA puissantes pour votre avenir",
+      "subtitle": "Massarek combine des conseils intelligents, des évaluations immersives et une IA conversationnelle pour aider les étudiants à choisir la meilleure voie avec confiance.",
+      "heroBullet1": "Soutien adaptatif pour chaque question.",
+      "heroBullet2": "Recommandations conversationnelles et clarté sur les prochaines étapes.",
+      "cards": {
+        "0": {
+          "title": "Recommandations IA",
+          "desc": "Correspondances de cours et de carrière intelligentes alimentées par l'analyse adaptative de l'IA et des modèles de croissance."
+        },
+        "1": {
+          "title": "Tests d'orientation",
+          "desc": "Diagnostics précis avec des évaluations guidées qui révèlent les forces, les intérêts et la clarté des prochaines étapes."
+        },
+        "2": {
+          "title": "Explorateur de carrière",
+          "desc": "Outils de découverte interactifs qui cartographient les voies à forte croissance, les options d'études et les métiers d'avenir."
+        },
+        "3": {
+          "title": "Chatbot IA",
+          "desc": "Conseils instantanés, orientation conviviale et réponses en temps réel d'un assistant conversationnel conçu pour les étudiants."
+        },
+        "4": {
+          "title": "Guidance personnalisée",
+          "desc": "Plans, étapes et recommandations sur mesure qui évoluent avec chaque décision académique."
+        }
+      }
     },
     "howItWorks": {
-      "label": "Comment ça marche",
-      "title": "Une expérience d'orientation plus intelligente en trois étapes",
+      "badge": "Fonctionnement",
+      "title": "Des étapes simples alimentées par l'intelligence artificielle",
+      "subtitle": "Suivez notre processus rationalisé pour découvrir votre voie académique parfaite. De la création du compte à l'exploration de carrière, chaque étape est conçue pour vous guider professionnellement.",
       "steps": [
-        { "title": "Répondez au test d'orientation", "desc": "Complétez un quiz court et adaptatif qui identifie vos points forts et vos préférences." },
-        { "title": "Recevez des insights IA", "desc": "Notre moteur analyse votre profil et suggère des domaines, des majeures et des parcours professionnels adaptés." },
-        { "title": "Avancez en confiance", "desc": "Utilisez des recommandations personnalisées, des ressources carrière et des conseils pour planifier votre avenir." }
-      ]
+        {
+          "title": "Créer un compte",
+          "desc": "Inscrivez-vous en quelques secondes et configurez votre profil étudiant avec vos informations de base."
+        },
+        {
+          "title": "Passer le test d'orientation",
+          "desc": "Complétez un questionnaire adaptatif qui révèle vos forces, intérêts et préférences académiques."
+        },
+        {
+          "title": "L'IA analyse les réponses",
+          "desc": "Notre moteur intelligent traite vos réponses pour comprendre votre profil unique et votre potentiel."
+        },
+        {
+          "title": "Recevez des recommandations personnalisées",
+          "desc": "Obtenez des suggestions personnalisées pour les domaines, les diplômes et les parcours professionnels qui vous correspondent parfaitement."
+        },
+        {
+          "title": "Explorez les carrières et les domaines d'études",
+          "desc": "Plongez dans des informations détaillées sur les carrières, les salaires, les exigences éducatives et les voies de croissance."
+        }
+      ],
+      "next": "Suivant",
+      "start": "Commencer maintenant",
+      "cta": {
+        "label": "Prêt à commencer?",
+        "title": "Commencez votre parcours d'orientation aujourd'hui",
+        "subtitle": "Rejoignez des milliers d'étudiants découvrant leur voie académique parfaite avec le guidance IA de Massarek.",
+        "button": "Commencer gratuitement"
+      }
     },
     "about": {
       "label": "À propos de Massarek",
-      "title": "Une plateforme conçue pour faciliter les décisions académiques",
-      "description": "Massarek réunit des conseils propulsés par l'IA, des informations sur les carrières et des recommandations personnalisées pour aider les étudiants à choisir le bon domaine avec confiance.",
+      "title": "Donner aux étudiants les moyens grâce à l'intelligence artificielle",
+      "subtitle": "Massarek utilise l'IA avancée pour fournir aux étudiants une orientation et des conseils de carrière clairs et personnalisés, afin qu'ils puissent faire des choix académiques confiants.",
+      "description": "Massarek réunit des conseils propulsés par l'IA, des informations sur les carrières et des recommandations personnalisées pour aider les étudiants à choisir le bon domaine avec confiance. Nous privilégions la clarté, l'exactitude et une expérience agréable.",
       "missionLabel": "Notre mission",
-      "mission": "Aider les étudiants à découvrir leurs forces et à transformer cela en un parcours académique significatif, tout en supprimant l'incertitude de la planification de carrière."
+      "mission": "Aider les étudiants à découvrir leurs forces et à les transformer en un parcours académique significatif, tout en réduisant l'incertitude liée à la planification de carrière.",
+      "educationLabel": "Objectif pédagogique",
+      "education": "Fournir aux étudiants des insights exploitables et des parcours d'études basés sur les données et une analyse IA personnalisée.",
+      "visionLabel": "Vision & Innovation",
+      "vision": "Construire le compagnon IA le plus fiable pour aider les étudiants à planifier leur avenir académique et professionnel.",
+      "howAI": "Comment l'IA aide",
+      "howAIText": "Massarek analyse les réponses aux tests et les signaux de profil pour produire des recommandations compréhensibles et des parcours d'apprentissage adaptés à chaque étudiant.",
+      "personalized": "Insights personnalisés",
+      "personalizedText": "Des recommandations qui évoluent à mesure que les étudiants grandissent et apprennent.",
+      "humanCentered": "Axé sur l'humain",
+      "humanCenteredText": "L'IA soutient les décisions humaines — nous mettons en avant des choix clairs, pas des boîtes noires.",
+      "team": {
+        "title": "Équipe",
+        "subtitle": "Conçu par des étudiants, pour des étudiants — petit, concentré et passionné.",
+        "members": [
+          {
+            "name": "Zouhair El Mazi",
+            "role": "Développeur Full-Stack",
+            "bio": "Apportant expérience, créativité et une approche IA à chaque partie de l'expérience Massarek."
+          },
+          {
+            "name": "Aymane El Asri",
+            "role": "Développeur Full-Stack",
+            "bio": "Concentré sur des interfaces élégantes et des systèmes backend robustes pour soutenir la réussite des étudiants."
+          }
+        ]
+      }
     },
     "contact": {
       "label": "Contact",
       "title": "Répondons à vos questions",
       "description": "Contactez-nous si vous avez besoin d'aide pour démarrer, si vous souhaitez en savoir plus sur nos tests ou si vous souhaitez une démo de Massarek.",
       "emailLabel": "Email",
-      "email": "contact@massarek.ai"
+      "email": "contact@massarek.ma"
+    },
+    "contactForm": {
+      "sectionLabel": "Envoyer un message",
+      "title": "Discutez avec notre équipe",
+      "subtitle": "Partagez votre question et notre équipe vous répondra rapidement.",
+      "nameLabel": "Votre nom",
+      "namePlaceholder": "Jane Doe",
+      "emailLabel": "Votre adresse email",
+      "emailPlaceholder": "vous@exemple.com",
+      "messageLabel": "Votre message",
+      "messagePlaceholder": "Dites-nous comment nous pouvons vous aider...",
+      "sendButton": "Envoyer le message",
+      "sending": "Envoi...",
+      "fastReply": "Réponse rapide",
+      "fastReplyDesc": "Nous répondons dans la journée.",
+      "support": "Support premium",
+      "supportDesc": "Un accompagnement haut de gamme pour les étudiants et partenaires.",
+      "successTitle": "Message envoyé",
+      "successMessage": "Nous vous répondrons sous peu.",
+      "errorTitle": "Veuillez remplir tous les champs",
+      "errorMessage": "Remplissez votre nom, votre email et votre message avant d'envoyer.",
+      "errorNetwork": "Veuillez réessayer plus tard."
     },
     "cta": {
       "readyTitle": "Prêt à découvrir votre chemin ?",
@@ -334,7 +445,7 @@
     "description": "Massarek aide les étudiants à trouver la bonne orientation scolaire grâce à des conseils pilotés par l'IA, à l'exploration de carrières et à des recommandations personnalisées.",
     "contact": "Contact",
     "support": "Besoin d'aide ?",
-    "email": "contact@massarek.ai",
+    "email": "contact@massarek.ma",
     "copyright": "© 2026 Massarek. Tous droits réservés."
   },
   "sidebar": {

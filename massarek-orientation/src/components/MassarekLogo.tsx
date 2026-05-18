@@ -1,20 +1,25 @@
-import { Compass } from "lucide-react";
-
 interface MassarekLogoProps {
   collapsed?: boolean;
   size?: "sm" | "md" | "lg";
+  imageSize?: "sm" | "md" | "lg";
 }
 
-const MassarekLogo = ({ collapsed = false, size = "md" }: MassarekLogoProps) => {
-  const iconSize = size === "sm" ? 20 : size === "lg" ? 32 : 24;
+const MassarekLogo = ({ collapsed = false, size = "md", imageSize }: MassarekLogoProps) => {
+  const resolvedImageSize = imageSize ?? size;
+  const sizeClass = resolvedImageSize === "sm" ? "w-8" : resolvedImageSize === "lg" ? "w-16" : "w-12";
+  const textClass = size === "lg" ? "text-2xl" : size === "sm" ? "text-base" : "text-xl";
 
   return (
-    <div className="flex items-center gap-2.5">
-      <div className="gradient-primary rounded-xl p-1.5 flex items-center justify-center">
-        <Compass className="text-primary-foreground" size={iconSize} strokeWidth={2.2} />
+    <div className="flex items-center gap-3">
+      <div className={` ${sizeClass}`}>
+        <img
+          src="/logo1.png"
+          alt="Massarek logo"
+          className="h-auto w-full object-contain transition-all duration-300" 
+        />
       </div>
       {!collapsed && (
-        <span className={`font-bold tracking-tight gradient-text ${size === "lg" ? "text-2xl" : size === "sm" ? "text-base" : "text-xl"}`}>
+        <span className={`font-bold tracking-tight text-slate-950 dark:text-white ${textClass}`}>
           Massarek
         </span>
       )}

@@ -10,29 +10,38 @@ const Navbar = () => {
   const { t } = useTranslation();
 
   return (
-    <header className="h-14 border-b border-border bg-card flex items-center px-4 gap-4 sticky top-0 z-30">
-      <SidebarTrigger className="mr-1" />
-      <Link to="/" className="lg:hidden">
-        <MassarekLogo size="sm" />
-      </Link>
-      <div className="flex-1" />
-      <div className="relative hidden sm:block">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-        <input
-          type="text"
-          placeholder={t("navbar.searchPlaceholder")}
-          className="pl-9 pr-4 py-1.5 text-sm rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring/20 w-56 transition-all"
-        />
+    <header className="sticky top-4 z-30 mx-4 mb-4 rounded-[2rem] border border-border bg-card/90 px-4 py-3 shadow-sm shadow-slate-900/5 backdrop-blur-xl backdrop-saturate-150 transition-all duration-300 sm:mx-6 lg:mx-8">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="flex items-center gap-2">
+          <SidebarTrigger className="mr-1" />
+          <Link to="/" className="lg:hidden">
+            <MassarekLogo size="sm" imageSize="md" />
+          </Link>
+        </div>
+
+        <div className="flex-1 min-w-[160px]" />
+
+        <div className="relative hidden sm:block">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+          <input
+            type="text"
+            placeholder={t("navbar.searchPlaceholder")}
+            className="w-56 rounded-2xl border border-input bg-background/90 py-2 pl-10 pr-4 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+          />
+        </div>
+
+        <div className="flex items-center gap-2 md:gap-3">
+          <LanguageSwitcher />
+          <ThemeToggle />
+          <button className="relative rounded-2xl border border-border bg-background/80 p-2 text-muted-foreground transition hover:bg-muted/80 focus:outline-none focus:ring-2 focus:ring-primary/20">
+            <Bell size={18} />
+            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-gradient-to-r from-sky-500 to-cyan-400" />
+          </button>
+          <Link to="/profile" className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 text-primary-foreground text-sm font-semibold shadow-lg shadow-sky-500/10">
+            S
+          </Link>
+        </div>
       </div>
-      <LanguageSwitcher />
-      <ThemeToggle />
-      <button className="p-2 rounded-lg hover:bg-accent transition-colors relative">
-        <Bell size={18} className="text-muted-foreground" />
-        <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full gradient-primary" />
-      </button>
-      <Link to="/profile" className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-primary-foreground text-sm font-semibold">
-        S
-      </Link>
     </header>
   );
 };

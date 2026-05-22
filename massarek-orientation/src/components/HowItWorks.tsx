@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { UserPlus, Zap, Brain, Sparkles, Compass } from "lucide-react";
 
@@ -60,6 +61,7 @@ const connectorVariants = {
 
 const HowItWorks = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const isRTL = document.documentElement.dir === "rtl" || document.documentElement.lang?.startsWith("ar");
 
   const steps = [
@@ -116,7 +118,7 @@ const HowItWorks = () => {
   ];
 
   return (
-    <section id="how-it-works" className="relative overflow-hidden px-6 py-10 bg-[linear-gradient(180deg,rgba(249,251,255,0.95),rgba(241,247,255,0.85))] dark:bg-[linear-gradient(180deg,rgba(10,18,33,0.94),rgba(15,23,42,0.92))] md:px-12 lg:py-16">
+    <section id="how-it-works" className="relative overflow-hidden px-6 py-10 md:px-12 lg:py-16" style={{background:"var(--ms-bg-layer1)"}}>
       {/* Background gradients */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-96 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.15),transparent_40%)] dark:bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.12),transparent_45%)]" />
       <div className="absolute left-1/2 top-20 h-32 w-32 -translate-x-1/2 rounded-full bg-sky-200/20 blur-3xl dark:bg-sky-500/10" />
@@ -131,15 +133,15 @@ const HowItWorks = () => {
         variants={sectionVariants}
         className="relative mx-auto max-w-4xl text-center"
       >
-        <span className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.6em] text-sky-600 dark:text-sky-400 mb-6">
+        <span className="section-eyebrow inline-flex items-center justify-center px-3 py-1.5 mb-6">
           {t("landing.howItWorks.badge", "How It Works")}
         </span>
 
-        <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-display font-semibold tracking-tight text-slate-950 dark:text-white sm:text-4xl md:text-5xl">
+        <h2 className="mx-auto mt-4 max-w-3xl text-3xl font-display font-bold tracking-tight sm:text-4xl md:text-5xl">
           {t("landing.howItWorks.title", "Simple Steps Powered by Artificial Intelligence")}
         </h2>
 
-        <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-300 sm:text-lg">
+        <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
           {t(
             "landing.howItWorks.subtitle",
             "Follow our streamlined process to discover your perfect academic path. From account creation to career exploration, every step is designed to guide you professionally."
@@ -187,7 +189,7 @@ const HowItWorks = () => {
                 {/* Step Card */}
                 <motion.div
                   whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                  className="group relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-slate-200/50 bg-gradient-to-br from-white/80 via-white/60 to-slate-50/80 p-8 shadow-[0_20px_80px_-50px_rgba(15,23,42,0.15)] backdrop-blur-xl transition-all duration-300 hover:border-sky-300/40 dark:border-white/10 dark:bg-gradient-to-br dark:from-slate-900/60 dark:via-slate-900/40 dark:to-slate-950/50 dark:shadow-[0_25px_100px_-55px_rgba(56,189,248,0.2)] dark:hover:border-sky-500/40"
+                  className="group relative flex h-full flex-col overflow-hidden rounded-2xl p-8 glass-card transition-all duration-300"
                 >
                   {/* Background gradient accent */}
                   <div className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-gradient-to-br from-blue-300/20 to-transparent blur-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-blue-500/10" />
@@ -209,17 +211,17 @@ const HowItWorks = () => {
                         <Icon className="h-7 w-7 text-white" />
                       </motion.div>
                     </motion.div>
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-sky-500/10 text-sm font-display font-semibold text-sky-600 dark:bg-sky-500/20 dark:text-sky-300">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full text-sm font-display font-bold" style={{background:"var(--ms-accent-glow)",color:"var(--ms-accent-sky)",border:"1px solid var(--ms-border-glow)"}}>
                       {index + 1}
                     </span>
                   </div>
 
                   {/* Content */}
                   <div className="relative flex-1">
-                    <h3 className="text-lg font-display font-semibold text-slate-950 dark:text-white mb-3">
+                    <h3 className="text-lg font-display font-bold mb-3">
                       {step.title}
                     </h3>
-                    <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    <p className="text-sm leading-6 text-muted-foreground">
                       {step.desc}
                     </p>
                   </div>
@@ -273,28 +275,31 @@ const HowItWorks = () => {
         viewport={{ once: true, amount: 0.3 }}
         variants={sectionVariants}
         transition={{ delay: 0.3 }}
-        className="relative mx-auto mt-20 max-w-2xl rounded-[2.5rem] border border-sky-300/20 bg-gradient-to-br from-white/60 via-sky-50/40 to-white/60 p-8 shadow-[0_35px_110px_-55px_rgba(56,189,248,0.2)] backdrop-blur-2xl dark:border-sky-500/20 dark:bg-gradient-to-br dark:from-slate-900/60 dark:via-sky-900/20 dark:to-slate-900/60 dark:shadow-[0_35px_110px_-55px_rgba(56,189,248,0.15)] sm:p-10"
+        className="relative mx-auto mt-20 max-w-2xl rounded-2xl p-8 glass-card sm:p-10"
       >
         <div className="absolute -left-10 top-8 h-24 w-24 rounded-full bg-sky-400/10 blur-3xl dark:bg-sky-500/10" />
         <div className="absolute right-0 top-20 h-20 w-20 rounded-full bg-blue-400/10 blur-3xl dark:bg-blue-500/10" />
 
         <div className="relative text-center">
-          <p className="mb-4 text-sm uppercase tracking-[0.4em] text-sky-600 dark:text-sky-400 font-semibold">
+          <p className="mb-4 section-eyebrow">
             {t("landing.howItWorks.cta.label", "Ready to start?")}
           </p>
-          <h3 className="text-2xl font-display font-semibold text-slate-950 dark:text-white sm:text-3xl">
+          <h3 className="text-2xl font-display font-bold sm:text-3xl">
             {t("landing.howItWorks.cta.title", "Begin Your Orientation Journey Today")}
           </h3>
-          <p className="mx-auto mt-4 max-w-xl text-base text-slate-600 dark:text-slate-300">
+          <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground">
             {t(
               "landing.howItWorks.cta.subtitle",
               "Join thousands of students discovering their perfect academic path with Massarek's AI-powered guidance."
             )}
           </p>
           <motion.button
+            type="button"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.98 }}
-            className="mt-8 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-sky-500 to-blue-500 px-8 py-3 font-semibold text-white shadow-lg shadow-sky-500/40 transition-all duration-300 hover:shadow-sky-500/60 dark:shadow-sky-500/20 dark:hover:shadow-sky-500/40"
+            onClick={() => navigate("/register")}
+            className="mt-8 inline-flex items-center justify-center rounded-full px-8 py-3 font-bold text-white transition-all duration-300 hover:-translate-y-0.5 glow-pulse"
+            style={{ background: "linear-gradient(135deg,var(--ms-accent-blue),#0E7490)", border: "1px solid var(--ms-border-glow)", boxShadow: "0 0 24px var(--ms-accent-glow-strong)" }}
           >
             {t("landing.howItWorks.cta.button", "Get Started Free")}
             <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

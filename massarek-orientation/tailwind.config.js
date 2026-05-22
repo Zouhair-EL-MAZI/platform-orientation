@@ -1,0 +1,85 @@
+import type { Config } from "tailwindcss";
+
+export default {
+  darkMode: ["class"],
+  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  prefix: "",
+  theme: {
+    screens: {
+      xs: "344px", sm: "640px", md: "768px", md2: "820px",
+      lg2: "912px", lg: "1024px", xl: "1280px", "2xl": "1536px", "3xl": "1920px",
+    },
+    container: { center: true, padding: "2rem", screens: { "2xl": "1400px" } },
+    extend: {
+      fontFamily: {
+        sans: ['Sora', 'system-ui', 'sans-serif'],
+        display: ['Sora', 'system-ui', 'sans-serif'],
+        arabic: ['Cairo', 'system-ui', 'sans-serif'],
+        mono: ['Space Mono', 'monospace'],
+      },
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: { DEFAULT: "hsl(var(--primary))", foreground: "hsl(var(--primary-foreground))" },
+        secondary: { DEFAULT: "hsl(var(--secondary))", foreground: "hsl(var(--secondary-foreground))" },
+        destructive: { DEFAULT: "hsl(var(--destructive))", foreground: "hsl(var(--destructive-foreground))" },
+        muted: { DEFAULT: "hsl(var(--muted))", foreground: "hsl(var(--muted-foreground))" },
+        accent: { DEFAULT: "hsl(var(--accent))", foreground: "hsl(var(--accent-foreground))" },
+        popover: { DEFAULT: "hsl(var(--popover))", foreground: "hsl(var(--popover-foreground))" },
+        card: { DEFAULT: "hsl(var(--card))", foreground: "hsl(var(--card-foreground))" },
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar-background))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          primary: "hsl(var(--sidebar-primary))",
+          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+          accent: "hsl(var(--sidebar-accent))",
+          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          ring: "hsl(var(--sidebar-ring))",
+        },
+        massarek: {
+          cyan: "#22D3EE", blue: "#2563EB", sky: "#38BDF8",
+          navy1: "#050816", navy2: "#071120", navy3: "#0A1628", navy4: "#101D36",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)", md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)", "2xl": "calc(var(--radius) + 0.5rem)",
+      },
+      boxShadow: {
+        "glow-cyan": "0 0 20px rgba(34,211,238,0.25), inset 0 1px 0 rgba(255,255,255,0.15)",
+        "glow-cyan-strong": "0 0 30px rgba(34,211,238,0.40), 0 8px 24px rgba(37,99,235,0.30)",
+        "glow-card": "0 12px 32px rgba(0,0,0,0.22), 0 0 0 1px rgba(34,211,238,0.06)",
+        "card": "0 20px 60px -30px rgba(0,0,0,0.3), 0 0 0 1px rgba(34,211,238,0.06)",
+        "elevated": "0 28px 80px -36px rgba(0,0,0,0.4), 0 0 0 1px rgba(34,211,238,0.10)",
+      },
+      keyframes: {
+        "accordion-down": { from: { height: "0" }, to: { height: "var(--radix-accordion-content-height)" } },
+        "accordion-up": { from: { height: "var(--radix-accordion-content-height)" }, to: { height: "0" } },
+        "fade-in": { from: { opacity: "0", transform: "translateY(24px)" }, to: { opacity: "1", transform: "translateY(0)" } },
+        "slide-in": { from: { opacity: "0", transform: "translateX(-10px)" }, to: { opacity: "1", transform: "translateX(0)" } },
+        "scale-in": { from: { opacity: "0", transform: "scale(0.95)" }, to: { opacity: "1", transform: "scale(1)" } },
+        float: { "0%, 100%": { transform: "translateY(0px)" }, "50%": { transform: "translateY(-8px)" } },
+        "ms-pulse": { "0%, 100%": { opacity: "1", transform: "scale(1)" }, "50%": { opacity: "0.6", transform: "scale(0.85)" } },
+        "glow-pulse": {
+          "0%, 100%": { boxShadow: "0 0 28px rgba(34,211,238,0.28), 0 8px 24px rgba(37,99,235,0.25)" },
+          "50%": { boxShadow: "0 0 44px rgba(34,211,238,0.50), 0 12px 32px rgba(37,99,235,0.40)" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in": "fade-in 0.6s ease-out forwards",
+        "slide-in": "slide-in 0.3s ease-out forwards",
+        "scale-in": "scale-in 0.3s ease-out forwards",
+        float: "float 3s ease-in-out infinite",
+        "ms-pulse": "ms-pulse 2s ease-in-out infinite",
+        "glow-pulse": "glow-pulse 2.5s ease-in-out infinite",
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate"), require("tailwindcss-rtl")],
+} satisfies Config;

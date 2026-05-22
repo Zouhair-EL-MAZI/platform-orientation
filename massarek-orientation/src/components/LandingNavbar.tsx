@@ -32,87 +32,58 @@ const LandingNavbar = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Intersection Observer for active section detection
   useEffect(() => {
     if (location.pathname !== "/") return;
-
-    const observerOptions = {
-      root: null,
-      rootMargin: "-50% 0px -50% 0px",
-      threshold: 0,
-    };
-
-    observerRef.current = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(`#${entry.target.id}`);
-        }
-      });
-    }, observerOptions);
-
-    // Observe all sections
+    observerRef.current = new IntersectionObserver(
+      (entries) => { entries.forEach((e) => { if (e.isIntersecting) setActiveSection(`#${e.target.id}`); }); },
+      { root: null, rootMargin: "-50% 0px -50% 0px", threshold: 0 }
+    );
     navItems.forEach((item) => {
-      const element = document.getElementById(item.id);
-      if (element && observerRef.current) {
-        observerRef.current.observe(element);
-      }
+      const el = document.getElementById(item.id);
+      if (el && observerRef.current) observerRef.current.observe(el);
     });
-
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, [location.pathname, navItems]);
+    return () => { if (observerRef.current) observerRef.current.disconnect(); };
+  }, [location.pathname]);
 
   const scrollToSection = (hash: string) => {
-    const sectionId = hash.slice(1);
-    const element = document.getElementById(sectionId);
-    if (!element) return;
-
-    const headerHeight = 96;
-    const elementTop = element.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo({ top: elementTop - headerHeight, behavior: "smooth" });
+    const el = document.getElementById(hash.slice(1));
+    if (!el) return;
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 96, behavior: "smooth" });
     setActiveSection(hash);
   };
 
-  // Handle navigation to section on link click
-  const handleNavClick = (hash: string) => {
-    scrollToSection(hash);
-    setIsOpen(false);
-  };
+  const handleNavClick = (hash: string) => { scrollToSection(hash); setIsOpen(false); };
 
-  // Scroll to section if hash changes in URL
-  useEffect(() => {
-    if (!location.hash) return;
-    scrollToSection(location.hash);
-  }, [location.hash]);
+  useEffect(() => { if (location.hash) scrollToSection(location.hash); }, [location.hash]);
 
   return (
     <header className="pointer-events-none fixed inset-x-0 top-4 z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div
-          className={cn(
-            "pointer-events-auto flex flex-wrap items-center justify-between gap-3 rounded-full border bg-white/80 p-3 shadow-[0_30px_80px_-55px_rgba(56,189,248,0.24)] backdrop-blur-3xl ring-1 ring-white/15 transition-all duration-300 dark:bg-slate-950/85 dark:border-slate-700/55 dark:ring-white/10",
-            scrolled ? "border-opacity-100 shadow-[0_35px_90px_-55px_rgba(56,189,248,0.32)]" : "border-opacity-70",
-          )}
-        >
+        <div className={cn(
+          "pointer-events-auto flex flex-wrap items-center justify-between gap-3 rounded-full border p-3 transition-all duration-300",
+          "bg-white/80 dark:bg-[rgba(5,8,22,0.85)]",
+          "backdrop-blur-2xl",
+          "border-[rgba(2,132,199,0.12)] dark:border-[rgba(34,211,238,0.10)]",
+          scrolled
+            ? "shadow-[0_8px_32px_rgba(2,132,199,0.12)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+            : "shadow-sm"
+        )}>
           <div className="flex items-center gap-3">
-            <Link to="/" className="flex items-center gap-3 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+            <Link to="/" className="flex items-center gap-3 rounded-full focus:outline-none">
               <MassarekLogo size="md" />
             </Link>
           </div>
 
-          <nav className="hidden md:flex items-center gap-2.5 lg:gap-4">
+          <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
               <button
                 key={item.hash}
                 onClick={() => handleNavClick(item.hash)}
                 className={cn(
-                  "inline-flex items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold transition-all duration-300",
+                  "inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 border",
                   activeHash === item.hash
-                    ? "bg-gradient-to-r from-sky-500 to-cyan-400 text-white shadow-[0_15px_45px_-20px_rgba(56,189,248,0.55)]"
-                    : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5",
+                    ? "bg-[var(--ms-accent-glow)] text-[var(--ms-accent-sky)] border-[var(--ms-border-glow)]"
+                    : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--ms-accent-glow)] border-transparent hover:border-[var(--ms-border-subtle)]"
                 )}
               >
                 {item.label}
@@ -120,19 +91,24 @@ const LandingNavbar = () => {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-2 md:gap-3">
             <LanguageSwitcher />
             <ThemeToggle />
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2">
               <Link
                 to="/login"
-                className="rounded-full px-4 py-2.5 text-sm font-medium text-slate-600 transition-colors duration-200 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 border border-[var(--ms-border-subtle)] hover:border-[var(--ms-border-glow)] hover:text-[var(--ms-accent-sky)] transition-all duration-200 backdrop-blur-sm"
               >
                 {t("common.signIn")}
               </Link>
               <Link
                 to="/register"
-                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_14px_35px_-20px_rgba(56,189,248,0.85)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_45px_-22px_rgba(56,189,248,0.9)]"
+                className="inline-flex items-center justify-center rounded-full px-5 py-2 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 glow-pulse"
+                style={{
+                  background: "linear-gradient(135deg, var(--ms-accent-blue), #0E7490)",
+                  border: "1px solid var(--ms-border-glow)",
+                  boxShadow: "0 0 20px var(--ms-accent-glow-strong), inset 0 1px 0 rgba(255,255,255,0.15)"
+                }}
               >
                 {t("common.getStarted")}
               </Link>
@@ -140,51 +116,53 @@ const LandingNavbar = () => {
 
             <button
               type="button"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200/70 bg-white/90 text-slate-700 shadow-sm transition hover:bg-white dark:border-slate-700/60 dark:bg-slate-950/80 dark:text-slate-200 dark:hover:bg-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
-              onClick={() => setIsOpen((prev) => !prev)}
-              aria-expanded={isOpen}
-              aria-label={isOpen ? t("landing.closeMenu", "Close navigation menu") : t("landing.openMenu", "Open navigation menu")}
+              onClick={() => setIsOpen((p) => !p)}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--ms-border-subtle)] bg-[var(--ms-bg-card)] text-muted-foreground backdrop-blur-sm transition hover:border-[var(--ms-border-glow)] hover:text-[var(--ms-accent-cyan)] md:hidden"
             >
-              {isOpen ? <X size={20} /> : <Menu size={20} />}
+              {isOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
         </div>
       </div>
 
-      <div
-        className={cn(
-          "pointer-events-auto overflow-hidden transition-[max-height,opacity] duration-300 md:hidden",
-          isOpen ? "max-h-[520px] opacity-100" : "max-h-0 opacity-0",
-        )}
-      >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="space-y-3 overflow-hidden rounded-[2rem] border border-slate-200/70 bg-white/90 px-4 pb-5 pt-4 shadow-[0_35px_90px_-50px_rgba(56,189,248,0.18)] backdrop-blur-xl dark:border-slate-700/60 dark:bg-slate-950/90">
+      <div className={cn(
+        "pointer-events-auto overflow-hidden transition-[max-height,opacity] duration-300 md:hidden",
+        isOpen ? "max-h-[520px] opacity-100" : "max-h-0 opacity-0"
+      )}>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 mt-2">
+          <div
+            className="space-y-2 overflow-hidden rounded-3xl px-4 pb-5 pt-4 backdrop-blur-2xl"
+            style={{
+              background: "var(--ms-bg-card)",
+              border: "1px solid var(--ms-border-subtle)"
+            }}
+          >
             {navItems.map((item) => (
               <button
                 key={item.hash}
                 onClick={() => handleNavClick(item.hash)}
                 className={cn(
-                  "w-full block rounded-3xl px-4 py-3 text-base font-medium transition-all duration-300 cursor-pointer",
+                  "w-full block rounded-2xl px-4 py-3 text-base font-semibold transition-all duration-200 text-left border",
                   activeHash === item.hash
-                    ? "bg-gradient-to-r from-sky-500 to-cyan-400 text-white shadow-[0_12px_32px_-18px_rgba(56,189,248,0.45)]"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white",
+                    ? "text-[var(--ms-accent-sky)] bg-[var(--ms-accent-glow)] border-[var(--ms-border-glow)]"
+                    : "text-muted-foreground hover:text-foreground hover:bg-[var(--ms-accent-glow)] border-transparent"
                 )}
               >
                 {item.label}
               </button>
             ))}
-            <div className="flex flex-col gap-3 pt-2">
-              <Link
-                to="/login"
-                onClick={() => setIsOpen(false)}
-                className="rounded-full px-4 py-3 text-center text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white"
+            <div className="flex flex-col gap-2 pt-2">
+              <Link to="/login" onClick={() => setIsOpen(false)}
+                className="rounded-2xl px-4 py-3 text-center text-sm font-semibold text-muted-foreground border border-[var(--ms-border-subtle)] hover:border-[var(--ms-border-glow)] transition-all"
               >
                 {t("common.signIn")}
               </Link>
-              <Link
-                to="/register"
-                onClick={() => setIsOpen(false)}
-                className="rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 px-4 py-3 text-center text-sm font-semibold text-white shadow-[0_14px_35px_-20px_rgba(56,189,248,0.72)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_45px_-22px_rgba(56,189,248,0.86)]"
+              <Link to="/register" onClick={() => setIsOpen(false)}
+                className="rounded-2xl px-4 py-3 text-center text-sm font-bold text-white transition hover:-translate-y-0.5"
+                style={{
+                  background: "linear-gradient(135deg, var(--ms-accent-blue), #0E7490)",
+                  boxShadow: "0 0 20px var(--ms-accent-glow-strong)"
+                }}
               >
                 {t("common.getStarted")}
               </Link>

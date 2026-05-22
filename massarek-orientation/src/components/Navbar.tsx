@@ -8,39 +8,71 @@ import LanguageSwitcher from "./LanguageSwitcher";
 
 const Navbar = () => {
   const { t } = useTranslation();
-
   return (
-    <header className="sticky top-4 z-30 mx-4 mb-4 rounded-[2rem] border border-border bg-card/90 px-4 py-3 shadow-sm shadow-slate-900/5 backdrop-blur-xl backdrop-saturate-150 transition-all duration-300 sm:mx-6 lg:mx-8">
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2">
-          <SidebarTrigger className="mr-1" />
-          <Link to="/" className="lg:hidden">
-            <MassarekLogo size="sm" imageSize="md" />
-          </Link>
-        </div>
+    <header
+      className="sticky top-0 z-30 h-[60px] flex items-center px-4 sm:px-6 gap-3 backdrop-blur-xl border-b transition-all duration-300"
+      style={{
+        background: "var(--ms-bg-navbar)",
+        borderColor: "var(--ms-border-subtle)",
+      }}
+    >
+      <div className="flex items-center gap-2">
+        <SidebarTrigger
+          className="rounded-lg border transition-all hover:text-[var(--ms-accent-cyan)]"
+          style={{ borderColor: "var(--ms-border-subtle)", background: "transparent" }}
+        />
+        <Link to="/" className="lg:hidden">
+          <MassarekLogo size="sm" imageSize="md" />
+        </Link>
+      </div>
 
-        <div className="flex-1 min-w-[160px]" />
+      <div
+        className="relative hidden sm:flex items-center gap-2 flex-1 max-w-sm rounded-full h-9 px-4 backdrop-blur-sm transition-all"
+        style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)" }}
+      >
+        <Search size={14} className="text-muted-foreground flex-shrink-0" />
+        <input
+          type="text"
+          placeholder={t("navbar.searchPlaceholder")}
+          className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground font-sans"
+        />
+      </div>
 
-        <div className="relative hidden sm:block">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-          <input
-            type="text"
-            placeholder={t("navbar.searchPlaceholder")}
-            className="w-56 rounded-2xl border border-input bg-background/90 py-2 pl-10 pr-4 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-          />
-        </div>
+      <div className="flex-1" />
 
-        <div className="flex items-center gap-2 md:gap-3">
-          <LanguageSwitcher />
+      <div className="flex items-center gap-2">
+        <LanguageSwitcher />
+        <div
+          className="rounded-full p-1.5 transition-all hover:text-[var(--ms-accent-cyan)] cursor-pointer"
+          style={{ border: "1px solid var(--ms-border-subtle)", background: "var(--ms-bg-card)" }}
+        >
           <ThemeToggle />
-          <button className="relative rounded-2xl border border-border bg-background/80 p-2 text-muted-foreground transition hover:bg-muted/80 focus:outline-none focus:ring-2 focus:ring-primary/20">
-            <Bell size={18} />
-            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-gradient-to-r from-sky-500 to-cyan-400" />
-          </button>
-          <Link to="/profile" className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 text-primary-foreground text-sm font-semibold shadow-lg shadow-sky-500/10">
-            S
-          </Link>
         </div>
+        <button
+          className="relative rounded-full p-2 text-muted-foreground transition-all hover:text-[var(--ms-accent-cyan)]"
+          style={{ border: "1px solid var(--ms-border-subtle)", background: "var(--ms-bg-card)" }}
+        >
+          <Bell size={16} />
+          <span
+            className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full border-2"
+            style={{
+              background: "var(--ms-accent-cyan)",
+              boxShadow: "0 0 6px var(--ms-accent-cyan)",
+              borderColor: "var(--ms-bg-base)",
+            }}
+          />
+        </button>
+        <Link
+          to="/profile"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-full text-white text-sm font-bold"
+          style={{
+            background: "linear-gradient(135deg, var(--ms-accent-blue), var(--ms-accent-cyan))",
+            border: "2px solid var(--ms-border-glow)",
+            boxShadow: "0 0 14px var(--ms-accent-glow-strong)",
+          }}
+        >
+          S
+        </Link>
       </div>
     </header>
   );

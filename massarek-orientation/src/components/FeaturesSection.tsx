@@ -38,7 +38,7 @@ const FeatureCard = ({
     variants={cardVariants}
     whileHover={{ y: -8 }}
     transition={{ type: "spring", stiffness: 220, damping: 20 }}
-    className="group relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-slate-200/60 bg-white/85 p-7 shadow-[0_25px_90px_-55px_rgba(15,23,42,0.18)] backdrop-blur-xl transition-all duration-300 hover:border-sky-300/40 hover:bg-white/95 dark:border-white/10 dark:bg-slate-950/75 dark:shadow-[0_30px_90px_-55px_rgba(56,189,248,0.16)] dark:hover:border-sky-500/40"
+    className="group relative flex h-full flex-col overflow-hidden rounded-2xl p-7 transition-all duration-300" style={{background:"var(--ms-bg-card)",border:"1px solid var(--ms-border-subtle)",backdropFilter:"blur(12px)"}}
   >
     <div className="pointer-events-none absolute -left-8 top-6 h-28 w-28 rounded-full bg-gradient-to-br from-sky-400/20 via-transparent to-cyan-400/0 blur-2xl opacity-70" />
     <div className="relative flex items-start gap-4">
@@ -46,10 +46,10 @@ const FeatureCard = ({
         <Icon className="h-5 w-5 text-white" />
       </span>
       <div>
-        <h3 className="text-lg font-display font-semibold text-slate-950 dark:text-white">{title}</h3>
+        <h3 className="text-lg font-display font-bold">{title}</h3>
       </div>
     </div>
-    <p className="mt-5 text-sm leading-7 text-slate-600 dark:text-slate-300">{description}</p>
+    <p className="mt-5 text-sm leading-7 text-muted-foreground">{description}</p>
   </motion.article>
 );
 
@@ -109,7 +109,7 @@ const FeaturesSection = () => {
   const rightFeatures = [featureCards[2], featureCards[4]];
 
   return (
-    <section id="features" className="relative overflow-hidden px-6 py-10 bg-[linear-gradient(180deg,rgba(241,247,255,0.95),rgba(238,246,255,0.78))] dark:bg-[linear-gradient(180deg,rgba(11,16,32,0.96),rgba(15,23,42,0.9))] md:px-12 lg:py-16">
+    <section id="features" className="relative overflow-hidden px-6 py-10 md:px-12 lg:py-16" style={{background:"var(--ms-bg-base)"}}>
       <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.14),transparent_32%)] dark:bg-[radial-gradient(circle_at_top,rgba(56,189,248,0.14),transparent_38%)]" />
       <div className="absolute left-1/2 top-12 h-24 w-24 -translate-x-1/2 rounded-full bg-cyan-400/10 blur-3xl" />
       <div className="absolute right-12 top-24 h-32 w-32 rounded-full bg-sky-500/10 blur-3xl" />
@@ -122,13 +122,13 @@ const FeaturesSection = () => {
         variants={sectionVariants}
         className="relative mx-auto max-w-5xl text-center"
       >
-        <span className="inline-flex items-center justify-center px-2 text-xs font-semibold uppercase tracking-[0.55em] text-sky-500 dark:text-sky-400">
+        <span className="section-eyebrow inline-flex items-center justify-center px-2">
           {t("landing.featuresSection.badge", "Features")}
         </span>
-        <h2 className="mx-auto mt-6 max-w-3xl text-3xl font-display font-semibold tracking-tight text-slate-950 dark:text-white sm:text-4xl md:text-5xl">
+        <h2 className="mx-auto mt-6 max-w-3xl text-3xl font-display font-bold tracking-tight sm:text-4xl md:text-5xl">
           {t("landing.featuresSection.title", "Powerful AI features designed for your future")}
         </h2>
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-300 sm:text-lg">
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
           {t(
             "landing.featuresSection.subtitle",
             "Massarek combines intelligent guidance, immersive assessments, and conversational AI to help students choose the best path with confidence and clarity."
@@ -158,7 +158,7 @@ const FeaturesSection = () => {
           variants={cardVariants}
           whileHover={{ y: -10 }}
           transition={{ type: "spring", stiffness: 230, damping: 20 }}
-          className="relative overflow-hidden rounded-[2.5rem] border border-sky-300/20 bg-white/95 p-10 shadow-[0_35px_110px_-55px_rgba(56,189,248,0.24)] backdrop-blur-2xl transition-all duration-300 hover:border-sky-300/40 dark:border-sky-500/20 dark:bg-slate-950/80 dark:shadow-[0_35px_110px_-55px_rgba(56,189,248,0.18)] lg:row-span-2"
+          className="relative overflow-hidden rounded-2xl p-10 transition-all duration-300 glass-card lg:row-span-2"
         >
           <div className="absolute -left-10 top-12 h-28 w-28 rounded-full bg-cyan-400/10 blur-3xl" />
           <div className="absolute right-0 top-16 h-24 w-24 rounded-full bg-sky-400/10 blur-3xl" />

@@ -133,38 +133,38 @@ const ContactSection = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
-      className="relative overflow-hidden px-6 md:px-12 py-16 bg-[linear-gradient(180deg,rgba(241,248,255,0.94),rgba(236,245,255,0.82))] dark:bg-[linear-gradient(180deg,rgba(9,19,35,0.92),rgba(15,23,42,0.88))]"
+      className="relative overflow-hidden px-6 md:px-12 py-16" style={{background:"var(--ms-bg-layer1)"}}
     >
       <div className="pointer-events-none absolute -right-24 top-10 h-72 w-72 rounded-full bg-sky-500/12 blur-3xl" />
       <div className="pointer-events-none absolute left-0 top-24 h-56 w-56 rounded-full bg-cyan-400/12 blur-3xl" />
       <div className="max-w-6xl mx-auto grid gap-10 xl:grid-cols-[0.95fr_1.05fr] items-center">
         <div className="space-y-6">
-          <p className="text-sm uppercase tracking-[0.3em] text-primary font-semibold">
+          <p className="section-eyebrow">
             {t("landing.contact.label")}
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+          <h2 className="text-3xl md:text-4xl font-bold">
             {t("landing.contact.title")}
           </h2>
           <p className="text-base leading-8 text-muted-foreground max-w-xl">
             {t("landing.contact.description")}
           </p>
-          <div className="rounded-[2rem] border border-slate-200 bg-white/90 p-8 shadow-card backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/70">
+          <div className="rounded-2xl p-8 glass-card">
             <div className="space-y-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.32em] text-sky-500 font-semibold mb-2">
+                <p className="section-eyebrow mb-2">
                   {t("landing.contact.emailLabel")}
                 </p>
-                <a href={`mailto:${t("landing.contact.email")}`} className="text-xl font-semibold text-foreground hover:text-sky-500 transition">
+                <a href={`mailto:${t("landing.contact.email")}`} className="text-xl font-bold transition" style={{color:"var(--ms-accent-sky)"}}>
                   {t("landing.contact.email")}
                 </a>
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-3xl bg-slate-50/95 p-4 border border-slate-200 shadow-sm backdrop-blur-sm dark:bg-slate-900/85 dark:border-slate-700">
-                  <p className="text-sm uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400 mb-2">{t("landing.contactForm.fastReply", "Fast reply")}</p>
+                <div className="rounded-2xl p-4" style={{background:"var(--ms-bg-layer2)",border:"1px solid var(--ms-border-subtle)"}}>
+                  <p className="text-[11px] uppercase tracking-[0.15em] font-bold mb-2" style={{color:"var(--ms-accent-cyan)"}}>{t("landing.contactForm.fastReply", "Fast reply")}</p>
                   <p className="text-sm text-foreground dark:text-slate-100">{t("landing.contactForm.fastReplyDesc", "We respond within one business day.")}</p>
                 </div>
-                <div className="rounded-3xl bg-slate-50/95 p-4 border border-slate-200 shadow-sm backdrop-blur-sm dark:bg-slate-900/85 dark:border-slate-700">
-                  <p className="text-sm uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400 mb-2">{t("landing.contactForm.support", "Trusted support")}</p>
+                <div className="rounded-2xl p-4" style={{background:"var(--ms-bg-layer2)",border:"1px solid var(--ms-border-subtle)"}}>
+                  <p className="text-[11px] uppercase tracking-[0.15em] font-bold mb-2" style={{color:"var(--ms-accent-cyan)"}}>{t("landing.contactForm.support", "Trusted support")}</p>
                   <p className="text-sm text-foreground dark:text-slate-100">{t("landing.contactForm.supportDesc", "Premium guidance for students and partners.")}</p>
                 </div>
               </div>
@@ -177,13 +177,13 @@ const ContactSection = () => {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
           whileHover={{ y: -4, scale: 1.001 }}
-          className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white/95 p-8 shadow-card backdrop-blur-3xl dark:border-white/10 dark:bg-slate-950/90"
+          className="relative overflow-hidden rounded-2xl p-8 glass-card"
         >
           <div className="mb-8 text-center">
-            <p className="text-sm uppercase tracking-[0.28em] text-sky-500 font-semibold mb-2">
+            <p className="section-eyebrow mb-2">
               {t("landing.contactForm.sectionLabel")}
             </p>
-            <h3 className="text-2xl font-semibold text-foreground">
+            <h3 className="text-2xl font-bold">
               {t("landing.contactForm.title")}
             </h3>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">
@@ -205,7 +205,7 @@ const ContactSection = () => {
                     }
                   }}
                   placeholder={t("landing.contactForm.namePlaceholder")}
-                  className="h-14 rounded-3xl border border-slate-200 bg-slate-50/95 px-4 text-sm text-foreground shadow-sm outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 dark:border-slate-800 dark:bg-slate-900/90 dark:text-white"
+                  className="h-14 rounded-2xl px-4 text-sm outline-none transition" style={{background:"var(--ms-bg-layer2)",border:"1px solid var(--ms-border-subtle)",color:"hsl(var(--foreground))"}}
                 />
                 {nameError ? (
                   <span className="text-xs text-destructive mt-1">{nameError}</span>
@@ -223,7 +223,7 @@ const ContactSection = () => {
                     }
                   }}
                   placeholder={t("landing.contactForm.emailPlaceholder")}
-                  className="h-14 rounded-3xl border border-slate-200 bg-slate-50/95 px-4 text-sm text-foreground shadow-sm outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 dark:border-slate-800 dark:bg-slate-900/90 dark:text-white"
+                  className="h-14 rounded-2xl px-4 text-sm outline-none transition" style={{background:"var(--ms-bg-layer2)",border:"1px solid var(--ms-border-subtle)",color:"hsl(var(--foreground))"}}
                 />
                 {emailError ? (
                   <span className="text-xs text-destructive mt-1">{emailError}</span>
@@ -243,7 +243,7 @@ const ContactSection = () => {
                 }}
                 placeholder={t("landing.contactForm.messagePlaceholder")}
                 rows={6}
-                className="min-h-[170px] rounded-[2rem] border border-slate-200 bg-slate-50/95 px-4 py-4 text-sm text-foreground shadow-sm outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20 dark:border-slate-800 dark:bg-slate-900/90 dark:text-white"
+                className="min-h-[170px] rounded-2xl px-4 py-4 text-sm outline-none transition" style={{background:"var(--ms-bg-layer2)",border:"1px solid var(--ms-border-subtle)",color:"hsl(var(--foreground))"}}
               />
               {messageError ? (
                 <span className="text-xs text-destructive mt-1">{messageError}</span>
@@ -253,7 +253,7 @@ const ContactSection = () => {
             <button
               type="submit"
               disabled={isSubmitting || name.trim().length < 2 || !emailPattern.test(email.trim()) || message.trim().length < 10}
-              className="inline-flex w-full items-center justify-center rounded-3xl bg-gradient-to-r from-sky-500 to-cyan-400 px-6 py-4 text-sm font-semibold text-white shadow-[0_20px_50px_-25px_rgba(56,189,248,0.85)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_60px_-30px_rgba(56,189,248,0.9)] disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex w-full items-center justify-center rounded-2xl px-6 py-4 text-sm font-bold text-white transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 glow-pulse" style={{background:"linear-gradient(135deg,var(--ms-accent-blue),#0E7490)",border:"1px solid var(--ms-border-glow)",boxShadow:"0 0 24px var(--ms-accent-glow-strong)"}}
             >
               {isSubmitting ? t("landing.contactForm.sending", "Sending...") : t("landing.contactForm.sendButton")}
             </button>

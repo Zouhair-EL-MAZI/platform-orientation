@@ -1,0 +1,530 @@
+{
+  "common": {
+    "home": "Accueil",
+    "features": "Fonctionnalités",
+    "about": "À propos",
+    "contact": "Contact",
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "getStarted": "Commencer",
+    "signOut": "Se déconnecter",
+    "dashboard": "Tableau de bord",
+    "profile": "Profil",
+    "searchPlaceholder": "Rechercher...",
+    "searchCareers": "Rechercher des carrières...",
+    "email": "Email",
+    "password": "Mot de passe",
+    "fullName": "Nom complet",
+    "step": "Étape",
+    "educationLevel": "Niveau d'études",
+    "age": "Âge",
+    "saveProfile": "Enregistrer le profil",
+    "continueWithGoogle": "Continuer avec Google",
+    "noResults": "Aucun résultat trouvé.",
+    "all": "Toutes",
+    "or": "OU",
+    "returnHome": "Retour à l'accueil",
+    "poweredByAI": "Propulsé par l'IA"
+  },
+  "navbar": {
+    "searchPlaceholder": "Rechercher..."
+  },
+  "landing": {
+    "hero": {
+      "label": "Propulsé par l'IA",
+      "title": "Trouvez votre",
+      "highlight": "parcours académique",
+      "subtitle": "Massarek utilise l'IA pour analyser vos compétences, vos centres d'intérêt et votre personnalité afin de recommander les meilleurs domaines d'études et parcours professionnels.",
+      "startTest": "Commencer le test d'orientation",
+      "exploreCareers": "Explorer les carrières"
+    },
+    "stats": [
+      { "value": "10K+", "label": "Étudiants accompagnés" },
+      { "value": "95%", "label": "Taux de satisfaction" },
+      { "value": "200+", "label": "Parcours professionnels" },
+      { "value": "50+", "label": "Modules de test" }
+    ],
+    "statsSection": {
+      "badge": "Résultats premium",
+      "title": "Des métriques exploitables, modernes et hautement soignées.",
+      "subtitle": "Ces chiffres sont intentionnellement statiques, mais la présentation est conçue pour paraître dynamique avec du glassmorphisme, du mouvement et un raffinement SaaS élégant.",
+      "cards": [
+        { "label": "Étudiants accompagnés" },
+        { "label": "Précision des recommandations" },
+        { "label": "Parcours professionnels" },
+        { "label": "Modules d'orientation" }
+      ]
+    },
+    "features": [
+      { "title": "Recommandations IA", "desc": "Recevez des suggestions de domaines personnalisées en fonction de votre profil et de vos résultats." },
+      { "title": "Tests intelligents", "desc": "Passez des tests d'orientation conçus pour révéler vos forces et vos intérêts." },
+      { "title": "Chatbot IA", "desc": "Discutez avec notre assistant IA pour obtenir des conseils sur les choix académiques et professionnels." },
+      { "title": "Explorateur de carrières", "desc": "Explorez des centaines de carrières avec des informations détaillées et des scores de compatibilité." }
+    ],
+    "featuresSection": {
+      "badge": "Fonctionnalités",
+      "title": "Fonctionnalités IA puissantes pour votre avenir",
+      "subtitle": "Massarek combine des conseils intelligents, des évaluations immersives et une IA conversationnelle pour aider les étudiants à choisir la meilleure voie avec confiance.",
+      "heroBullet1": "Soutien adaptatif pour chaque question.",
+      "heroBullet2": "Recommandations conversationnelles et clarté sur les prochaines étapes.",
+      "cards": {
+        "0": {
+          "title": "Recommandations IA",
+          "desc": "Correspondances de cours et de carrière intelligentes alimentées par l'analyse adaptative de l'IA et des modèles de croissance."
+        },
+        "1": {
+          "title": "Tests d'orientation",
+          "desc": "Diagnostics précis avec des évaluations guidées qui révèlent les forces, les intérêts et la clarté des prochaines étapes."
+        },
+        "2": {
+          "title": "Explorateur de carrière",
+          "desc": "Outils de découverte interactifs qui cartographient les voies à forte croissance, les options d'études et les métiers d'avenir."
+        },
+        "3": {
+          "title": "Chatbot IA",
+          "desc": "Conseils instantanés, orientation conviviale et réponses en temps réel d'un assistant conversationnel conçu pour les étudiants."
+        },
+        "4": {
+          "title": "Guidance personnalisée",
+          "desc": "Plans, étapes et recommandations sur mesure qui évoluent avec chaque décision académique."
+        }
+      }
+    },
+    "howItWorks": {
+      "badge": "Fonctionnement",
+      "title": "Des étapes simples alimentées par l'intelligence artificielle",
+      "subtitle": "Suivez notre processus rationalisé pour découvrir votre voie académique parfaite. De la création du compte à l'exploration de carrière, chaque étape est conçue pour vous guider professionnellement.",
+      "steps": [
+        {
+          "title": "Créer un compte",
+          "desc": "Inscrivez-vous en quelques secondes et configurez votre profil étudiant avec vos informations de base."
+        },
+        {
+          "title": "Passer le test d'orientation",
+          "desc": "Complétez un questionnaire adaptatif qui révèle vos forces, intérêts et préférences académiques."
+        },
+        {
+          "title": "L'IA analyse les réponses",
+          "desc": "Notre moteur intelligent traite vos réponses pour comprendre votre profil unique et votre potentiel."
+        },
+        {
+          "title": "Recevez des recommandations personnalisées",
+          "desc": "Obtenez des suggestions personnalisées pour les domaines, les diplômes et les parcours professionnels qui vous correspondent parfaitement."
+        },
+        {
+          "title": "Explorez les carrières et les domaines d'études",
+          "desc": "Plongez dans des informations détaillées sur les carrières, les salaires, les exigences éducatives et les voies de croissance."
+        }
+      ],
+      "next": "Suivant",
+      "start": "Commencer maintenant",
+      "cta": {
+        "label": "Prêt à commencer?",
+        "title": "Commencez votre parcours d'orientation aujourd'hui",
+        "subtitle": "Rejoignez des milliers d'étudiants découvrant leur voie académique parfaite avec le guidance IA de Massarek.",
+        "button": "Commencer gratuitement"
+      }
+    },
+    "about": {
+      "label": "À propos de Massarek",
+      "title": "Donner aux étudiants les moyens grâce à l'intelligence artificielle",
+      "subtitle": "Massarek utilise l'IA avancée pour fournir aux étudiants une orientation et des conseils de carrière clairs et personnalisés, afin qu'ils puissent faire des choix académiques confiants.",
+      "description": "Massarek réunit des conseils propulsés par l'IA, des informations sur les carrières et des recommandations personnalisées pour aider les étudiants à choisir le bon domaine avec confiance. Nous privilégions la clarté, l'exactitude et une expérience agréable.",
+      "missionLabel": "Notre mission",
+      "mission": "Aider les étudiants à découvrir leurs forces et à les transformer en un parcours académique significatif, tout en réduisant l'incertitude liée à la planification de carrière.",
+      "educationLabel": "Objectif pédagogique",
+      "education": "Fournir aux étudiants des insights exploitables et des parcours d'études basés sur les données et une analyse IA personnalisée.",
+      "visionLabel": "Vision & Innovation",
+      "vision": "Construire le compagnon IA le plus fiable pour aider les étudiants à planifier leur avenir académique et professionnel.",
+      "howAI": "Comment l'IA aide",
+      "howAIText": "Massarek analyse les réponses aux tests et les signaux de profil pour produire des recommandations compréhensibles et des parcours d'apprentissage adaptés à chaque étudiant.",
+      "personalized": "Insights personnalisés",
+      "personalizedText": "Des recommandations qui évoluent à mesure que les étudiants grandissent et apprennent.",
+      "humanCentered": "Axé sur l'humain",
+      "humanCenteredText": "L'IA soutient les décisions humaines — nous mettons en avant des choix clairs, pas des boîtes noires.",
+      "team": {
+        "title": "Équipe",
+        "subtitle": "Conçu par des étudiants, pour des étudiants — petit, concentré et passionné.",
+        "members": [
+          {
+            "name": "Zouhair El Mazi",
+            "role": "Développeur Full-Stack",
+            "bio": "Apportant expérience, créativité et une approche IA à chaque partie de l'expérience Massarek."
+          },
+          {
+            "name": "Aymane El Asri",
+            "role": "Développeur Full-Stack",
+            "bio": "Concentré sur des interfaces élégantes et des systèmes backend robustes pour soutenir la réussite des étudiants."
+          },
+          {
+            "name": "Aziz Bouzrour",
+            "role": "Développeur Full-Stack",
+            "bio": "Passionné par la performance et la qualité du code, il contribue à construire une plateforme fiable et scalable pour chaque étudiant."
+          }
+        ]
+      }
+    },
+    "contact": {
+      "label": "Contact",
+      "title": "Répondons à vos questions",
+      "description": "Contactez-nous si vous avez besoin d'aide pour démarrer, si vous souhaitez en savoir plus sur nos tests ou si vous souhaitez une démo de Massarek.",
+      "emailLabel": "Email",
+      "email": "contact@massarek.ma"
+    },
+    "contactForm": {
+      "sectionLabel": "Envoyer un message",
+      "title": "Discutez avec notre équipe",
+      "subtitle": "Partagez votre question et notre équipe vous répondra rapidement.",
+      "nameLabel": "Votre nom",
+      "namePlaceholder": "Votre nom complet",
+      "emailLabel": "Votre adresse email",
+      "emailPlaceholder": "Entrez votre adresse e-mail",
+      "messageLabel": "Votre message",
+      "messagePlaceholder": "Écrivez votre message ici...",
+      "sendButton": "Envoyer le message",
+      "sending": "Envoi...",
+      "fastReply": "Réponse rapide",
+      "fastReplyDesc": "Nous répondons dans la journée.",
+      "support": "Support premium",
+      "supportDesc": "Un accompagnement haut de gamme pour les étudiants et partenaires.",
+      "successTitle": "Message envoyé",
+      "successMessage": "Nous vous répondrons sous peu.",
+      "errorTitle": "Veuillez remplir tous les champs",
+      "errorMessage": "Remplissez votre nom, votre email et votre message avant d'envoyer.",
+      "errorNetwork": "Veuillez réessayer plus tard."
+    },
+    "cta": {
+      "readyTitle": "Prêt à découvrir votre chemin ?",
+      "readySubtitle": "Rejoignez des milliers d'étudiants qui ont trouvé leur domaine idéal avec Massarek.",
+      "start": "Commencez gratuitement"
+    }
+  },
+  "aboutPage": {
+    "hero": {
+      "intro": "À propos de Massarek",
+      "headline": "Orientation étudiante propulsée par l'IA pour des décisions académiques plus claires.",
+      "subtitle": "Massarek aide les étudiants à découvrir le meilleur parcours académique et professionnel grâce à des recommandations intelligentes, des insights approfondis et une plateforme simple conçue pour la nouvelle génération d'apprenants.",
+      "ctaStart": "Commencer votre orientation",
+      "ctaExplore": "Explorer les parcours professionnels"
+    },
+    "insight": {
+      "label": "Aperçu du projet",
+      "title": "Conçu pour supprimer l'incertitude et apporter de la clarté à l'orientation étudiante.",
+      "description": "Pensé pour les étudiants modernes, Massarek combine l'analyse IA et une intelligence carrière facile à lire pour permettre aux apprenants de choisir leur avenir en toute confiance.",
+      "cardA": {
+        "title": "Conseils intelligents",
+        "description": "Recommandations ciblées pour chaque parcours étudiant."
+      },
+      "cardB": {
+        "title": "Clarté basée sur les données",
+        "description": "Des insights basés sur les tests, les intérêts et les objectifs académiques."
+      }
+    },
+    "sections": [
+      { "title": "Idée du projet", "description": "Massarek est une plateforme propulsée par l'IA qui aide les étudiants à trouver les meilleurs parcours académiques et professionnels en fonction de leurs compétences, de leurs intérêts et de leurs résultats. Elle apporte des conseils significatifs au processus d'orientation grâce à une intelligence moderne." },
+      { "title": "Pourquoi nous l'avons créé", "description": "De nombreux étudiants ont du mal à choisir la bonne voie académique en raison d'un manque de guidance et d'informations claires. Massarek a été créé pour combler cette lacune et fournir un soutien intelligent et basé sur les données pour la prise de décision académique." },
+      { "title": "Notre mission", "description": "Aider les étudiants à prendre des décisions plus intelligentes grâce à des recommandations IA. Nous aidons les apprenants à choisir la voie académique qui correspond vraiment à leurs forces et à leurs aspirations." }
+    ],
+    "benefits": {
+      "label": "Avantages",
+      "headline": "Pourquoi les étudiants adorent Massarek",
+      "cta": "Essayez le test d'orientation",
+      "items": [
+        { "title": "Orientation personnalisée", "description": "Une guidance adaptée à vos compétences, intérêts et résultats." },
+        { "title": "Recommandations IA", "description": "Des suggestions intelligentes qui correspondent aux meilleurs domaines et parcours." },
+        { "title": "Meilleure prise de décision", "description": "Des insights clairs et basés sur les données pour vous aider à choisir avec confiance." },
+        { "title": "Accès facile aux informations", "description": "Un accès rapide et complet aux détails sur les majeures, les carrières et les opportunités futures." }
+      ]
+    },
+    "team": {
+      "label": "Équipe",
+      "headline": "Créé par des étudiants, conçu pour les étudiants",
+      "description": "Massarek a été développé par une équipe d'ingénieurs axés sur les étudiants qui se soucient de l'accessibilité, de la transparence et de l'aide aux apprenants pour choisir leur bonne voie académique.",
+      "members": [
+        { "name": "Zouhair El Mazi", "role": "Développeur Full-Stack", "description": "Apportant expérience, créativité et une approche IA à chaque partie de l'expérience Massarek." },
+        { "name": "Aymane El Asri", "role": "Développeur Full-Stack", "description": "Apportant expérience, créativité et une approche IA à chaque partie de l'expérience Massarek." }
+      ]
+    }
+  },
+  "auth": {
+    "forgot": {
+      "title": "Mot de passe oublié",
+      "subtitle": "Entrez votre email et nous vous enverrons un lien de réinitialisation.",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Envoyer le lien",
+      "loading": "Envoi…",
+      "errorEmpty": "Veuillez entrer votre adresse email.",
+      "errorTitle": "Erreur",
+      "errorDescription": "Email introuvable.",
+      "successTitle": "Lien envoyé",
+      "successMessage": "Un lien de réinitialisation a été envoyé à votre email.",
+      "sentMessage": "Lien de réinitialisation envoyé à votre email.",
+      "remembered": "Vous vous souvenez de votre mot de passe ?",
+      "signInLink": "Se connecter"
+    },
+    "login": {
+      "title": "Bienvenue",
+      "subtitle": "Connectez-vous à votre compte pour continuer",
+      "emailLabel": "Email",
+      "passwordLabel": "Mot de passe",
+      "emailPlaceholder": "Entrez votre adresse e-mail",
+      "passwordPlaceholder": "Votre mot de passe",
+      "submit": "Connexion",
+      "loading": "Connexion...",
+      "errorEmpty": "Veuillez remplir les champs email et mot de passe.",
+      "successTitle": "Bienvenue",
+      "successMessage": "Vous êtes connecté avec succès.",
+      "failedTitle": "Échec de la connexion",
+      "failedMessage": "Email ou mot de passe invalide.",
+      "highlight": "de retour",
+      "rememberMe": "Se souvenir de moi",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "signUpLink": "S'inscrire"
+    },
+    "register": {
+      "title": "Créez votre compte",
+      "subtitle": "Commencez votre parcours d'orientation aujourd'hui",
+      "nameLabel": "Nom complet",
+      "emailLabel": "Email",
+      "passwordLabel": "Mot de passe",
+      "namePlaceholder": "Votre nom complet",
+      "emailPlaceholder": "Entrez votre adresse e-mail",
+      "passwordPlaceholder": "Votre mot de passe",
+      "confirmPasswordPlaceholder": "Confirmez le mot de passe",
+      "submit": "Commencer",
+      "loading": "Création du compte...",
+      "errorEmpty": "Veuillez remplir tous les champs.",
+      "errorPasswordLength": "Le mot de passe doit contenir au moins 8 caractères.",
+      "successTitle": "Succès",
+      "successMessage": "Compte créé avec succès ! Bienvenue sur Massarek.",
+      "alreadyAccount": "Vous avez déjà un compte ?",
+      "signInLink": "Se connecter",
+      "badge": "Orientation IA gratuite",
+      "verifyTitle": "Vérifiez votre email",
+      "verifyDesc": "Un lien de vérification a été envoyé à",
+      "verifyDesc2": "Cliquez sur le lien pour activer votre compte.",
+      "resendBtn": "Renvoyer l'email",
+      "resendLoading": "Envoi…",
+      "resendCooldown": "Renvoyer",
+      "spamNote": "Pensez à vérifier vos spams.",
+      "strengthWeak": "Faible",
+      "strengthFair": "Moyen",
+      "strengthStrong": "Fort ✓",
+      "confirmPasswordLabel": "Confirmer le mot de passe",
+      "matchMessage": "Mots de passe identiques ✓",
+      "mismatchMessage": "Les mots de passe ne correspondent pas",
+      "terms": "J'accepte les",
+      "termsLink": "Conditions d'utilisation",
+      "termsAnd": "et la",
+      "privacyLink": "Politique de confidentialité"
+    },
+    "logout": {
+      "title": "Déconnecté",
+      "description": "Vous avez été déconnecté avec succès."
+    },
+    "reset": {
+      "title": "Réinitialiser votre mot de passe",
+      "subtitle": "Entrez un nouveau mot de passe pour pouvoir vous connecter à nouveau.",
+      "passwordLabel": "Nouveau mot de passe",
+      "confirmPasswordLabel": "Confirmer le mot de passe",
+      "submit": "Mettre à jour le mot de passe",
+      "loading": "Mise à jour...",
+      "errorTitle": "Jeton invalide",
+      "errorMissingToken": "Le jeton de réinitialisation est absent de l'URL.",
+      "errorExpired": "Ce lien de réinitialisation a expiré. Veuillez en demander un nouveau.",
+      "errorPassword": "Le mot de passe doit contenir au moins 8 caractères.",
+      "errorMismatch": "Les mots de passe ne correspondent pas.",
+      "successTitle": "Succès",
+      "completeMessage": "Mot de passe mis à jour avec succès. Redirection vers la connexion...",
+      "minLength": "Minimum 8 caractères requis",
+      "confirm": "Confirmer le mot de passe"
+    }
+  },
+  "dashboard": {
+    "welcomeTitle": "Bon retour, étudiant ! 👋",
+    "welcomeSubtitle": "Poursuivez votre parcours d'orientation et découvrez le chemin idéal pour votre avenir.",
+    "quickActions": [
+      { "title": "Passer le test", "desc": "Commencer le test d'orientation", "to": "/test" },
+      { "title": "Résultats IA", "desc": "Voir les recommandations", "to": "/recommendations" },
+      { "title": "Carrières", "desc": "Explorer les parcours professionnels", "to": "/careers" },
+      { "title": "Chatbot", "desc": "Demander à l'assistant IA", "to": "/chatbot" }
+    ],
+    "progress": {
+      "profileCompletion": "Complétion du profil",
+      "testsCompleted": "Tests terminés",
+      "careerExploration": "Exploration de carrière"
+    },
+    "recommendationsSection": {
+      "title": "Recommandations IA",
+      "previewLink": "Voir →"
+    },
+    "activity": {
+      "title": "Activité récente",
+      "completedTest": "Test de personnalité complété",
+      "exploredCareer": "Parcours Sciences Informatiques exploré",
+      "newRecommendations": "Nouvelles recommandations IA disponibles"
+    }
+  },
+  "profile": {
+    "title": "Mon profil",
+    "educationOptions": ["Lycée", "Licence", "Master"],
+    "skills": ["Résolution de problèmes", "Esprit critique", "Communication", "Mathématiques", "Créativité", "Leadership", "Travail en équipe", "Recherche"],
+    "interests": ["Technologie", "Science", "Arts", "Affaires", "Médecine", "Ingénierie", "Éducation", "Droit"],
+    "saveProfile": "Enregistrer le profil"
+  },
+  "careerExplorer": {
+    "title": "Explorateur de carrière",
+    "subtitle": "Découvrez des parcours professionnels qui correspondent à vos compétences et intérêts.",
+    "searchPlaceholder": "Rechercher des carrières...",
+    "fieldAll": "Toutes",
+    "careers": [
+      {
+        "title": "Ingénieur logiciel",
+        "field": "Technologie",
+        "salary": "95K–180K $",
+        "growth": "25%",
+        "education": "Licence",
+        "desc": "Concevoir, développer et maintenir des systèmes et applications logiciels."
+      },
+      {
+        "title": "Data Scientist",
+        "field": "Technologie",
+        "salary": "90K–160K $",
+        "growth": "35%",
+        "education": "Master",
+        "desc": "Analyser des données complexes pour aider les organisations à prendre de meilleures décisions."
+      },
+      {
+        "title": "Designer UX",
+        "field": "Design",
+        "salary": "75K–130K $",
+        "growth": "13%",
+        "education": "Licence",
+        "desc": "Créer des expériences numériques intuitives et engageantes."
+      },
+      {
+        "title": "Ingénieur biomédical",
+        "field": "Ingénierie",
+        "salary": "70K–120K $",
+        "growth": "6%",
+        "education": "Licence",
+        "desc": "Développer des dispositifs médicaux et des équipements pour améliorer les soins."
+      },
+      {
+        "title": "Analyste financier",
+        "field": "Affaires",
+        "salary": "65K–110K $",
+        "growth": "9%",
+        "education": "Licence",
+        "desc": "Évaluer les données financières et fournir des recommandations d'investissement."
+      },
+      {
+        "title": "Psychologue clinicien",
+        "field": "Santé",
+        "salary": "80K–130K $",
+        "growth": "6%",
+        "education": "Doctorat",
+        "desc": "Diagnostiquer et traiter les troubles de la santé mentale par la thérapie."
+      },
+      {
+        "title": "Scientifique de l'environnement",
+        "field": "Science",
+        "salary": "55K–95K $",
+        "growth": "8%",
+        "education": "Licence",
+        "desc": "Étudier l'environnement et développer des solutions aux problèmes environnementaux."
+      },
+      {
+        "title": "Chef de produit",
+        "field": "Affaires",
+        "salary": "100K–170K $",
+        "growth": "10%",
+        "education": "Licence",
+        "desc": "Diriger la stratégie de produit et le développement du concept au lancement."
+      }
+    ],
+    "noResults": "Aucune carrière correspondant à vos critères n'a été trouvée."
+  },
+  "chatbot": {
+    "title": "Assistant IA",
+    "subtitle": "Propulsé par l'IA",
+    "initialMessage": "Bonjour ! Je suis votre assistant d'orientation IA. 🎓 Je peux vous aider à explorer des carrières, comprendre vos résultats de tests ou répondre à toutes vos questions sur les domaines académiques. Que souhaitez-vous savoir ?",
+    "responseMessage": "C'est une excellente question ! D'après votre profil et vos résultats, je vous recommanderais d'explorer des domaines qui combinent vos compétences analytiques et vos intérêts créatifs. Voulez-vous des détails sur des programmes spécifiques ?",
+    "inputPlaceholder": "Demandez des informations sur les carrières, les domaines ou vos résultats..."
+  },
+  "recommendations": {
+    "title": "Recommandations IA",
+    "subtitle": "En fonction de vos résultats et de votre profil, voici vos meilleures correspondances.",
+    "chartTitle": "Vue d'ensemble de la compatibilité",
+    "viewMore": "Voir →"
+  },
+  "test": {
+    "progressLabel": "Question {{current}} sur {{total}}",
+    "completePercent": "{{percent}}% terminé",
+    "completedTitle": "Test terminé ! 🎉",
+    "completedDescription": "Vos réponses ont été analysées par notre IA. Consultez maintenant vos recommandations personnalisées.",
+    "viewRecommendations": "Voir les recommandations",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "finish": "Terminer",
+    "questions": [
+      {
+        "question": "Quel type d'activités appréciez-vous le plus ?",
+        "options": ["Construire et créer des choses", "Analyser des données et résoudre des énigmes", "Aider et enseigner aux autres", "Concevoir et exprimer sa créativité"]
+      },
+      {
+        "question": "Quelle matière scolaire vous intéresse le plus ?",
+        "options": ["Mathématiques", "Sciences", "Langue et littérature", "Sciences sociales"]
+      },
+      {
+        "question": "Comment préférez-vous travailler ?",
+        "options": ["Indépendamment", "En petites équipes", "En dirigeant un groupe", "En collaborant avec plusieurs personnes"]
+      },
+      {
+        "question": "Qu'est-ce qui compte le plus dans une future carrière ?",
+        "options": ["Un salaire élevé", "Un équilibre travail-vie privée", "Avoir un impact", "La liberté créative"]
+      },
+      {
+        "question": "Quel environnement vous attire ?",
+        "options": ["Bureau / Entreprise", "Laboratoire / Recherche", "En plein air / Terrain", "À distance / Digital"]
+      }
+    ]
+  },
+  "admin": {
+    "title": "Tableau de bord admin",
+    "recentUsers": "Utilisateurs récents",
+    "name": "Nom",
+    "email": "Email",
+    "tests": "Tests",
+    "status": "Statut"
+  },
+  "footer": {
+    "quickLinks": "Liens rapides",
+    "description": "Massarek aide les étudiants à trouver la bonne orientation scolaire grâce à des conseils pilotés par l'IA, à l'exploration de carrières et à des recommandations personnalisées.",
+    "contact": "Contact",
+    "support": "Besoin d'aide ?",
+    "email": "contact@massarek.ma",
+    "more": "Suivez-nous",
+    "followUs": "Suivez-nous pour les mises à jour, les témoignages d'étudiants et les nouveaux guides de carrière.",
+    "copyright": "© 2026 Massarek. Tous droits réservés."
+  },
+  "sidebar": {
+    "main": "Principal",
+    "account": "Compte",
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "orientationTest": "Test d'orientation",
+    "recommendations": "Recommandations IA",
+    "careers": "Explorateur de carrières",
+    "chatbot": "Chatbot IA",
+    "profile": "Profil",
+    "admin": "Admin",
+    "signOut": "Se déconnecter"
+  },
+  "notFound": {
+    "title": "404",
+    "message": "Oups ! Page introuvable",
+    "returnHome": "Retour à l'accueil"
+  }
+}

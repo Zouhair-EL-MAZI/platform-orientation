@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use App\Models\PendingRegistration;
 
 class AuthController extends Controller
 {
@@ -36,40 +37,50 @@ class AuthController extends Controller
         }
 
         try {
+            // Check if email already in pending_registrations
+            if (User::where('email', $request->email)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cette adresse e-mail est déjà utilisée.',
+                    'errors'  => ['email' => ['Cette adresse e-mail est déjà utilisée.']]
+                ], 422);
+            }
             $verificationToken = Str::random(64);
 
-            // Create the user with email verification pending
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'email_verified_at' => null,
-                'email_verification_token' => $verificationToken,
-            ]);
+            // Store in pending_registrations until email is verified
+            PendingRegistration::updateOrCreate(
+                ['email' => $request->email],
+                [
+                    'name'       => $request->name,
+                    'password'   => Hash::make($request->password),
+                    'token'      => $verificationToken,
+                    'expires_at' => now()->addHours(24),
+                ]
+            );
 
             $frontendUrl = env('FRONTEND_URL', config('app.url'));
             $verificationLink = rtrim($frontendUrl, '/') . '/verify-email?token=' . urlencode($verificationToken);
 
             Mail::send('emails.verify', [
-                'name'             => $user->name,
+                'name'             => $request->name,
                 'verificationLink' => $verificationLink,
                 'frontendUrl'      => rtrim($frontendUrl, '/'),
-            ], function ($message) use ($user) {
-                $message->to($user->email);
+            ], function ($message) use ($request) {
+                $message->to($request->email);
                 $message->subject('Vérifiez votre adresse e-mail — Massarek');
             });
 
             return response()->json([
                 'success' => true,
                 'message' => 'User registered successfully',
-                'email' => $user->email,
+                'email'   => $request->email,
             ], 201);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Registration failed',
-                'error' => $e->getMessage()
+                'error'   => $e->getMessage()
             ], 500);
         }
     }
@@ -147,15 +158,26 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $user = User::where('email_verification_token', $request->token)->first();
+        $pending = PendingRegistration::where('token', $request->token)->first();
 
-        if (!$user) {
+        if (!$pending) {
             return response()->json(['message' => 'Verification token not found'], 404);
         }
 
-        $user->email_verified_at = now();
-        $user->email_verification_token = null;
-        $user->save();
+        if (Carbon::parse($pending->expires_at)->isPast()) {
+            $pending->delete();
+            return response()->json(['message' => 'Verification link has expired'], 410);
+        }
+
+        // Create the real user now
+        User::create([
+            'name'              => $pending->name,
+            'email'             => $pending->email,
+            'password'          => $pending->password,
+            'email_verified_at' => now(),
+        ]);
+
+        $pending->delete();
 
         return response()->json(['message' => 'Email verified successfully'], 200);
     }
@@ -177,29 +199,31 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user) {
-            return response()->json(['message' => 'Email not found'], 404);
-        }
-
-        if ($user->email_verified_at) {
+        // Check if already a verified user
+        if (User::where('email', $request->email)->whereNotNull('email_verified_at')->exists()) {
             return response()->json(['message' => 'Email already verified'], 400);
         }
 
+        $pending = PendingRegistration::where('email', $request->email)->first();
+
+        if (!$pending) {
+            return response()->json(['message' => 'Email not found'], 404);
+        }
+
         $token = Str::random(64);
-        $user->email_verification_token = $token;
-        $user->save();
+        $pending->token      = $token;
+        $pending->expires_at = now()->addHours(24);
+        $pending->save();
 
         $frontendUrl = env('FRONTEND_URL', config('app.url'));
         $verificationLink = rtrim($frontendUrl, '/') . '/verify-email?token=' . urlencode($token);
 
         Mail::send('emails.verify', [
-            'name'             => $user->name,
+            'name'             => $pending->name,
             'verificationLink' => $verificationLink,
             'frontendUrl'      => rtrim($frontendUrl, '/'),
-        ], function ($message) use ($user) {
-            $message->to($user->email);
+        ], function ($message) use ($pending) {
+            $message->to($pending->email);
             $message->subject('Vérifiez votre adresse e-mail — Massarek');
         });
 

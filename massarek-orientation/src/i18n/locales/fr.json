@@ -314,6 +314,7 @@
       "confirmPasswordLabel": "Confirmer le mot de passe",
       "matchMessage": "Mots de passe identiques ✓",
       "mismatchMessage": "Les mots de passe ne correspondent pas",
+      "errorEmailExists": "Cette adresse e-mail est déjà utilisée.",
       "terms": "J'accepte les",
       "termsLink": "Conditions d'utilisation",
       "termsAnd": "et la",

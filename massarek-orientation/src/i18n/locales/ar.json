@@ -314,6 +314,7 @@
       "confirmPasswordLabel": "تأكيد كلمة المرور",
       "matchMessage": "كلمتا المرور متطابقتان ✓",
       "mismatchMessage": "كلمتا المرور غير متطابقتين",
+      "errorEmailExists": "هذا البريد الإلكتروني مستخدم بالفعل.",
       "terms": "أوافق على",
       "termsLink": "شروط الاستخدام",
       "termsAnd": "و",

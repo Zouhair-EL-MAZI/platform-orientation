@@ -36,15 +36,25 @@ const Register = () => {
   const [resendLoading, setResendLoading] = useState(false);
   const [resendCountdown, setResendCountdown] = useState(0);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const navigate = useNavigate();
+
+  const EMAIL_REGEX = /^[a-zA-Z0-9._%+\-]+@(gmail|yahoo|hotmail|outlook|icloud|live|msn|protonmail|massarek)\.(com|fr|ma|net|org)$/;
+  const NAME_REGEX = /^[\p{L}\s\-]+$/u;
+
+  const validateName = (val: string) => {
+    if (val.length < 3) return t("auth.register.errorNameMin", "Minimum 3 caractères.");
+    if (val.length > 50) return t("auth.register.errorNameMax", "Maximum 50 caractères.");
+    if (!NAME_REGEX.test(val)) return t("auth.register.errorNameChars", "Lettres uniquement, pas de chiffres ni caractères spéciaux.");
+    return "";
+  };
+
+  const validateEmail = (val: string) => {
+    if (!EMAIL_REGEX.test(val)) return t("auth.register.errorEmailFormat", "Email invalide.");
+    return "";
+  };
   const strength = getStrength(password);
-  const strengthLevels = [
-    { label: t("auth.register.strengthWeak", "Faible"),   color:"#F87171", glow:"rgba(248,113,113,.5)" },
-    { label: t("auth.register.strengthWeak", "Faible"),   color:"#F87171", glow:"rgba(248,113,113,.5)" },
-    { label: t("auth.register.strengthFair", "Moyen"),    color:"#FBBF24", glow:"rgba(251,191,36,.5)"  },
-    { label: t("auth.register.strengthStrong", "Fort ✓"), color:"#10B981", glow:"rgba(16,185,129,.5)"  },
-  ];
-  const strengthInfo = strengthLevels[Math.max(0, strength - 1)] ?? strengthLevels[0];
   const passwordsMatch = password && confirmPassword && password === confirmPassword;
   const [isLargeScreen, setIsLargeScreen] = useState(() =>
     typeof window !== "undefined" ? window.innerWidth > 1280 : false
@@ -62,6 +72,18 @@ const Register = () => {
     const timer = window.setInterval(() => setResendCountdown((current) => Math.max(0, current - 1)), 1000);
     return () => window.clearInterval(timer);
   }, [resendCountdown]);
+
+  useEffect(() => {
+    if (!registrationCompleted) return;
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "email_verified") {
+        localStorage.removeItem("email_verified");
+        navigate("/login");
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [registrationCompleted]);
 
   const inputStyle = useMemo<CSSProperties>(() => ({
     width: "100%",
@@ -81,7 +103,12 @@ const Register = () => {
   /* ── logic unchanged ── */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !password || !confirmPassword) {
+    const nErr = validateName(name);
+    const eErr = validateEmail(email);
+    setNameError(nErr);
+    setEmailError(eErr);
+    if (nErr || eErr) return;
+    if (!password || !confirmPassword) {
       toast({ title: t("auth.register.errorEmpty","Error"), description: t("auth.register.errorEmpty"), variant:"destructive" }); return;
     }
     if (password.length < 8) {
@@ -98,7 +125,12 @@ const Register = () => {
       setResendCountdown(30);
     } catch (error: any) {
       console.error("Registration error:", error);
-      toast({ title: t("auth.register.errorTitle","Error"), description: error.response?.data?.message || t("auth.register.errorDescription"), variant:"destructive" });
+      const emailErr = error.response?.data?.errors?.email?.[0];
+      if (emailErr) {
+        setEmailError(t("auth.register.errorEmailExists", emailErr) as string);
+      } else {
+        toast({ title: t("auth.register.errorTitle","Error"), description: error.response?.data?.message || t("auth.register.errorDescription"), variant:"destructive" });
+      }
     } finally { setIsLoading(false); }
   };
 
@@ -292,7 +324,17 @@ const Register = () => {
                   {resendCountdown > 0 ? `${t("auth.register.resendCooldown", "Renvoyer")} (${resendCountdown}s)` : (resendLoading ? t("auth.register.resendLoading", "Envoi…") : t("auth.register.resendBtn", "Renvoyer l'email"))}
                 </button>
 
-                <p className="text-center text-xs text-slate-400">{t("auth.register.spamNote", "Pensez à vérifier vos spams.")}</p>
+                <p className="text-center text-xs mt-3" style={{ color:"hsl(var(--muted-foreground))" }}>
+                  {t("auth.register.alreadyAccount", "Vous avez déjà un compte ?")}{" "}
+                  <button type="button" onClick={()=>{ setRegistrationCompleted(false); setName(""); setEmail(""); setPassword(""); setConfirmPassword(""); }}
+                    className="font-bold transition-colors duration-200"
+                    style={{ color:"var(--ms-accent-cyan)", background:"none", border:"none", cursor:"pointer", fontFamily:"'Sora',sans-serif" }}
+                    onMouseEnter={e=>(e.currentTarget as HTMLElement).style.color="var(--ms-accent-blue)"}
+                    onMouseLeave={e=>(e.currentTarget as HTMLElement).style.color="var(--ms-accent-cyan)"}
+                  >
+                    {t("auth.register.backToRegister", "Retour à l'inscription")}
+                  </button>
+                </p>
               </div>
             ) : (
               <>
@@ -304,9 +346,11 @@ const Register = () => {
                   style={{ color:"hsl(var(--muted-foreground))" }}>
                   {t("auth.register.nameLabel")}
                 </label>
-                <input type="text" value={name} onChange={e=>setName(e.target.value)}
+                <input type="text" value={name} onChange={e=>{ setName(e.target.value); setNameError(validateName(e.target.value)); }}
                   placeholder={t("auth.register.namePlaceholder")} required
-                  style={inputStyle} onFocus={onFocusIn} onBlur={onFocusOut}/>
+                  style={{...inputStyle, borderColor: nameError ? "#F87171" : undefined}}
+                  onFocus={onFocusIn} onBlur={onFocusOut}/>
+                {nameError && <p className="mt-1 text-xs font-semibold" style={{ color:"#F87171" }}>{nameError}</p>}
               </div>
 
               {/* Email */}
@@ -317,7 +361,9 @@ const Register = () => {
                 </label>
                 <input type="email" value={email} onChange={e=>setEmail(e.target.value)}
                   placeholder={t("auth.register.emailPlaceholder")} required
-                  style={inputStyle} onFocus={onFocusIn} onBlur={onFocusOut}/>
+                  style={{...inputStyle, borderColor: emailError ? "#F87171" : undefined}}
+                  onFocus={onFocusIn} onBlur={onFocusOut}/>
+                {emailError && <p className="mt-1 text-xs font-semibold" style={{ color:"#F87171" }}>{emailError}</p>}
               </div>
 
               {/* Password */}
@@ -341,21 +387,9 @@ const Register = () => {
                   </button>
                 </div>
                 {password.length > 0 && (
-                  <div className="mt-1.5">
-                    <div className="flex gap-1.5">
-                      {[1,2,3,4].map(i=>(
-                        <div key={i} style={{
-                          flex:1, height:3, borderRadius:100,
-                          background:i<=strength?strengthInfo.color:"var(--ms-bg-layer3,rgba(16,29,54,0.8))",
-                          boxShadow:i<=strength?`0 0 5px ${strengthInfo.glow}`:"none",
-                          transition:"all .35s",
-                        }}/>
-                      ))}
-                    </div>
-                    <p className="text-xs font-semibold mt-1" style={{ color:strengthInfo.color, letterSpacing:".04em" }}>
-                      {strengthInfo.label}
-                    </p>
-                  </div>
+                  <p className="mt-1 text-xs font-semibold" style={{ color: password.length < 8 ? "#F87171" : "hsl(var(--muted-foreground))", letterSpacing:".04em" }}>
+                    {password.length < 8 ? t("auth.register.errorPasswordLength", "Minimum 8 caractères.") : ""}
+                  </p>
                 )}
               </div>
 
@@ -369,7 +403,18 @@ const Register = () => {
                   <input type={showConfirm?"text":"password"} value={confirmPassword}
                     onChange={e=>setConfirmPassword(e.target.value)}
                     placeholder={t("auth.register.confirmPasswordPlaceholder", "Confirmez votre mot de passe")} required minLength={8}
-                    style={{...inputStyle, paddingRight:44}} onFocus={onFocusIn} onBlur={onFocusOut}/>
+                    style={{...inputStyle, paddingRight:44,
+                      borderColor: confirmPassword.length > 0 ? (passwordsMatch ? "#22c55e" : "#ef4444") : undefined,
+                      boxShadow: confirmPassword.length > 0 ? (passwordsMatch ? "0 0 0 3px rgba(34,197,94,0.2)" : "0 0 0 3px rgba(239,68,68,0.2)") : undefined,
+                    }}
+                    onFocus={e=>{
+                      if (confirmPassword.length > 0) return;
+                      onFocusIn(e);
+                    }}
+                    onBlur={e=>{
+                      if (confirmPassword.length > 0) return;
+                      onFocusOut(e);
+                    }}/>
                   <button type="button" onClick={()=>setShowConfirm(p=>!p)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors duration-200"
                     style={{ color:"hsl(var(--muted-foreground))" }}
@@ -379,9 +424,9 @@ const Register = () => {
                     {showConfirm?<EyeOff size={15}/>:<Eye size={15}/>}
                   </button>
                 </div>
-                {confirmPassword.length > 0 && (
-                  <p className="mt-2 text-xs font-semibold" style={{ color: passwordsMatch ? "#10B981" : "#F87171" }}>
-                    {passwordsMatch ? t("auth.register.matchMessage", "Mots de passe identiques ✓") : t("auth.register.mismatchMessage", "Les mots de passe ne correspondent pas")}
+                {confirmPassword.length > 0 && !passwordsMatch && (
+                  <p className="mt-2 text-xs font-semibold" style={{ color: "#F87171" }}>
+                    {t("auth.register.mismatchMessage", "Les mots de passe ne correspondent pas")}
                   </p>
                 )}
               </div>

@@ -298,6 +298,7 @@
       "confirmPasswordLabel": "Confirm password",
       "matchMessage": "Passwords match ✓",
       "mismatchMessage": "Passwords do not match",
+      "errorEmailExists": "This email address is already in use.",
       "terms": "I agree to the",
       "termsLink": "Terms of Service",
       "termsAnd": "and",

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { api } from "@/lib/api";
@@ -12,13 +12,18 @@ const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState<Status>("loading");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = searchParams.get("token");
     if (!token) { setStatus("error"); setMessage(t("auth.verify.noToken", "Token manquant.")); return; }
 
     api.post("/verify-email", { token })
-      .then(() => setStatus("success"))
+      .then(() => {
+        localStorage.setItem("email_verified", "1");
+        setStatus("success");
+        setTimeout(() => window.close(), 2000);
+      })
       .catch((err) => {
         setStatus("error");
         setMessage(err.response?.data?.message || t("auth.verify.errorMsg", "Lien invalide ou expiré."));
@@ -52,7 +57,6 @@ const VerifyEmail = () => {
             boxShadow:"var(--shadow-card)",
           }}
         >
-          {/* top glow */}
           <div style={{ position:"absolute", top:0, left:"50%", transform:"translateX(-50%)", width:"60%", height:1, background:"linear-gradient(90deg,transparent,#22D3EE,transparent)", opacity:.5 }}/>
 
           {status === "loading" && (
@@ -94,8 +98,11 @@ const VerifyEmail = () => {
               <h2 style={{ fontSize:22, fontWeight:800, color:"hsl(var(--foreground))", marginBottom:8, letterSpacing:"-.03em" }}>
                 {t("auth.verify.successTitle", "Email vérifié avec succès !")}
               </h2>
-              <p style={{ fontSize:14, color:"hsl(var(--muted-foreground))", lineHeight:1.7, marginBottom:32 }}>
-                {t("auth.verify.successDesc", "Votre compte Massarek est maintenant actif. Vous pouvez vous connecter et commencer votre parcours d'orientation.")}
+              <p style={{ fontSize:14, color:"hsl(var(--muted-foreground))", lineHeight:1.7, marginBottom:24 }}>
+                {t("auth.verify.successDesc", "Votre compte est actif. Cet onglet va se fermer automatiquement.")}
+              </p>
+              <p style={{ fontSize:13, color:"hsl(var(--muted-foreground))", marginBottom:24 }}>
+                {t("auth.verify.closing", "Fermeture dans")} <strong style={{ color:"#10B981" }}>2s</strong>...
               </p>
               <Link to="/login">
                 <motion.div

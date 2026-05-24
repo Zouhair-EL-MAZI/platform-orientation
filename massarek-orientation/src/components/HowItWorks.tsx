@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/hooks/use-auth";
 import {
   UserRoundPlus, ClipboardCheck, BrainCircuit,
   Sparkles, Map, ArrowRight, Rocket
@@ -32,7 +33,13 @@ const STEPS_META = [
 const HowItWorks = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const isRTL = document.documentElement.dir === "rtl";
+
+  const handleProtectedClick = (path: string) => {
+    if (isAuthenticated) { navigate(path); }
+    else { localStorage.setItem("intendedDestination", path); navigate("/login"); }
+  };
 
   const steps = [
     {
@@ -109,7 +116,7 @@ const HowItWorks = () => {
             const isLast = index === steps.length - 1;
 
             return (
-              <motion.div key={index} variants={stepVariants} className="relative">
+              <motion.div id={`how-step-${index}`} key={index} variants={stepVariants} className="relative">
                 <motion.div
                   whileHover={{ y: -8 }}
                   transition={{ type: "spring", stiffness: 220, damping: 20 }}
@@ -168,13 +175,26 @@ const HowItWorks = () => {
                   </div>
 
                   {/* CTA row */}
-                  <div
-                    className={`relative mt-4 flex items-center gap-1.5 text-xs font-semibold transition-all duration-200 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 ${isRTL ? "flex-row-reverse group-hover:-translate-x-1 group-hover:translate-x-0" : ""}`}
-                    style={{ color: "var(--ms-accent-sky)" }}
-                  >
-                    <span>{isLast ? t("landing.howItWorks.start","Start Now") : t("landing.howItWorks.next","Next")}</span>
-                    <ArrowRight className={`h-3.5 w-3.5 ${isRTL ? "rotate-180" : ""}`}/>
-                  </div>
+                  {isLast ? (
+                    <button
+                      type="button"
+                      onClick={() => handleProtectedClick("/careers")}
+                      className={`relative mt-4 inline-flex items-center gap-1.5 text-xs font-semibold transition-all duration-200 opacity-80 hover:opacity-100 ${isRTL ? "flex-row-reverse" : ""}`}
+                      style={{ color: "var(--ms-accent-sky)" }}
+                      aria-label={t("landing.howItWorks.start","Start Now")}
+                    >
+                      <span>{t("landing.howItWorks.start","Start Now")}</span>
+                      <ArrowRight className={`h-3.5 w-3.5 ${isRTL ? "rotate-180" : ""}`}/>
+                    </button>
+                  ) : (
+                    <div
+                      className={`relative mt-4 inline-flex items-center gap-1.5 text-xs font-semibold opacity-70 ${isRTL ? "flex-row-reverse" : ""}`}
+                      style={{ color: "var(--ms-accent-sky)" }}
+                    >
+                      <span>{t("landing.howItWorks.next","Next")}</span>
+                      <ArrowRight className={`h-3.5 w-3.5 ${isRTL ? "rotate-180" : ""}`}/>
+                    </div>
+                  )}
                 </motion.div>
               </motion.div>
             );
@@ -233,7 +253,7 @@ const HowItWorks = () => {
             type="button"
             whileHover={{ y: -2, boxShadow: "0 0 44px rgba(34,211,238,0.45),0 14px 36px rgba(37,99,235,0.40)" }}
             whileTap={{ scale: 0.97 }}
-            onClick={() => navigate("/register")}
+            onClick={() => isAuthenticated ? navigate("/dashboard") : navigate("/register")}
             className="mt-8 inline-flex items-center justify-center gap-2 rounded-full px-8 py-3.5 font-bold text-white transition-all duration-300"
             style={{
               background: "linear-gradient(135deg,var(--ms-accent-blue),#0E7490)",

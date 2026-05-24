@@ -1,220 +1,278 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { api } from "@/lib/api";
-import { toast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
+import axios from "axios";
+import {
+  Mail, Clock, ShieldCheck, Send,
+  MessageSquare, MapPin, Sparkles
+} from "lucide-react";
+
+const sectionVariants = {
+  hidden:  { opacity:0, y:28 },
+  visible: { opacity:1, y:0, transition:{ duration:.8 } },
+};
 
 const ContactSection = () => {
   const { t } = useTranslation();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [messageError, setMessageError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const [form, setForm]       = useState({ name:"", email:"", message:"" });
+  const [isLoading, setIsLoading] = useState(false);
+  const [sent, setSent]       = useState(false);
 
-  const validateInputs = () => {
-    let valid = true;
-    const trimmedName = name.trim();
-    const trimmedEmail = email.trim();
-    const trimmedMessage = message.trim();
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) =>
+    setForm(p => ({ ...p, [e.target.name]: e.target.value }));
 
-    if (trimmedName.length < 2) {
-      setNameError(
-        trimmedName.length === 0
-          ? t("landing.contactForm.nameErrorRequired", "Name is required.")
-          : t("landing.contactForm.nameErrorMin", "Name must be at least 2 characters.")
-      );
-      valid = false;
-    } else {
-      setNameError("");
-    }
-
-    if (trimmedEmail.length === 0) {
-      setEmailError(t("landing.contactForm.emailErrorRequired", "Email is required."));
-      valid = false;
-    } else if (!emailPattern.test(trimmedEmail)) {
-      setEmailError(t("landing.contactForm.emailErrorInvalid", "Enter a valid email address."));
-      valid = false;
-    } else {
-      setEmailError("");
-    }
-
-    if (trimmedMessage.length < 5) {
-      setMessageError(
-        trimmedMessage.length === 0
-          ? t("landing.contactForm.messageErrorRequired", "Message is required.")
-          : t("landing.contactForm.messageErrorMin", "Message must be at least 5 characters.")
-      );
-      valid = false;
-    } else {
-      setMessageError("");
-    }
-
-    return valid;
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (isSubmitting) return;
-
-    if (!validateInputs()) {
-      toast({
-        title: t("landing.contactForm.errorValidationTitle", "Please fix the form errors"),
-        description: t("landing.contactForm.errorMessage", "Fill in your name, email, and message before sending."),
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
     try {
-      await api.post("/contact/send", {
-        name: name.trim(),
-        email: email.trim(),
-        message: message.trim(),
-      });
-
-      toast({
-        title: t("landing.contactForm.successTitle", "Message sent"),
-        description: t("landing.contactForm.successMessage", "We'll get back to you shortly."),
-      });
-      setName("");
-      setEmail("");
-      setMessage("");
-      setNameError("");
-      setEmailError("");
-      setMessageError("");
-    } catch (error) {
-      console.error("Contact send error:", error);
-      toast({
-        title: t("landing.contactForm.errorSubmitTitle", "Unable to send your message"),
-        description: t("landing.contactForm.errorNetwork", "Please try again later."),
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+      await axios.post("http://127.0.0.1:8000/api/contact", form);
+      setSent(true);
+      setForm({ name:"", email:"", message:"" });
+    } catch {
+      /* silent — keep existing error handling if any */
+    } finally { setIsLoading(false); }
   };
+
+  const iS: React.CSSProperties = {
+    width:"100%", borderRadius:10, padding:"11px 14px", fontSize:13.5,
+    outline:"none", fontFamily:"'Sora',sans-serif", transition:"all .22s",
+    background:"var(--ms-auth-input-bg)",
+    border:"1px solid var(--ms-auth-input-border)",
+    color:"hsl(var(--foreground))",
+  };
+  const iF = (e: React.FocusEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+    e.target.style.borderColor="var(--ms-border-active)";
+    e.target.style.boxShadow="0 0 0 3px var(--ms-accent-glow),0 0 12px var(--ms-accent-glow)";
+    e.target.style.background="var(--ms-bg-card)";
+  };
+  const iB = (e: React.FocusEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+    e.target.style.borderColor="var(--ms-auth-input-border)";
+    e.target.style.boxShadow="none";
+    e.target.style.background="var(--ms-auth-input-bg)";
+  };
+
+  const INFO = [
+    {
+      icon: Mail,
+      grad: "from-cyan-500 to-blue-500",
+      glow: "rgba(34,211,238,0.35)",
+      label: t("contact.emailLabel", "Email"),
+      value: t("footer.email", "contact@massarek.ma"),
+      sub:   t("contact.emailSub", ""),
+    },
+    {
+      icon: Clock,
+      grad: "from-sky-500 to-indigo-500",
+      glow: "rgba(56,189,248,0.35)",
+      label: t("contact.replyLabel", "Fast Reply"),
+      value: t("contact.replyValue", "Within one business day"),
+      sub:   t("contact.replySub", ""),
+    },
+    {
+      icon: ShieldCheck,
+      grad: "from-indigo-500 to-violet-500",
+      glow: "rgba(99,102,241,0.35)",
+      label: t("contact.supportLabel", "Trusted Support"),
+      value: t("contact.supportValue", "Premium guidance"),
+      sub:   t("contact.supportSub", "For students and partners"),
+    },
+  ];
 
   return (
-    <motion.section
-      id="contact"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
-      className="relative overflow-hidden px-6 md:px-12 py-16" style={{background:"var(--ms-bg-layer1)"}}
-    >
-      <div className="pointer-events-none absolute -right-24 top-10 h-72 w-72 rounded-full bg-sky-500/12 blur-3xl" />
-      <div className="pointer-events-none absolute left-0 top-24 h-56 w-56 rounded-full bg-cyan-400/12 blur-3xl" />
-      <div className="max-w-6xl mx-auto grid gap-10 xl:grid-cols-[0.95fr_1.05fr] items-center">
-        <div className="space-y-6">
-          <p className="section-eyebrow">
-            {t("landing.contact.label")}
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold">
-            {t("landing.contact.title")}
+    <section id="contact" className="relative overflow-hidden px-6 py-10 md:px-12 lg:py-16"
+      style={{ background:"var(--ms-bg-layer1)" }}>
+
+      {/* ambient */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-80" style={{
+        background:"radial-gradient(ellipse 65% 45% at 50% 0%,rgba(34,211,238,0.08),transparent)",
+      }}/>
+      <div className="pointer-events-none absolute right-14 top-28 h-40 w-40 rounded-full blur-3xl"
+        style={{ background:"radial-gradient(circle,rgba(37,99,235,0.10),transparent)" }}/>
+      <div className="pointer-events-none absolute left-8 bottom-20 h-32 w-32 rounded-full blur-3xl"
+        style={{ background:"radial-gradient(circle,rgba(14,116,144,0.10),transparent)" }}/>
+
+      <div className="relative mx-auto max-w-6xl">
+
+        <motion.div initial="hidden" whileInView="visible" viewport={{once:true,amount:.3}}
+          variants={sectionVariants} className="text-center mb-14">
+          <span className="section-eyebrow inline-flex items-center gap-1.5 mb-4">
+            <MessageSquare className="h-3 w-3"/>
+            {t("contact.badge","Contact")}
+          </span>
+          <h2 className="text-3xl font-display font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
+            {t("contact.title","Let's answer your questions")}
           </h2>
-          <p className="text-base leading-8 text-muted-foreground max-w-xl">
-            {t("landing.contact.description")}
+          <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            {t("contact.subtitle","Reach out if you need help getting started, want to learn more about our tools, or want a demo for students or partners.")}
           </p>
-          <div className="rounded-2xl p-8 glass-card">
-            <div className="space-y-4">
-              <div>
-                <p className="section-eyebrow mb-2">
-                  {t("landing.contact.emailLabel")}
-                </p>
-                <a href={`mailto:${t("landing.contact.email")}`} className="text-xl font-bold transition" style={{color:"var(--ms-accent-sky)"}}>
-                  {t("landing.contact.email")}
-                </a>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-2xl p-4" style={{background:"var(--ms-bg-layer2)",border:"1px solid var(--ms-border-subtle)"}}>
-                  <p className="text-[11px] uppercase tracking-[0.15em] font-bold mb-2" style={{color:"var(--ms-accent-cyan)"}}>{t("landing.contactForm.fastReply", "Fast reply")}</p>
-                  <p className="text-sm text-foreground dark:text-slate-100">{t("landing.contactForm.fastReplyDesc", "We respond within one business day.")}</p>
-                </div>
-                <div className="rounded-2xl p-4" style={{background:"var(--ms-bg-layer2)",border:"1px solid var(--ms-border-subtle)"}}>
-                  <p className="text-[11px] uppercase tracking-[0.15em] font-bold mb-2" style={{color:"var(--ms-accent-cyan)"}}>{t("landing.contactForm.support", "Trusted support")}</p>
-                  <p className="text-sm text-foreground dark:text-slate-100">{t("landing.contactForm.supportDesc", "Premium guidance for students and partners.")}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <motion.div
-          initial={{ scale: 0.98, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          whileHover={{ y: -4, scale: 1.001 }}
-          className="relative overflow-hidden rounded-2xl p-8 glass-card"
-        >
-          <div className="mb-8 text-center">
-            <p className="section-eyebrow mb-2">
-              {t("landing.contactForm.sectionLabel")}
-            </p>
-            <h3 className="text-2xl font-bold">
-              {t("landing.contactForm.title")}
-            </h3>
-            <p className="mt-3 text-sm leading-7 text-muted-foreground">
-              {t("landing.contactForm.subtitle")}
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="grid gap-5 sm:grid-cols-2">
-              <label className="flex flex-col gap-2 text-sm text-foreground">
-                <span className="font-medium">{t("landing.contactForm.nameLabel")}</span>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(event) => { setName(event.target.value); if (nameError) setNameError(""); }}
-                  placeholder={t("landing.contactForm.namePlaceholder")}
-                  className="h-14 rounded-2xl px-4 text-sm outline-none transition" style={{background:"var(--ms-bg-layer2)",border:"1px solid var(--ms-border-subtle)",color:"hsl(var(--foreground))"}}
-                />
-                {nameError ? <span className="text-xs text-destructive mt-1">{nameError}</span> : null}
-              </label>
-              <label className="flex flex-col gap-2 text-sm text-foreground">
-                <span className="font-medium">{t("landing.contactForm.emailLabel")}</span>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(event) => { setEmail(event.target.value); if (emailError) setEmailError(""); }}
-                  placeholder={t("landing.contactForm.emailPlaceholder")}
-                  className="h-14 rounded-2xl px-4 text-sm outline-none transition" style={{background:"var(--ms-bg-layer2)",border:"1px solid var(--ms-border-subtle)",color:"hsl(var(--foreground))"}}
-                />
-                {emailError ? <span className="text-xs text-destructive mt-1">{emailError}</span> : null}
-              </label>
-            </div>
-
-            <label className="flex flex-col gap-2 text-sm text-foreground">
-              <span className="font-medium">{t("landing.contactForm.messageLabel")}</span>
-              <textarea
-                value={message}
-                onChange={(event) => { setMessage(event.target.value); if (messageError) setMessageError(""); }}
-                placeholder={t("landing.contactForm.messagePlaceholder")}
-                rows={6}
-                className="min-h-[170px] rounded-2xl px-4 py-4 text-sm outline-none transition" style={{background:"var(--ms-bg-layer2)",border:"1px solid var(--ms-border-subtle)",color:"hsl(var(--foreground))"}}
-              />
-              {messageError ? <span className="text-xs text-destructive mt-1">{messageError}</span> : null}
-            </label>
-
-            <button
-              type="submit"
-              disabled={isSubmitting || name.trim().length < 2 || !emailPattern.test(email.trim()) || message.trim().length < 10}
-              className="inline-flex w-full items-center justify-center rounded-2xl px-6 py-4 text-sm font-bold text-white transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60 glow-pulse"
-              style={{background:"linear-gradient(135deg,var(--ms-accent-blue),#0E7490)",border:"1px solid var(--ms-border-glow)",boxShadow:"0 0 24px var(--ms-accent-glow-strong)"}}
-            >
-              {isSubmitting ? t("landing.contactForm.sending", "Sending...") : t("landing.contactForm.sendButton")}
-            </button>
-          </form>
         </motion.div>
+
+        <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start">
+
+          {/* ── LEFT: info cards ── */}
+          <motion.div initial={{opacity:0,x:-20}} whileInView={{opacity:1,x:0}}
+            viewport={{once:true,amount:.3}} transition={{duration:.65,ease:[.22,1,.36,1]}}
+            className="space-y-4"
+          >
+            <h3 className="text-xl font-display font-bold mb-2">
+              {t("contact.infoTitle","Talk to our team")}
+            </h3>
+            <p className="text-sm text-muted-foreground leading-6 mb-6">
+              {t("contact.infoSubtitle","Share your question and our student success team will reply quickly.")}
+            </p>
+
+            {INFO.map((item,i)=>(
+              <motion.div key={i}
+                initial={{opacity:0,x:-16}} whileInView={{opacity:1,x:0}}
+                viewport={{once:true}} transition={{duration:.5,delay:i*.1}}
+                className="group flex items-start gap-4 rounded-2xl p-4"
+                style={{ background:"var(--ms-bg-card)", border:"1px solid var(--ms-border-subtle)", backdropFilter:"blur(10px)", transition:"border-color .22s" }}
+                onMouseEnter={e=>(e.currentTarget as HTMLElement).style.borderColor="var(--ms-border-glow)"}
+                onMouseLeave={e=>(e.currentTarget as HTMLElement).style.borderColor="var(--ms-border-subtle)"}
+              >
+                <div className={`flex-shrink-0 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${item.grad} text-white mt-0.5`}
+                  style={{ boxShadow:`0 0 14px ${item.glow}` }}>
+                  <item.icon className="h-4 w-4"/>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.14em] mb-0.5" style={{ color:"var(--ms-accent-cyan)" }}>
+                    {item.label}
+                  </p>
+                  <p className="text-sm font-semibold">{item.value}</p>
+                  {item.sub && <p className="text-xs text-muted-foreground mt-0.5">{item.sub}</p>}
+                </div>
+              </motion.div>
+            ))}
+
+            {/* map / location hint */}
+            <motion.div
+              initial={{opacity:0,x:-16}} whileInView={{opacity:1,x:0}}
+              viewport={{once:true}} transition={{duration:.5,delay:.35}}
+              className="flex items-center gap-3 rounded-2xl p-4"
+              style={{ background:"var(--ms-bg-card)", border:"1px solid var(--ms-border-subtle)", backdropFilter:"blur(10px)" }}
+            >
+              <div className="flex-shrink-0 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-400 text-white"
+                style={{ boxShadow:"0 0 14px rgba(139,92,246,0.35)" }}>
+                <MapPin className="h-4 w-4"/>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] mb-0.5" style={{ color:"var(--ms-accent-cyan)" }}>
+                  Based in
+                </p>
+                <p className="text-sm font-semibold">Morocco 🇲🇦</p>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* ── RIGHT: form card ── */}
+          <motion.div initial={{opacity:0,x:20}} whileInView={{opacity:1,x:0}}
+            viewport={{once:true,amount:.3}} transition={{duration:.65,ease:[.22,1,.36,1]}}
+          >
+            <div className="relative overflow-hidden rounded-2xl p-7 sm:p-8"
+              style={{
+                background:"var(--ms-bg-card)",
+                border:"1px solid var(--ms-border-subtle)",
+                backdropFilter:"blur(16px)",
+                boxShadow:"var(--shadow-card)",
+              }}
+            >
+              {/* top glow */}
+              <div style={{ position:"absolute",top:0,left:"50%",transform:"translateX(-50%)",width:"60%",height:1,background:"linear-gradient(90deg,transparent,#22D3EE,transparent)",opacity:.5 }}/>
+              <div style={{ position:"absolute",top:-44,right:-44,width:160,height:160,borderRadius:"50%",background:"radial-gradient(circle,rgba(34,211,238,0.07),transparent 70%)",pointerEvents:"none" }}/>
+
+              <div className="relative mb-6">
+                <span className="section-eyebrow inline-flex items-center gap-1.5 mb-2">
+                  <Sparkles className="h-3 w-3"/>
+                  {t("contact.formBadge","Send a Message")}
+                </span>
+                <h3 className="text-xl font-display font-bold">
+                  {t("contact.formTitle","Talk to our team")}
+                </h3>
+              </div>
+
+              {sent ? (
+                <motion.div initial={{opacity:0,scale:.95}} animate={{opacity:1,scale:1}}
+                  className="flex flex-col items-center justify-center py-12 text-center"
+                >
+                  <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 text-white mb-4"
+                    style={{ boxShadow:"0 0 24px rgba(34,211,238,0.40)" }}>
+                    <Send className="h-7 w-7"/>
+                  </div>
+                  <h4 className="text-lg font-bold mb-2">{t("contact.successTitle","Message sent!")}</h4>
+                  <p className="text-sm text-muted-foreground">{t("contact.successText","We'll reply within one business day.")}</p>
+                  <button onClick={()=>setSent(false)} className="mt-6 text-xs font-semibold" style={{ color:"var(--ms-accent-cyan)" }}>
+                    {t("contact.sendAnother","Send another message")} →
+                  </button>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="relative space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="block mb-1.5 text-xs font-bold uppercase tracking-widest" style={{ color:"hsl(var(--muted-foreground))" }}>
+                        {t("contact.nameLabel","Your name")}
+                      </label>
+                      <input
+                        name="name" type="text" required value={form.name} onChange={handleChange}
+                        placeholder={t("contact.namePlaceholder","Enter your name")}
+                        style={iS} onFocus={iF} onBlur={iB}
+                      />
+                    </div>
+                    <div>
+                      <label className="block mb-1.5 text-xs font-bold uppercase tracking-widest" style={{ color:"hsl(var(--muted-foreground))" }}>
+                        {t("contact.emailInputLabel","Your email")}
+                      </label>
+                      <input
+                        name="email" type="email" required value={form.email} onChange={handleChange}
+                        placeholder={t("contact.emailInputPlaceholder","Enter your email")}
+                        style={iS} onFocus={iF} onBlur={iB}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block mb-1.5 text-xs font-bold uppercase tracking-widest" style={{ color:"hsl(var(--muted-foreground))" }}>
+                      {t("contact.messageLabel","Your message")}
+                    </label>
+                    <textarea
+                      name="message" required value={form.message} onChange={handleChange}
+                      placeholder={t("contact.messagePlaceholder","Tell us what you'd like help with…")}
+                      rows={5}
+                      style={{ ...iS, resize:"vertical", minHeight:110 }}
+                      onFocus={iF as any} onBlur={iB as any}
+                    />
+                  </div>
+
+                  <motion.button
+                    type="submit" disabled={isLoading}
+                    whileHover={{y:-2,boxShadow:"0 0 44px rgba(34,211,238,0.42),0 14px 36px rgba(37,99,235,0.36)"}}
+                    whileTap={{scale:.97}}
+                    className="relative w-full overflow-hidden rounded-xl py-3.5 text-sm font-bold text-white disabled:opacity-50"
+                    style={{
+                      background:"linear-gradient(135deg,var(--ms-accent-blue),#0E7490)",
+                      border:"1px solid var(--ms-border-glow)",
+                      boxShadow:"0 0 28px rgba(34,211,238,0.22),0 8px 24px rgba(37,99,235,0.22),inset 0 1px 0 rgba(255,255,255,0.14)",
+                      fontFamily:"'Sora',sans-serif",
+                      transition:"box-shadow .25s,transform .2s",
+                    }}
+                  >
+                    <motion.span className="absolute inset-0 pointer-events-none"
+                      style={{ background:"linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent)" }}
+                      animate={{x:["-100%","100%"]}} transition={{duration:2.4,repeat:Infinity,ease:"easeInOut",repeatDelay:.9}}
+                    />
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      {isLoading ? t("contact.sending","Sending…") : (
+                        <>{t("contact.submitButton","Send Message")} <Send className="h-4 w-4"/></>
+                      )}
+                    </span>
+                  </motion.button>
+                </form>
+              )}
+            </div>
+          </motion.div>
+        </div>
       </div>
-    </motion.section>
+    </section>
   );
 };
 

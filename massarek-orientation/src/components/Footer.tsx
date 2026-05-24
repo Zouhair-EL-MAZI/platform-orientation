@@ -1,113 +1,154 @@
-import { Github, Linkedin, Twitter, Instagram } from "lucide-react";
+import { Github, Linkedin, Twitter, Instagram, Sparkles, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 import MassarekLogo from "./MassarekLogo";
 
 const Footer = () => {
   const { t } = useTranslation();
+
   const quickLinks = [
-    { label: t("common.home"), href: "/#home" },
-    { label: t("common.features"), href: "/#features" },
-    { label: t("common.about"), href: "/#about" },
-    { label: t("common.contact"), href: "/#contact" },
+    { label: t("common.home"),     href:"/#home"       },
+    { label: t("common.features"), href:"/#features"   },
+    { label: t("common.about"),    href:"/#about"      },
+    { label: t("common.contact"),  href:"/#contact"    },
   ];
 
-  const socialIcon = (Icon: typeof Github) => (
-    <a
-      href="#"
-      target="_blank"
-      rel="noreferrer"
-      className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-gray-200 bg-white/90 text-sky-600 shadow-sm transition duration-200 hover:border-sky-300 hover:text-sky-700 hover:shadow-sky-200/60"
-      style={{ backdropFilter: "blur(10px)" }}
-    >
-      <Icon size={16} />
-    </a>
-  );
+  const legalLinks = [
+    { label: t("footer.privacy","Privacy Policy"), href:"#" },
+    { label: t("footer.terms","Terms of Use"),     href:"#" },
+  ];
+
+  const SOCIALS = [
+    { Icon:Twitter,   label:"Twitter",   grad:"from-sky-500 to-blue-400",   glow:"rgba(56,189,248,0.40)"   },
+    { Icon:Linkedin,  label:"LinkedIn",  grad:"from-blue-600 to-indigo-500", glow:"rgba(37,99,235,0.40)"   },
+    { Icon:Github,    label:"GitHub",    grad:"from-slate-600 to-slate-500", glow:"rgba(100,116,139,0.35)" },
+    { Icon:Instagram, label:"Instagram", grad:"from-pink-500 to-rose-400",   glow:"rgba(236,72,153,0.38)"  },
+  ];
 
   return (
-    <footer
-      style={{
-        background: "linear-gradient(180deg, rgba(245,249,255,1), rgba(235,244,255,0.96))",
-        borderTop: "1px solid rgba(15,23,42,0.08)",
-        backgroundImage: `
-          radial-gradient(circle at 18% 24%, rgba(56,189,248,0.16), transparent 16%),
-          radial-gradient(circle at 82% 18%, rgba(14,165,233,0.10), transparent 18%),
-          radial-gradient(circle at 50% 84%, rgba(59,130,246,0.08), transparent 22%),
-          linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 25%, transparent 75%, rgba(255,255,255,0.45) 100%)
-        `,
-        backgroundBlendMode: "screen, overlay",
-        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.7), inset 0 24px 80px rgba(14,165,233,0.06)",
-      }}
-    >
-      <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:items-start">
-          <div className="space-y-4">
-            <Link to="/" className="inline-flex items-center gap-3 rounded-2xl bg-white/80 px-4 py-3 shadow-sm ring-1 ring-slate-200/80 transition hover:ring-sky-300/70">
-              <MassarekLogo size="md" />
+    <footer className="relative overflow-hidden"
+      style={{ background:"var(--ms-bg-layer1)", borderTop:"1px solid var(--ms-border-subtle)" }}>
+
+      {/* ambient */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-72" style={{
+        background:"radial-gradient(ellipse 60% 45% at 50% 0%,rgba(34,211,238,0.07),transparent)",
+      }}/>
+      <div className="pointer-events-none absolute right-10 top-10 h-44 w-44 rounded-full blur-3xl"
+        style={{ background:"radial-gradient(circle,rgba(37,99,235,0.08),transparent)" }}/>
+
+      {/* main content */}
+      <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <div className="grid gap-12 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
+
+          {/* brand column */}
+          <div className="space-y-5">
+            <Link to="/" className="inline-flex items-center gap-2.5 rounded-xl">
+              <MassarekLogo size="md"/>
             </Link>
-            <p className="text-sm leading-7 text-slate-600">
-              {t("footer.description")}
+            <p className="text-sm leading-6 text-muted-foreground max-w-xs">
+              {t("footer.description","Massarek helps students discover the right academic path with AI-powered guidance, career exploration, and personalized recommendations.")}
             </p>
+
+            {/* social icons */}
+            <div className="flex items-center gap-2">
+              {SOCIALS.map(({Icon,label,grad,glow})=>(
+                <motion.a
+                  key={label} href="#" target="_blank" rel="noreferrer" aria-label={label}
+                  whileHover={{y:-3,boxShadow:`0 0 16px ${glow}`}}
+                  transition={{type:"spring",stiffness:300,damping:20}}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-white"
+                  style={{ background:`linear-gradient(135deg,var(--ms-bg-layer2),var(--ms-bg-layer2))`, border:"1px solid var(--ms-border-subtle)" }}
+                  onMouseEnter={e=>{
+                    (e.currentTarget as HTMLElement).style.background=`linear-gradient(135deg, var(--${grad.split("-")[1]}-500, var(--${grad.split("-")[3]}-400))`;
+                    (e.currentTarget as HTMLElement).style.borderColor="transparent";
+                  }}
+                  onMouseLeave={e=>{
+                    (e.currentTarget as HTMLElement).style.background="var(--ms-bg-layer2)";
+                    (e.currentTarget as HTMLElement).style.borderColor="var(--ms-border-subtle)";
+                  }}
+                >
+                  <Icon size={15} style={{ color:"hsl(var(--muted-foreground))" }}/>
+                </motion.a>
+              ))}
+            </div>
+
+            {/* AI badge */}
+            <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold"
+              style={{ background:"rgba(34,211,238,0.07)", border:"1px solid rgba(34,211,238,0.18)", color:"var(--ms-accent-cyan)" }}>
+              <Sparkles className="h-3 w-3"/>
+              AI-Powered Platform
+            </div>
           </div>
-          <div className="space-y-3">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-sky-600">
-              {t("footer.quickLinks")}
+
+          {/* quick links */}
+          <div className="space-y-4">
+            <h3 className="text-[11px] font-bold uppercase tracking-[0.16em]" style={{ color:"var(--ms-accent-cyan)" }}>
+              {t("footer.quickLinks","Quick Links")}
             </h3>
-            <div className="flex flex-col gap-3">
-              {quickLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  className="text-sm text-slate-600 transition duration-200 hover:text-sky-700 hover:translate-x-0.5"
+            <div className="flex flex-col gap-2.5">
+              {quickLinks.map(link=>(
+                <Link key={link.href} to={link.href}
+                  className="group flex items-center gap-1.5 text-sm text-muted-foreground transition-all duration-200 hover:translate-x-1"
+                  onMouseEnter={e=>(e.currentTarget as HTMLElement).style.color="var(--ms-accent-sky)"}
+                  onMouseLeave={e=>(e.currentTarget as HTMLElement).style.color=""}
                 >
                   {link.label}
+                  <ArrowUpRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color:"var(--ms-accent-sky)" }}/>
                 </Link>
               ))}
             </div>
           </div>
 
-          <div className="space-y-3">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-sky-600">
-              {t("footer.contact")}
+          {/* contact */}
+          <div className="space-y-4">
+            <h3 className="text-[11px] font-bold uppercase tracking-[0.16em]" style={{ color:"var(--ms-accent-cyan)" }}>
+              {t("footer.contact","Contact")}
             </h3>
-            <div className="text-sm text-slate-600 leading-7 space-y-2">
-              <p>{t("footer.support")}</p>
-              <a
-                href={`mailto:${t("footer.email")}`}
-                className="text-slate-600 transition duration-200 hover:text-sky-700"
+            <div className="space-y-2.5 text-sm text-muted-foreground">
+              <p>{t("footer.support","Student support")}</p>
+              <a href={`mailto:${t("footer.email","contact@massarek.ma")}`}
+                className="block transition-colors duration-200"
+                onMouseEnter={e=>(e.currentTarget as HTMLElement).style.color="var(--ms-accent-sky)"}
+                onMouseLeave={e=>(e.currentTarget as HTMLElement).style.color=""}
               >
-                {t("footer.email")}
+                {t("footer.email","contact@massarek.ma")}
               </a>
             </div>
           </div>
 
-          <div className="space-y-3">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-sky-600">
-              {t("footer.more")}
+          {/* legal */}
+          <div className="space-y-4">
+            <h3 className="text-[11px] font-bold uppercase tracking-[0.16em]" style={{ color:"var(--ms-accent-cyan)" }}>
+              {t("footer.legal","Legal")}
             </h3>
-            <div className="text-sm text-slate-600 leading-7 space-y-2">
-              <p>{t("footer.followUs", "Follow us for updates, student stories, and new career guides.")}</p>
-              <div className="flex items-center gap-3">
-                {socialIcon(Twitter)}
-                {socialIcon(Linkedin)}
-                {socialIcon(Github)}
-                {socialIcon(Instagram)}
-              </div>
+            <div className="flex flex-col gap-2.5">
+              {legalLinks.map(l=>(
+                <a key={l.label} href={l.href}
+                  className="text-sm text-muted-foreground transition-colors duration-200"
+                  onMouseEnter={e=>(e.currentTarget as HTMLElement).style.color="var(--ms-accent-sky)"}
+                  onMouseLeave={e=>(e.currentTarget as HTMLElement).style.color=""}
+                >
+                  {l.label}
+                </a>
+              ))}
             </div>
           </div>
         </div>
       </div>
+
+      {/* bottom bar */}
       <div
-        className="px-4 py-4 text-center text-xs font-mono-ts"
+        className="relative px-4 py-4 text-center text-xs"
         style={{
-          borderTop: "1px solid var(--ms-border-subtle)",
-          background: "var(--ms-bg-layer1)",
-          color: "var(--ms-muted-foreground)",
-          opacity: 0.72,
-          backdropFilter: "blur(8px)",
+          borderTop:"1px solid var(--ms-border-subtle)",
+          background:"var(--ms-bg-layer2)",
+          color:"hsl(var(--muted-foreground))",
         }}
       >
-        {t("footer.copyright")}
+        <span>{t("footer.copyright")}</span>
+        <span className="mx-2 opacity-30">·</span>
+        <span style={{ color:"var(--ms-accent-cyan)", opacity:.6 }}>Built with ❤️ for students everywhere</span>
       </div>
     </footer>
   );

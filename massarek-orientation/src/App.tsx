@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import AppLayout from "./components/AppLayout";
 import MainLayout from "./components/MainLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Landing from "./pages/Landing";
 import About from "./pages/About";
 import Login from "./pages/Login";
@@ -43,6 +44,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* PUBLIC ROUTES */}
           <Route path="/" element={<PublicLayout><Landing /></PublicLayout>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -53,13 +55,17 @@ const App = () => (
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/logout" element={<PublicLayout><Logout /></PublicLayout>} />
           <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
-          <Route path="/dashboard" element={<WithLayout><Dashboard /></WithLayout>} />
-          <Route path="/profile" element={<WithLayout><Profile /></WithLayout>} />
-          <Route path="/test" element={<WithLayout><TestInterface /></WithLayout>} />
-          <Route path="/recommendations" element={<WithLayout><Recommendations /></WithLayout>} />
-          <Route path="/careers" element={<WithLayout><CareerExplorer /></WithLayout>} />
-          <Route path="/chatbot" element={<WithLayout><Chatbot /></WithLayout>} />
-          <Route path="/admin" element={<WithLayout><AdminDashboard /></WithLayout>} />
+          
+          {/* PROTECTED ROUTES */}
+          <Route path="/dashboard" element={<ProtectedRoute><WithLayout><Dashboard /></WithLayout></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><WithLayout><Profile /></WithLayout></ProtectedRoute>} />
+          <Route path="/test" element={<ProtectedRoute><WithLayout><TestInterface /></WithLayout></ProtectedRoute>} />
+          <Route path="/recommendations" element={<ProtectedRoute><WithLayout><Recommendations /></WithLayout></ProtectedRoute>} />
+          <Route path="/careers" element={<ProtectedRoute><WithLayout><CareerExplorer /></WithLayout></ProtectedRoute>} />
+          <Route path="/chatbot" element={<ProtectedRoute><WithLayout><Chatbot /></WithLayout></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><WithLayout><AdminDashboard /></WithLayout></ProtectedRoute>} />
+          
+          {/* NOT FOUND */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

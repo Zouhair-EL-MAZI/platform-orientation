@@ -66,7 +66,9 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
       toast({ title: t("auth.login.successTitle"), description: t("auth.login.successMessage") });
-      navigate("/dashboard");
+      const intended = localStorage.getItem("intendedDestination");
+      if (intended) { localStorage.removeItem("intendedDestination"); navigate(intended); }
+      else { navigate("/dashboard"); }
     } catch (error: any) {
       console.error("Google login error:", error);
       toast({

@@ -57,25 +57,25 @@ const ContactSection = () => {
       icon: Mail,
       grad: "from-cyan-500 to-blue-500",
       glow: "rgba(34,211,238,0.35)",
-      label: t("contact.emailLabel", "Email"),
+      label: t("landing.contact.emailLabel", "Email"),
       value: t("footer.email", "contact@massarek.ma"),
-      sub:   t("contact.emailSub", ""),
+      sub:   t("landing.contact.emailSub", ""),
     },
     {
       icon: Clock,
       grad: "from-sky-500 to-indigo-500",
       glow: "rgba(56,189,248,0.35)",
-      label: t("contact.replyLabel", "Fast Reply"),
-      value: t("contact.replyValue", "Within one business day"),
-      sub:   t("contact.replySub", ""),
+      label: t("landing.contact.replyLabel", "Fast Reply"),
+      value: t("landing.contact.replyValue", "Within one business day"),
+      sub:   t("landing.contact.replySub", ""),
     },
     {
       icon: ShieldCheck,
       grad: "from-indigo-500 to-violet-500",
       glow: "rgba(99,102,241,0.35)",
-      label: t("contact.supportLabel", "Trusted Support"),
-      value: t("contact.supportValue", "Premium guidance"),
-      sub:   t("contact.supportSub", "For students and partners"),
+      label: t("landing.contact.supportLabel", "Trusted Support"),
+      value: t("landing.contact.supportValue", "Premium guidance"),
+      sub:   t("landing.contact.supportSub", "For students and partners"),
     },
   ];
 
@@ -98,13 +98,13 @@ const ContactSection = () => {
           variants={sectionVariants} className="text-center mb-14">
           <span className="section-eyebrow inline-flex items-center gap-1.5 mb-4">
             <MessageSquare className="h-3 w-3"/>
-            {t("contact.badge","Contact")}
+            {t("landing.contact.badge","Contact")}
           </span>
           <h2 className="text-3xl font-display font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
-            {t("contact.title","Let's answer your questions")}
+            {t("landing.contact.title","Let's answer your questions")}
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            {t("contact.subtitle","Reach out if you need help getting started, want to learn more about our tools, or want a demo for students or partners.")}
+            {t("landing.contact.subtitle","Reach out if you need help getting started, want to learn more about our tools, or want a demo for students or partners.")}
           </p>
         </motion.div>
 
@@ -116,10 +116,10 @@ const ContactSection = () => {
             className="space-y-4"
           >
             <h3 className="text-xl font-display font-bold mb-2">
-              {t("contact.infoTitle","Talk to our team")}
+              {t("landing.contact.infoTitle","Talk to our team")}
             </h3>
             <p className="text-sm text-muted-foreground leading-6 mb-6">
-              {t("contact.infoSubtitle","Share your question and our student success team will reply quickly.")}
+              {t("landing.contact.infoSubtitle","Share your question and our student success team will reply quickly.")}
             </p>
 
             {INFO.map((item,i)=>(
@@ -158,9 +158,9 @@ const ContactSection = () => {
               </div>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.14em] mb-0.5" style={{ color:"var(--ms-accent-cyan)" }}>
-                  Based in
+                  {t("landing.contact.locationLabel", "Based in")}
                 </p>
-                <p className="text-sm font-semibold">Morocco 🇲🇦</p>
+                <p className="text-sm font-semibold">{t("landing.contact.locationValue", "Morocco 🇲🇦")}</p>
               </div>
             </motion.div>
           </motion.div>
@@ -184,10 +184,10 @@ const ContactSection = () => {
               <div className="relative mb-6">
                 <span className="section-eyebrow inline-flex items-center gap-1.5 mb-2">
                   <Sparkles className="h-3 w-3"/>
-                  {t("contact.formBadge","Send a Message")}
+                  {t("landing.contact.formBadge","Send a Message")}
                 </span>
                 <h3 className="text-xl font-display font-bold">
-                  {t("contact.formTitle","Talk to our team")}
+                  {t("landing.contact.formTitle","Talk to our team")}
                 </h3>
               </div>
 
@@ -199,10 +199,10 @@ const ContactSection = () => {
                     style={{ boxShadow:"0 0 24px rgba(34,211,238,0.40)" }}>
                     <Send className="h-7 w-7"/>
                   </div>
-                  <h4 className="text-lg font-bold mb-2">{t("contact.successTitle","Message sent!")}</h4>
-                  <p className="text-sm text-muted-foreground">{t("contact.successText","We'll reply within one business day.")}</p>
+                  <h4 className="text-lg font-bold mb-2">{t("landing.contact.successTitle","Message sent!")}</h4>
+                  <p className="text-sm text-muted-foreground">{t("landing.contact.successText","We'll reply within one business day.")}</p>
                   <button onClick={()=>setSent(false)} className="mt-6 text-xs font-semibold" style={{ color:"var(--ms-accent-cyan)" }}>
-                    {t("contact.sendAnother","Send another message")} →
+                    {t("landing.contact.sendAnother","Send another message")} →
                   </button>
                 </motion.div>
               ) : (
@@ -210,21 +210,21 @@ const ContactSection = () => {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
                       <label className="block mb-1.5 text-xs font-bold uppercase tracking-widest" style={{ color:"hsl(var(--muted-foreground))" }}>
-                        {t("contact.nameLabel","Your name")}
+                        {t("landing.contact.nameLabel","Your name")}
                       </label>
                       <input
                         name="name" type="text" required value={form.name} onChange={handleChange}
-                        placeholder={t("contact.namePlaceholder","Enter your name")}
+                        placeholder={t("landing.contact.namePlaceholder","Enter your name")}
                         style={iS} onFocus={iF} onBlur={iB}
                       />
                     </div>
                     <div>
                       <label className="block mb-1.5 text-xs font-bold uppercase tracking-widest" style={{ color:"hsl(var(--muted-foreground))" }}>
-                        {t("contact.emailInputLabel","Your email")}
+                        {t("landing.contact.emailInputLabel","Your email")}
                       </label>
                       <input
                         name="email" type="email" required value={form.email} onChange={handleChange}
-                        placeholder={t("contact.emailInputPlaceholder","Enter your email")}
+                        placeholder={t("landing.contact.emailInputPlaceholder","Enter your email")}
                         style={iS} onFocus={iF} onBlur={iB}
                       />
                     </div>
@@ -232,11 +232,11 @@ const ContactSection = () => {
 
                   <div>
                     <label className="block mb-1.5 text-xs font-bold uppercase tracking-widest" style={{ color:"hsl(var(--muted-foreground))" }}>
-                      {t("contact.messageLabel","Your message")}
+                      {t("landing.contact.messageLabel","Your message")}
                     </label>
                     <textarea
                       name="message" required value={form.message} onChange={handleChange}
-                      placeholder={t("contact.messagePlaceholder","Tell us what you'd like help with…")}
+                      placeholder={t("landing.contact.messagePlaceholder","Tell us what you'd like help with…")}
                       rows={5}
                       style={{ ...iS, resize:"vertical", minHeight:110 }}
                       onFocus={iF as any} onBlur={iB as any}
@@ -261,8 +261,8 @@ const ContactSection = () => {
                       animate={{x:["-100%","100%"]}} transition={{duration:2.4,repeat:Infinity,ease:"easeInOut",repeatDelay:.9}}
                     />
                     <span className="relative z-10 flex items-center justify-center gap-2">
-                      {isLoading ? t("contact.sending","Sending…") : (
-                        <>{t("contact.submitButton","Send Message")} <Send className="h-4 w-4"/></>
+                      {isLoading ? t("landing.contact.sending","Sending…") : (
+                        <>{t("landing.contact.submitButton","Send Message")} <Send className="h-4 w-4"/></>
                       )}
                     </span>
                   </motion.button>

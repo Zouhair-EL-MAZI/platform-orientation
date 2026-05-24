@@ -15,8 +15,8 @@ const Footer = () => {
   ];
 
   const legalLinks = [
-    { label: t("footer.privacy","Privacy Policy"), href:"#" },
-    { label: t("footer.terms","Terms of Use"),     href:"#" },
+    { label: t("footer.privacy","Privacy Policy"), href:"/privacy" },
+    { label: t("footer.terms","Terms of Use"),     href:"/terms" },
   ];
 
   const SOCIALS = [
@@ -77,7 +77,7 @@ const Footer = () => {
             <div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold"
               style={{ background:"rgba(34,211,238,0.07)", border:"1px solid rgba(34,211,238,0.18)", color:"var(--ms-accent-cyan)" }}>
               <Sparkles className="h-3 w-3"/>
-              AI-Powered Platform
+              {t("footer.aiBadge","AI-Powered Platform")}
             </div>
           </div>
 
@@ -124,13 +124,13 @@ const Footer = () => {
             </h3>
             <div className="flex flex-col gap-2.5">
               {legalLinks.map(l=>(
-                <a key={l.label} href={l.href}
+                <Link key={l.label} to={l.href}
                   className="text-sm text-muted-foreground transition-colors duration-200"
                   onMouseEnter={e=>(e.currentTarget as HTMLElement).style.color="var(--ms-accent-sky)"}
                   onMouseLeave={e=>(e.currentTarget as HTMLElement).style.color=""}
                 >
                   {l.label}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -147,8 +147,6 @@ const Footer = () => {
         }}
       >
         <span>{t("footer.copyright")}</span>
-        <span className="mx-2 opacity-30">·</span>
-        <span style={{ color:"var(--ms-accent-cyan)", opacity:.6 }}>Built with ❤️ for students everywhere</span>
       </div>
     </footer>
   );

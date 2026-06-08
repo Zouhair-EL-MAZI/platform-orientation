@@ -1,19 +1,34 @@
 import { useEffect, useState, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, LayoutDashboard, LogOut, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import MassarekLogo from "./MassarekLogo";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
 
 const LandingNavbar = () => {
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("#home");
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   const navItems = [
     { label: t("common.home"), hash: "#home", id: "home" },
@@ -74,7 +89,7 @@ const LandingNavbar = () => {
             </Link>
           </div>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden xl:flex items-center gap-1">
             {navItems.map((item) => (
               <button
                 key={item.hash}
@@ -94,30 +109,71 @@ const LandingNavbar = () => {
           <div className="flex items-center gap-2 md:gap-3">
             <LanguageSwitcher />
             <ThemeToggle />
-            <div className="hidden md:flex items-center gap-2">
-              <Link
-                to="/login"
-                className="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 border border-[var(--ms-border-subtle)] hover:border-[var(--ms-border-glow)] hover:text-[var(--ms-accent-sky)] transition-all duration-200 backdrop-blur-sm"
-              >
-                {t("common.signIn")}
-              </Link>
-              <Link
-                to="/register"
-                className="inline-flex items-center justify-center rounded-full px-5 py-2 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 glow-pulse"
-                style={{
-                  background: "linear-gradient(135deg, var(--ms-accent-blue), #0E7490)",
-                  border: "1px solid var(--ms-border-glow)",
-                  boxShadow: "0 0 20px var(--ms-accent-glow-strong), inset 0 1px 0 rgba(255,255,255,0.15)"
-                }}
-              >
-                {t("common.getStarted")}
-              </Link>
+            <div className="hidden xl:flex items-center gap-2">
+              {isAuthenticated ? (
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    onClick={() => setShowUserMenu(p => !p)}
+                    className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold border border-[var(--ms-border-subtle)] hover:border-[var(--ms-border-glow)] transition-all duration-200 backdrop-blur-sm"
+                    style={{ background: "var(--ms-bg-card)", color: "hsl(var(--foreground))" }}
+                  >
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: "linear-gradient(135deg, var(--ms-accent-blue), #0E7490)" }}>
+                      {(user as any)?.name?.[0]?.toUpperCase() ?? "U"}
+                    </div>
+                    <span className="max-w-[100px] truncate">{(user as any)?.name}</span>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                  </button>
+                  {showUserMenu && (
+                    <div className="absolute right-0 top-full mt-2 w-48 rounded-2xl overflow-hidden z-50" style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", boxShadow: "var(--shadow-elevated)" }}>
+                      <button onClick={() => { navigate("/dashboard"); setShowUserMenu(false); }}
+                        className="flex w-full items-center gap-2 px-4 py-3 text-sm font-semibold hover:bg-[var(--ms-accent-glow)] transition-colors"
+                        style={{ color: "hsl(var(--foreground))" }}
+                      >
+                        <LayoutDashboard size={15} /> {t("common.dashboard")}
+                      </button>
+                      <button onClick={() => { navigate("/profile"); setShowUserMenu(false); }}
+                        className="flex w-full items-center gap-2 px-4 py-3 text-sm font-semibold hover:bg-[var(--ms-accent-glow)] transition-colors"
+                        style={{ color: "hsl(var(--foreground))" }}
+                      >
+                        <User size={15} /> {t("common.profile")}
+                      </button>
+                      <div style={{ height: 1, background: "var(--ms-border-subtle)" }} />
+                      <button onClick={() => { logout(); navigate("/"); setShowUserMenu(false); }}
+                        className="flex w-full items-center gap-2 px-4 py-3 text-sm font-semibold hover:bg-red-500/10 transition-colors"
+                        style={{ color: "#F87171" }}
+                      >
+                        <LogOut size={15} /> {t("common.signOut")}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-300 border border-[var(--ms-border-subtle)] hover:border-[var(--ms-border-glow)] hover:text-[var(--ms-accent-sky)] transition-all duration-200 backdrop-blur-sm"
+                  >
+                    {t("common.signIn")}
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="inline-flex items-center justify-center rounded-full px-5 py-2 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 glow-pulse"
+                    style={{
+                      background: "linear-gradient(135deg, var(--ms-accent-blue), #0E7490)",
+                      border: "1px solid var(--ms-border-glow)",
+                      boxShadow: "0 0 20px var(--ms-accent-glow-strong), inset 0 1px 0 rgba(255,255,255,0.15)"
+                    }}
+                  >
+                    {t("common.getStarted")}
+                  </Link>
+                </>
+              )}
             </div>
 
             <button
               type="button"
               onClick={() => setIsOpen((p) => !p)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--ms-border-subtle)] bg-[var(--ms-bg-card)] text-muted-foreground backdrop-blur-sm transition hover:border-[var(--ms-border-glow)] hover:text-[var(--ms-accent-cyan)] md:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--ms-border-subtle)] bg-[var(--ms-bg-card)] text-muted-foreground backdrop-blur-sm transition hover:border-[var(--ms-border-glow)] hover:text-[var(--ms-accent-cyan)] xl:hidden"
             >
               {isOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
@@ -126,7 +182,7 @@ const LandingNavbar = () => {
       </div>
 
       <div className={cn(
-        "pointer-events-auto overflow-hidden transition-[max-height,opacity] duration-300 md:hidden",
+        "pointer-events-auto overflow-hidden transition-[max-height,opacity] duration-300 xl:hidden",
         isOpen ? "max-h-[520px] opacity-100" : "max-h-0 opacity-0"
       )}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 mt-2">
@@ -152,20 +208,39 @@ const LandingNavbar = () => {
               </button>
             ))}
             <div className="flex flex-col gap-2 pt-2">
-              <Link to="/login" onClick={() => setIsOpen(false)}
-                className="rounded-2xl px-4 py-3 text-center text-sm font-semibold text-muted-foreground border border-[var(--ms-border-subtle)] hover:border-[var(--ms-border-glow)] transition-all"
-              >
-                {t("common.signIn")}
-              </Link>
-              <Link to="/register" onClick={() => setIsOpen(false)}
-                className="rounded-2xl px-4 py-3 text-center text-sm font-bold text-white transition hover:-translate-y-0.5"
-                style={{
-                  background: "linear-gradient(135deg, var(--ms-accent-blue), #0E7490)",
-                  boxShadow: "0 0 20px var(--ms-accent-glow-strong)"
-                }}
-              >
-                {t("common.getStarted")}
-              </Link>
+              {isAuthenticated ? (
+                <>
+                  <button onClick={() => { navigate("/dashboard"); setIsOpen(false); }}
+                    className="rounded-2xl px-4 py-3 text-center text-sm font-semibold border border-[var(--ms-border-subtle)] hover:border-[var(--ms-border-glow)] transition-all"
+                    style={{ color: "hsl(var(--foreground))" }}
+                  >
+                    {t("common.dashboard")}
+                  </button>
+                  <button onClick={() => { logout(); navigate("/"); setIsOpen(false); }}
+                    className="rounded-2xl px-4 py-3 text-center text-sm font-bold transition"
+                    style={{ background: "rgba(248,113,113,0.1)", color: "#F87171", border: "1px solid rgba(248,113,113,0.2)" }}
+                  >
+                    {t("common.signOut")}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" onClick={() => setIsOpen(false)}
+                    className="rounded-2xl px-4 py-3 text-center text-sm font-semibold text-muted-foreground border border-[var(--ms-border-subtle)] hover:border-[var(--ms-border-glow)] transition-all"
+                  >
+                    {t("common.signIn")}
+                  </Link>
+                  <Link to="/register" onClick={() => setIsOpen(false)}
+                    className="rounded-2xl px-4 py-3 text-center text-sm font-bold text-white transition hover:-translate-y-0.5"
+                    style={{
+                      background: "linear-gradient(135deg, var(--ms-accent-blue), #0E7490)",
+                      boxShadow: "0 0 20px var(--ms-accent-glow-strong)"
+                    }}
+                  >
+                    {t("common.getStarted")}
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

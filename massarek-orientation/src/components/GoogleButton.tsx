@@ -1,18 +1,15 @@
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 interface GoogleButtonProps {
   onClick?: () => void;
+  isLoading?: boolean;
 }
 
-const GoogleButton = ({ onClick }: GoogleButtonProps) => {
+const GoogleButton = ({ onClick, isLoading = false }: GoogleButtonProps) => {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = () => {
-    console.log("Google Sign-In clicked");
-    setIsLoading(true);
-    setTimeout(() => setIsLoading(false), 1200);
+    if (isLoading) return;
     onClick?.();
   };
 

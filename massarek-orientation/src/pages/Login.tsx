@@ -1,11 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { api } from "@/lib/api";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, ArrowLeft, Sparkles } from "lucide-react";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import MassarekLogo from "@/components/MassarekLogo";
 import GoogleButton from "@/components/GoogleButton";
+import { auth, googleProvider } from "@/lib/firebase";
 import { toast } from "@/hooks/use-toast";
 
 const Login = () => {
@@ -14,6 +17,10 @@ const Login = () => {
   const [password, setPassword]  = useState("");
   const [isLoading,setIsLoading] = useState(false);
   const [showPass, setShowPass]  = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [verificationError, setVerificationError] = useState("");
+  const [resendVerificationLoading, setResendVerificationLoading] = useState(false);
   const navigate = useNavigate();
 
   /* ── logic unchanged ── */
@@ -23,24 +30,98 @@ const Login = () => {
       toast({ title: t("auth.login.errorEmpty","Error"), description: t("auth.login.errorEmpty"), variant:"destructive" });
       return;
     }
+    setVerificationError("");
     setIsLoading(true);
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/login", { email, password });
+      const response = await api.post("/login", { email, password, remember_me: rememberMe });
       const { user, token } = response.data;
+      const role = response.data.role || user?.role || 'student';
       localStorage.setItem("user",  JSON.stringify(user));
       localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
       toast({ title: t("auth.login.successTitle"), description: t("auth.login.successMessage") });
       const intended = localStorage.getItem("intendedDestination");
-      if (intended) { localStorage.removeItem("intendedDestination"); navigate(intended); }
-      else { navigate("/dashboard"); }
-    } catch (error: any) {
+      if (intended) {
+        localStorage.removeItem("intendedDestination");
+        if (intended.startsWith("/admin")) {
+          if (role === 'admin') {
+            navigate(intended);
+          } else {
+            navigate('/dashboard');
+          }
+        } else {
+          if (role === 'admin') {
+            navigate('/admin/dashboard');
+          } else {
+            navigate(intended);
+          }
+        }
+      } else {
+        if (role === 'admin') navigate('/admin/dashboard');
+        else navigate('/dashboard');
+      }
+    } catch (error: unknown) {
       console.error("Login error:", error);
-      toast({ title: t("auth.login.failedTitle"), description: error.response?.data?.message || t("auth.login.failedMessage"), variant:"destructive" });
+      if (axios.isAxiosError(error) && error.response?.status === 403) {
+        setVerificationError(error.response?.data?.message || "Please verify your email before logging in");
+      } else {
+        const message = axios.isAxiosError(error) ? error.response?.data?.message : undefined;
+        toast({ title: t("auth.login.failedTitle"), description: message || t("auth.login.failedMessage"), variant:"destructive" });
+      }
     } finally { setIsLoading(false); }
   };
 
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const idToken = credential?.idToken ?? await result.user.getIdToken();
+      if (!idToken) {
+        throw new Error("Unable to retrieve Google ID token.");
+      }
+      const response = await api.post("/auth/google", { token: idToken });
+      const { user, token } = response.data;
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
+      toast({ title: t("auth.login.successTitle"), description: t("auth.login.successMessage") });
+      const role = response.data.role || user?.role || 'student';
+      localStorage.setItem("role", role);
+      const intended = localStorage.getItem("intendedDestination");
+      if (intended) {
+        localStorage.removeItem("intendedDestination");
+        if (intended.startsWith("/admin")) {
+          if (role === 'admin') {
+            navigate(intended);
+          } else {
+            navigate('/dashboard');
+          }
+        } else {
+          if (role === 'admin') {
+            navigate('/admin/dashboard');
+          } else {
+            navigate(intended);
+          }
+        }
+      } else {
+        if (role === 'admin') navigate('/admin/dashboard');
+        else navigate('/dashboard');
+      }
+    } catch (error: any) {
+      console.error("Google login error:", error);
+      toast({
+        title: t("auth.login.failedTitle"),
+        description: axios.isAxiosError(error) ? error.response?.data?.message : t("auth.login.failedMessage"),
+        variant: "destructive",
+      });
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
   const iS: React.CSSProperties = {
-    width:"100%", borderRadius:10, padding:"10px 14px", fontSize:13.5,
+    width:"100%", borderRadius:13, padding:"12px 14px", fontSize:14,
+    lineHeight:1.5, minHeight:50,
     outline:"none", fontFamily:"'Sora',sans-serif", transition:"all .2s",
     background:"var(--ms-auth-input-bg)",
     border:"1px solid var(--ms-auth-input-border)",
@@ -121,7 +202,7 @@ const Login = () => {
           inherits global theme automatically
       ═══════════════════════════════════════ */}
       <div
-        className="relative flex w-full lg:w-[45%] flex-col items-center justify-center overflow-hidden px-5 sm:px-8"
+        className="relative flex w-full lg:w-[45%] flex-col items-center justify-center overflow-y-visible px-5 sm:px-8"
         style={{ background:"var(--ms-bg-base)" }}
       >
         {/* soft ambient for right panel (light/dark aware opacity) */}
@@ -147,7 +228,7 @@ const Login = () => {
 
           {/* ── glassmorphism card ── */}
           <div
-            className="relative overflow-hidden rounded-2xl px-6 py-6"
+            className="relative overflow-hidden rounded-3xl px-6 py-6"
             style={{
               background:"var(--ms-bg-card)",
               border:"1px solid var(--ms-border-subtle)",
@@ -170,38 +251,37 @@ const Login = () => {
                   animate={{ opacity:[1,.5,1], scale:[1,.8,1] }} transition={{ duration:2, repeat:Infinity }}/>
                 <Sparkles size={9}/> AI-Powered Platform
               </div>
-              <h2 style={{ fontSize:20, fontWeight:800, letterSpacing:"-.03em", marginBottom:4, color:"hsl(var(--foreground))" }}>
-                {t("auth.login.title")}{" "}
+              <h2 style={{ fontSize:22, fontWeight:800, letterSpacing:"-.03em", marginBottom:6, color:"hsl(var(--foreground))" }}>
+                {t("auth.login.title")} {" "}
                 <span style={{ background:"linear-gradient(90deg,#22D3EE,#38BDF8)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>
-                  {t("auth.login.highlight","below")}
+                  {t("auth.login.highlight","back")}
                 </span>
               </h2>
-              <p style={{ fontSize:13, color:"hsl(var(--muted-foreground))" }}>{t("auth.login.subtitle")}</p>
+              <p style={{ fontSize:15, lineHeight:1.6, color:"hsl(var(--muted-foreground))" }}>{t("auth.login.subtitle")}</p>
             </div>
 
             {/* form */}
             <form onSubmit={handleSubmit} className="space-y-3">
 
               <div>
-                <label className="block mb-1 text-xs font-bold uppercase tracking-widest"
+                <label className="block mb-2 text-sm font-bold uppercase tracking-widest"
                   style={{ color:"hsl(var(--muted-foreground))" }}>
                   {t("auth.login.emailLabel")}
                 </label>
-                <input type="email" value={email} onChange={e=>setEmail(e.target.value)}
+                <input type="email" value={email}
+                  onChange={e => { setEmail(e.target.value); setVerificationError(""); }}
                   placeholder={t("auth.login.emailPlaceholder")} required
-                  style={iS} onFocus={iF} onBlur={iB}/>
-              </div>
-
-              <div>
-                <label className="block mb-1 text-xs font-bold uppercase tracking-widest"
+                  style={iS} onFocus={iF} onBlur={iB}
+                />
+                <label className="block mb-2 text-sm font-bold uppercase tracking-widest mt-4"
                   style={{ color:"hsl(var(--muted-foreground))" }}>
                   {t("auth.login.passwordLabel")}
                 </label>
                 <div className="relative">
-                  <input type={showPass?"text":"password"} value={password}
-                    onChange={e=>setPassword(e.target.value)}
+                  <input type={showPass ? "text" : "password"} value={password}
+                    onChange={e => setPassword(e.target.value)}
                     placeholder={t("auth.login.passwordPlaceholder")} required
-                    style={{...iS, paddingRight:42}} onFocus={iF} onBlur={iB}/>
+                    style={{ ...iS, paddingRight: 44 }} onFocus={iF} onBlur={iB} />
                   <button type="button" onClick={()=>setShowPass(p=>!p)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors duration-200"
                     style={{ color:"hsl(var(--muted-foreground))" }}
@@ -211,8 +291,24 @@ const Login = () => {
                     {showPass?<EyeOff size={16}/>:<Eye size={16}/>}
                   </button>
                 </div>
-                <div className="flex justify-end mt-1">
-                  <Link to="/forgot" className="text-xs font-semibold transition-colors duration-200"
+                <div className="flex items-center justify-between mt-2">
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <div onClick={() => setRememberMe(p => !p)}
+                      className="w-4 h-4 rounded flex items-center justify-center transition-all duration-200"
+                      style={{
+                        background: rememberMe ? "linear-gradient(135deg,var(--ms-accent-blue),var(--ms-accent-cyan))" : "var(--ms-auth-input-bg)",
+                        border: rememberMe ? "none" : "1.5px solid var(--ms-border-subtle)",
+                        boxShadow: rememberMe ? "0 0 8px var(--ms-accent-glow-strong)" : "none",
+                        borderRadius: 4,
+                      }}
+                    >
+                      {rememberMe && <svg width="9" height="7" fill="none" viewBox="0 0 9 7"><path d="M1 3.5l2.5 2.5 4.5-5" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                    </div>
+                    <span className="text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>
+                      {t("auth.login.rememberMe", "Se souvenir de moi")}
+                    </span>
+                  </label>
+                  <Link to="/forgot-password" className="text-sm font-semibold transition-colors duration-200"
                     style={{ color:"var(--ms-accent-cyan)" }}
                     onMouseEnter={e=>(e.currentTarget as HTMLElement).style.color="var(--ms-accent-blue)"}
                     onMouseLeave={e=>(e.currentTarget as HTMLElement).style.color="var(--ms-accent-cyan)"}
@@ -252,12 +348,34 @@ const Login = () => {
                 <div style={{ flex:1, height:1, background:"linear-gradient(270deg,transparent,var(--ms-border-glow))" }}/>
               </div>
 
-              <GoogleButton/>
+              <GoogleButton onClick={handleGoogleLogin} isLoading={googleLoading} />
 
             </form>
 
+            {verificationError && (
+              <div className="mt-4 rounded-3xl border border-red-300/20 bg-red-500/10 p-4 text-sm text-red-100">
+                <p className="font-semibold">{verificationError}</p>
+                <button type="button" onClick={async () => {
+                  if (!email) return;
+                  setResendVerificationLoading(true);
+                  try {
+                    await api.post("/resend-verification-email", { email });
+                    toast({ title: "Email renvoyé", description: "Vérifiez votre boîte de réception.", });
+                  } catch (error: any) {
+                    toast({ title: "Erreur", description: error.response?.data?.message || "Impossible de renvoyer l'email.", variant: "destructive" });
+                  } finally {
+                    setResendVerificationLoading(false);
+                  }
+                }} disabled={resendVerificationLoading}
+                  className="mt-3 inline-flex items-center rounded-full bg-slate-800 px-3 py-2 text-sm font-semibold text-cyan-300 transition hover:bg-slate-700 disabled:opacity-60"
+                >
+                  {resendVerificationLoading ? "Envoi…" : "Renvoyer l'email de vérification"}
+                </button>
+              </div>
+            )}
+
             {/* switch */}
-            <p className="text-center text-xs mt-4" style={{ color:"hsl(var(--muted-foreground))" }}>
+            <p className="text-center text-sm mt-4" style={{ color:"hsl(var(--muted-foreground))" }}>
               {t("auth.login.noAccount")}{" "}
               <Link to="/register" className="font-bold transition-colors duration-200"
                 style={{ color:"var(--ms-accent-cyan)" }}

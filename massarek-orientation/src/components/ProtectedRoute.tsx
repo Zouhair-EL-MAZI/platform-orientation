@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 
 interface ProtectedRouteProps {
@@ -6,37 +6,52 @@ interface ProtectedRouteProps {
   requiredRole?: "admin" | "user";
 }
 
+const STUDENT_FALLBACK = "/dashboard";
+const ADMIN_FALLBACK = "/admin/dashboard";
+const LAST_VALID_STUDENT_PATH = "lastValidStudentPath";
+const LAST_VALID_ADMIN_PATH = "lastValidAdminPath";
+
+const storeLastValidPath = (path: string, role: string | null) => {
+  if (!path) return;
+  if (role === "admin") {
+    localStorage.setItem(LAST_VALID_ADMIN_PATH, path);
+  } else {
+    localStorage.setItem(LAST_VALID_STUDENT_PATH, path);
+  }
+};
+
+const getFallbackPath = (role: string | null) => {
+  if (role === "admin") {
+    return localStorage.getItem(LAST_VALID_ADMIN_PATH) || ADMIN_FALLBACK;
+  }
+  return localStorage.getItem(LAST_VALID_STUDENT_PATH) || STUDENT_FALLBACK;
+};
+
 /**
- * ProtectedRoute - Guards routes from unauthorized access
- * 
- * If user is not authenticated:
- * - Stores the intended destination in localStorage
- * - Redirects to /login
- * 
- * If authenticated and no role requirement:
- * - Renders the component
- * 
- * If authenticated with role requirement:
- * - Checks user role matches requirement
- * - Allows access or redirects to /dashboard
+ * ProtectedRoute - Guards student/protected routes from unauthorized access
  */
 const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
-  const { isAuthenticated, user } = useAuth();
-  const currentPath = window.location.pathname;
+  const { isAuthenticated, user, role } = useAuth();
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const userRole = role || user?.role || "user";
 
-  // If not authenticated, store intended destination and redirect to login
   if (!isAuthenticated) {
     localStorage.setItem("intendedDestination", currentPath);
     return <Navigate to="/login" replace />;
   }
 
-  // If role is required, check if user has that role
   if (requiredRole && user?.role !== requiredRole) {
-    // User is authenticated but doesn't have the required role
-    return <Navigate to="/dashboard" replace />;
+    const fallback = getFallbackPath(userRole);
+    return <Navigate to={fallback} replace />;
   }
 
-  // User is authenticated (and has required role if specified)
+  if (userRole === "admin") {
+    const fallback = getFallbackPath(userRole);
+    return <Navigate to={fallback} replace />;
+  }
+
+  storeLastValidPath(currentPath, userRole);
   return <>{children}</>;
 };
 

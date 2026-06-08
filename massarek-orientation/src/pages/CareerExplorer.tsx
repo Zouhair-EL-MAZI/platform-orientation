@@ -1,70 +1,625 @@
-import { useState } from "react";
-import { Search, Briefcase, TrendingUp, DollarSign, GraduationCap } from "lucide-react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  Search, Briefcase, TrendingUp, DollarSign, X, ChevronDown,
+  ChevronUp, Heart, BookOpen, MapPin, GraduationCap, Star,
+  AlertCircle, RefreshCw, Filter,
+} from "lucide-react";
+import {
+  getCareers, getCareerCategories, getCareer,
+  type Career, type CareerCategory,
+} from "@/services/studentApi";
+import { toast } from "sonner";
 
-const careers = [
-  { title: "Software Engineer", field: "Technology", salary: "$95K–$180K", growth: "25%", education: "Bachelor's", desc: "Design, develop, and maintain software systems and applications." },
-  { title: "Data Scientist", field: "Technology", salary: "$90K–$160K", growth: "35%", education: "Master's", desc: "Analyze complex data to help organizations make better decisions." },
-  { title: "UX Designer", field: "Design", salary: "$75K–$130K", growth: "13%", education: "Bachelor's", desc: "Create intuitive and engaging user experiences for digital products." },
-  { title: "Biomedical Engineer", field: "Engineering", salary: "$70K–$120K", growth: "6%", education: "Bachelor's", desc: "Develop medical devices and equipment to improve healthcare." },
-  { title: "Financial Analyst", field: "Business", salary: "$65K–$110K", growth: "9%", education: "Bachelor's", desc: "Evaluate financial data and provide investment recommendations." },
-  { title: "Clinical Psychologist", field: "Healthcare", salary: "$80K–$130K", growth: "6%", education: "Doctorate", desc: "Diagnose and treat mental health disorders through therapy." },
-  { title: "Environmental Scientist", field: "Science", salary: "$55K–$95K", growth: "8%", education: "Bachelor's", desc: "Study the environment and develop solutions for environmental problems." },
-  { title: "Product Manager", field: "Business", salary: "$100K–$170K", growth: "10%", education: "Bachelor's", desc: "Lead product strategy and development from concept to launch." },
-];
+// ─────────────────────────────────────────────────────────────────────────────
+// Favorites — persisted in localStorage, never touches backend
+// ─────────────────────────────────────────────────────────────────────────────
+const FAV_KEY = "massarek_fav_careers";
 
-const fields = ["All", ...Array.from(new Set(careers.map((c) => c.field)))];
+function readFavs(): Set<number> {
+  try {
+    const raw = localStorage.getItem(FAV_KEY);
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  } catch { return new Set(); }
+}
 
-const CareerExplorer = () => {
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("All");
+function writeFavs(ids: Set<number>): void {
+  try { localStorage.setItem(FAV_KEY, JSON.stringify([...ids])); } catch {}
+}
 
-  const filtered = careers.filter((c) => {
-    const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase()) || c.desc.toLowerCase().includes(search.toLowerCase());
-    const matchesFilter = filter === "All" || c.field === filter;
-    return matchesSearch && matchesFilter;
-  });
+// ─────────────────────────────────────────────────────────────────────────────
+// Demand level badge config
+// ─────────────────────────────────────────────────────────────────────────────
+function demandStyle(level?: string | null): { bg: string; color: string; border: string } {
+  switch (level) {
+    case "Very High": return { bg: "rgba(16,185,129,0.12)", color: "#059669", border: "rgba(16,185,129,0.30)" };
+    case "High":      return { bg: "rgba(14,165,233,0.10)", color: "#0284C7", border: "rgba(14,165,233,0.28)" };
+    case "Growing":   return { bg: "rgba(167,139,250,0.12)", color: "#7C3AED", border: "rgba(167,139,250,0.30)" };
+    default:          return { bg: "rgba(245,158,11,0.10)", color: "#D97706", border: "rgba(245,158,11,0.28)" };
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Career Detail Modal — full Moroccan context
+// ─────────────────────────────────────────────────────────────────────────────
+function CareerModal({
+  career, isFav, onToggleFav, onClose,
+}: {
+  career: Career; isFav: boolean; onToggleFav: () => void; onClose: () => void;
+}) {
+  const ds = demandStyle(career.demand_level);
+  const [tab, setTab] = useState<"overview" | "morocco" | "skills">("overview");
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2"><Briefcase size={24} className="text-primary" /> Career Explorer</h1>
-        <p className="text-muted-foreground mt-1">Discover career paths that match your skills and interests.</p>
-      </div>
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-3 sm:p-4"
+      style={{ background: "rgba(0,0,0,0.60)", backdropFilter: "blur(8px)" }}
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-2xl rounded-2xl max-h-[92vh] overflow-hidden flex flex-col ms-page-enter"
+        style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-glow)", boxShadow: "0 24px 60px rgba(0,0,0,0.30)" }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Top accent */}
+        <div className="h-1 flex-shrink-0"
+          style={{ background: "linear-gradient(90deg, #1E40AF, #0E7490, var(--ms-accent-cyan))" }} />
 
-      {/* Search & Filter */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search careers..." className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-input bg-card text-sm focus:outline-none focus:ring-2 focus:ring-ring/20" />
+        {/* Header */}
+        <div className="p-5 md:p-6 flex-shrink-0"
+          style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                  style={{ background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-glow)", color: "var(--ms-accent-sky)" }}>
+                  {career.category.name}
+                </span>
+                {career.demand_level && (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1"
+                    style={{ background: ds.bg, border: `1px solid ${ds.border}`, color: ds.color }}>
+                    <TrendingUp size={9} /> {career.demand_level}
+                  </span>
+                )}
+              </div>
+              <h2 className="text-xl font-bold leading-tight">{career.title}</h2>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button onClick={onToggleFav}
+                className="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:scale-110"
+                style={isFav ? {
+                  background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.30)",
+                } : {
+                  background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-subtle)",
+                }}
+                aria-label={isFav ? "Remove from favorites" : "Save to favorites"}
+              >
+                <Heart size={15} fill={isFav ? "#EF4444" : "none"}
+                  style={{ color: isFav ? "#EF4444" : "var(--ms-accent-sky)" }} />
+              </button>
+              <button onClick={onClose}
+                className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+                style={{ background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-subtle)" }}>
+                <X size={14} style={{ color: "var(--ms-accent-sky)" }} />
+              </button>
+            </div>
+          </div>
+
+          {/* Meta row */}
+          {career.salary_range && (
+            <div className="flex items-center gap-1.5 mt-3 text-sm font-semibold"
+              style={{ color: "#059669" }}>
+              <DollarSign size={14} /> {career.salary_range}
+            </div>
+          )}
         </div>
-        <div className="flex gap-2 flex-wrap">
-          {fields.map((f) => (
-            <button key={f} onClick={() => setFilter(f)} className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${filter === f ? "gradient-primary text-primary-foreground" : "bg-card border border-border hover:bg-accent"}`}>
-              {f}
+
+        {/* Tab nav */}
+        <div className="flex gap-1 px-5 pt-3 flex-shrink-0"
+          style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
+          {[
+            { key: "overview", label: "Overview" },
+            { key: "morocco",  label: "🇲🇦 Morocco" },
+            { key: "skills",   label: "Skills & Study" },
+          ].map(t => (
+            <button key={t.key}
+              onClick={() => setTab(t.key as any)}
+              className="px-4 py-2 text-xs font-bold rounded-t-xl transition-all border-b-2"
+              style={{
+                borderColor: tab === t.key ? "var(--ms-accent-cyan)" : "transparent",
+                color: tab === t.key ? "var(--ms-accent-cyan)" : "var(--ms-accent-sky)",
+                background: tab === t.key ? `${`var(--ms-accent-glow)`}` : "transparent",
+                opacity: tab === t.key ? 1 : 0.6,
+              }}>
+              {t.label}
             </button>
           ))}
         </div>
+
+        {/* Tab content — scrollable */}
+        <div className="flex-1 overflow-y-auto p-5 md:p-6 space-y-4">
+
+          {/* Overview tab */}
+          {tab === "overview" && (
+            <>
+              <p className="text-sm text-muted-foreground leading-relaxed">{career.description}</p>
+
+              {career.future_scope && (
+                <div className="rounded-xl p-4"
+                  style={{ background: "var(--ms-bg-layer3)", border: "1px solid var(--ms-border-subtle)" }}>
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <TrendingUp size={13} style={{ color: "#34D399" }} />
+                    <span className="text-xs font-bold uppercase tracking-wider" style={{ color: "#34D399" }}>
+                      Career Prospects
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{career.future_scope}</p>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Morocco tab */}
+          {tab === "morocco" && (
+            <>
+              {career.moroccan_context ? (
+                <div className="rounded-xl p-4"
+                  style={{ background: "rgba(30,64,175,0.06)", border: "1px solid rgba(30,64,175,0.15)" }}>
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <MapPin size={13} style={{ color: "var(--ms-accent-sky)" }} />
+                    <span className="text-xs font-bold uppercase tracking-wider"
+                      style={{ color: "var(--ms-accent-sky)" }}>Moroccan Market Context</span>
+                  </div>
+                  <p className="text-sm leading-relaxed" style={{ color: "hsl(var(--foreground))" }}>
+                    {career.moroccan_context}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-8">
+                  Moroccan context data not available for this career yet.
+                </p>
+              )}
+
+              {career.recommended_schools && career.recommended_schools.length > 0 && (
+                <div className="rounded-xl p-4"
+                  style={{ background: "var(--ms-bg-layer3)", border: "1px solid var(--ms-border-subtle)" }}>
+                  <div className="flex items-center gap-1.5 mb-3">
+                    <GraduationCap size={13} style={{ color: "#A78BFA" }} />
+                    <span className="text-xs font-bold uppercase tracking-wider"
+                      style={{ color: "#A78BFA" }}>Recommended Schools in Morocco</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    {career.recommended_schools.map(s => (
+                      <div key={s} className="flex items-center gap-2 text-sm">
+                        <Star size={10} style={{ color: "#A78BFA", flexShrink: 0 }} />
+                        <span>{s}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Skills & Study tab */}
+          {tab === "skills" && (
+            <>
+              {career.required_skills?.length > 0 && (
+                <div className="rounded-xl p-4"
+                  style={{ background: "var(--ms-bg-layer3)", border: "1px solid var(--ms-border-subtle)" }}>
+                  <div className="flex items-center gap-1.5 mb-3">
+                    <BookOpen size={13} style={{ color: "var(--ms-accent-cyan)" }} />
+                    <span className="text-xs font-bold uppercase tracking-wider"
+                      style={{ color: "var(--ms-accent-cyan)" }}>Required Skills</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {career.required_skills.map(s => (
+                      <span key={s}
+                        className="text-xs font-semibold px-3 py-1.5 rounded-full"
+                        style={{ background: "rgba(34,211,238,0.10)", border: "1px solid rgba(34,211,238,0.22)", color: "var(--ms-accent-sky)" }}>
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {career.study_paths && career.study_paths.length > 0 && (
+                <div className="rounded-xl p-4"
+                  style={{ background: "var(--ms-bg-layer3)", border: "1px solid var(--ms-border-subtle)" }}>
+                  <div className="flex items-center gap-1.5 mb-3">
+                    <GraduationCap size={13} style={{ color: "#F59E0B" }} />
+                    <span className="text-xs font-bold uppercase tracking-wider"
+                      style={{ color: "#F59E0B" }}>Study Paths</span>
+                  </div>
+                  <div className="space-y-2">
+                    {career.study_paths.map((p, i) => (
+                      <div key={i} className="flex items-start gap-2 text-sm">
+                        <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5"
+                          style={{ background: "rgba(245,158,11,0.15)", color: "#F59E0B" }}>
+                          {i + 1}
+                        </span>
+                        <span className="text-muted-foreground leading-snug">{p}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CareerCard — rich card with favorite support
+// ─────────────────────────────────────────────────────────────────────────────
+function CareerCard({
+  career, isFav, onToggleFav, onClick,
+}: {
+  career: Career; isFav: boolean; onToggleFav: (e: React.MouseEvent) => void; onClick: () => void;
+}) {
+  const ds = demandStyle(career.demand_level);
+  const skills = career.required_skills ?? [];
+
+  return (
+    <div
+      className="ms-card-hover rounded-2xl overflow-hidden cursor-pointer group relative"
+      style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)" }}
+      onClick={onClick}
+    >
+      {/* Category color top strip */}
+      <div className="h-1"
+        style={{ background: `linear-gradient(90deg, transparent, var(--ms-accent-cyan)55, transparent)` }} />
+
+      <div className="p-4 md:p-5">
+        {/* Top row: badge + fav */}
+        <div className="flex items-start justify-between gap-2 mb-3">
+          <div className="flex items-center gap-1.5 flex-wrap flex-1 min-w-0">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0"
+              style={{ background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-glow)", color: "var(--ms-accent-sky)" }}>
+              {career.category.name}
+            </span>
+            {career.demand_level && (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0"
+                style={{ background: ds.bg, border: `1px solid ${ds.border}`, color: ds.color }}>
+                {career.demand_level}
+              </span>
+            )}
+          </div>
+
+          {/* Favorite button */}
+          <button
+            onClick={onToggleFav}
+            className="w-8 h-8 rounded-lg flex items-center justify-center transition-all flex-shrink-0 hover:scale-110"
+            style={isFav ? {
+              background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.25)",
+            } : {
+              background: "var(--ms-bg-layer3)", border: "1px solid var(--ms-border-subtle)",
+            }}
+            aria-label={isFav ? "Remove from favorites" : "Save career"}
+          >
+            <Heart size={13} fill={isFav ? "#EF4444" : "none"}
+              style={{ color: isFav ? "#EF4444" : "var(--ms-accent-sky)" }} />
+          </button>
+        </div>
+
+        {/* Title */}
+        <h3 className="font-bold text-base leading-tight mb-1.5 group-hover:text-[var(--ms-accent-sky)] transition-colors">
+          {career.title}
+        </h3>
+
+        {/* Description */}
+        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-3">
+          {career.description}
+        </p>
+
+        {/* Salary */}
+        {career.salary_range && (
+          <div className="flex items-center gap-1.5 text-xs font-semibold mb-3"
+            style={{ color: "#059669" }}>
+            <DollarSign size={11} /> {career.salary_range}
+          </div>
+        )}
+
+        {/* Skills tags */}
+        {skills.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-3">
+            {skills.slice(0, 3).map(s => (
+              <span key={s}
+                className="text-[10px] font-medium px-2 py-0.5 rounded-full"
+                style={{ background: "var(--ms-bg-layer3)", border: "1px solid var(--ms-border-subtle)", color: "var(--ms-accent-sky)" }}>
+                {s}
+              </span>
+            ))}
+            {skills.length > 3 && (
+              <span className="text-[10px] text-muted-foreground px-1 py-0.5">+{skills.length - 3}</span>
+            )}
+          </div>
+        )}
+
+        {/* Footer CTA */}
+        <div className="flex items-center justify-between mt-auto pt-2"
+          style={{ borderTop: "1px solid var(--ms-border-subtle)" }}>
+          <span className="text-xs text-muted-foreground">Click to explore</span>
+          <span className="text-xs font-bold" style={{ color: "var(--ms-accent-cyan)" }}>
+            Details →
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CareerExplorer — main page
+// ─────────────────────────────────────────────────────────────────────────────
+const CareerExplorer = () => {
+  const [careers, setCareers]         = useState<Career[]>([]);
+  const [categories, setCategories]   = useState<CareerCategory[]>([]);
+  const [loading, setLoading]         = useState(true);
+  const [error, setError]             = useState<string | null>(null);
+  const [search, setSearch]           = useState("");
+  const [debouncedSearch, setDbSearch]= useState("");
+  const [selectedCat, setSelectedCat] = useState<number | null>(null);
+  const [showFavsOnly, setShowFavsOnly] = useState(false);
+  const [modalCareer, setModalCareer] = useState<Career | null>(null);
+  const [favIds, setFavIds]           = useState<Set<number>>(() => readFavs());
+  const [showFilters, setShowFilters] = useState(false);
+  const searchInputRef                = useRef<HTMLInputElement>(null);
+
+  // Debounce search
+  useEffect(() => {
+    const t = setTimeout(() => setDbSearch(search), 350);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  // Load categories once
+  useEffect(() => {
+    getCareerCategories()
+      .then(r => setCategories(r.data.data))
+      .catch(() => {});
+  }, []);
+
+  // Load careers on filter change
+  const loadCareers = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const params: Record<string, any> = {};
+      if (debouncedSearch) params.search      = debouncedSearch;
+      if (selectedCat)     params.category_id = selectedCat;
+      const res = await getCareers(params);
+      setCareers(res.data.data);
+    } catch (e: any) {
+      const msg = e?.response?.data?.message || "Failed to load careers.";
+      setError(msg);
+      setCareers([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [debouncedSearch, selectedCat]);
+
+  useEffect(() => { loadCareers(); }, [loadCareers]);
+
+  // Open modal with full detail
+  const openDetail = async (career: Career) => {
+    try {
+      const res = await getCareer(career.id);
+      setModalCareer(res.data.data);
+    } catch {
+      setModalCareer(career);
+    }
+  };
+
+  // Toggle favorite
+  const toggleFav = (id: number, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setFavIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+        toast.success("Removed from saved careers");
+      } else {
+        next.add(id);
+        toast.success("Career saved!");
+      }
+      writeFavs(next);
+      return next;
+    });
+  };
+
+  // Displayed careers (apply fav filter client-side)
+  const displayed = showFavsOnly
+    ? careers.filter(c => favIds.has(c.id))
+    : careers;
+
+  const totalCareersInCat = selectedCat
+    ? categories.find(c => c.id === selectedCat)?.careers_count ?? 0
+    : categories.reduce((s, c) => s + c.careers_count, 0);
+
+  return (
+    <div className="max-w-6xl mx-auto space-y-5 ms-page-enter">
+
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-bold flex items-center gap-2.5">
+            <Briefcase size={22} style={{ color: "var(--ms-accent-cyan)" }} />
+            Career Explorer
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Discover career paths across Morocco's key sectors.
+          </p>
+        </div>
+
+        {/* Saved toggle */}
+        <button
+          onClick={() => setShowFavsOnly(f => !f)}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex-shrink-0"
+          style={showFavsOnly ? {
+            background: "rgba(239,68,68,0.10)",
+            border: "1px solid rgba(239,68,68,0.28)",
+            color: "#EF4444",
+          } : {
+            background: "var(--ms-bg-card)",
+            border: "1px solid var(--ms-border-subtle)",
+            color: "var(--ms-accent-sky)",
+          }}>
+          <Heart size={14} fill={showFavsOnly ? "#EF4444" : "none"}
+            style={{ color: showFavsOnly ? "#EF4444" : "var(--ms-accent-sky)" }} />
+          Saved ({favIds.size})
+        </button>
       </div>
 
-      {/* Grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filtered.map((c) => (
-          <div key={c.title} className="bg-card rounded-2xl border border-border shadow-card p-5 hover:shadow-elevated transition-shadow">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs bg-accent text-accent-foreground px-2.5 py-1 rounded-lg font-medium">{c.field}</span>
-            </div>
-            <h3 className="font-semibold mb-2">{c.title}</h3>
-            <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{c.desc}</p>
-            <div className="space-y-1.5 text-xs text-muted-foreground">
-              <div className="flex items-center gap-1.5"><DollarSign size={12} /> {c.salary}</div>
-              <div className="flex items-center gap-1.5"><TrendingUp size={12} /> Growth: {c.growth}</div>
-              <div className="flex items-center gap-1.5"><GraduationCap size={12} /> {c.education}</div>
-            </div>
-          </div>
+      {/* Search bar */}
+      <div className="flex gap-2.5">
+        <div className="relative flex-1">
+          <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"
+            style={{ color: "var(--ms-accent-cyan)" }} />
+          <input
+            ref={searchInputRef}
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search careers, skills, or descriptions…"
+            className="w-full pl-11 pr-10 py-3 rounded-xl text-sm focus:outline-none transition-all"
+            style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)" }}
+          />
+          {search && (
+            <button onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 transition-all hover:opacity-70"
+              style={{ color: "var(--ms-accent-sky)" }}>
+              <X size={15} />
+            </button>
+          )}
+        </div>
+
+        {/* Filter toggle (mobile) */}
+        <button
+          onClick={() => setShowFilters(f => !f)}
+          className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold transition-all sm:hidden"
+          style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)" }}>
+          <Filter size={14} />
+        </button>
+      </div>
+
+      {/* Category filters */}
+      <div className={`flex gap-2 flex-wrap transition-all ${showFilters || "hidden sm:flex"}`}>
+        <button
+          onClick={() => setSelectedCat(null)}
+          className="px-4 py-2 rounded-xl text-xs font-bold transition-all"
+          style={selectedCat === null ? {
+            background: "linear-gradient(135deg, #1E40AF, #0E7490)",
+            color: "#fff", border: "none",
+          } : {
+            background: "var(--ms-bg-card)",
+            border: "1px solid var(--ms-border-subtle)",
+          }}>
+          All {totalCareersInCat > 0 ? `(${totalCareersInCat})` : ""}
+        </button>
+        {categories.map(cat => (
+          <button key={cat.id}
+            onClick={() => setSelectedCat(selectedCat === cat.id ? null : cat.id)}
+            className="px-4 py-2 rounded-xl text-xs font-bold transition-all"
+            style={selectedCat === cat.id ? {
+              background: "linear-gradient(135deg, #1E40AF, #0E7490)",
+              color: "#fff", border: "none",
+            } : {
+              background: "var(--ms-bg-card)",
+              border: "1px solid var(--ms-border-subtle)",
+            }}>
+            {cat.name} ({cat.careers_count})
+          </button>
         ))}
       </div>
-      {filtered.length === 0 && (
-        <div className="text-center py-16 text-muted-foreground">No careers found matching your criteria.</div>
+
+      {/* Error */}
+      {error && (
+        <div className="flex items-center gap-3 p-4 rounded-xl"
+          style={{ background: "rgba(239,68,68,0.07)", border: "1px solid rgba(239,68,68,0.20)" }}>
+          <AlertCircle size={16} style={{ color: "#EF4444", flexShrink: 0 }} />
+          <span className="text-sm text-muted-foreground flex-1">{error}</span>
+          <button onClick={loadCareers}
+            className="text-xs font-bold flex items-center gap-1 flex-shrink-0"
+            style={{ color: "#EF4444" }}>
+            <RefreshCw size={12} /> Retry
+          </button>
+        </div>
+      )}
+
+      {/* Loading skeletons */}
+      {loading && (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="skeleton h-56 rounded-2xl" />
+          ))}
+        </div>
+      )}
+
+      {/* Empty states */}
+      {!loading && !error && displayed.length === 0 && (
+        <div className="text-center py-16 space-y-4">
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto"
+            style={{ background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-subtle)" }}>
+            {showFavsOnly
+              ? <Heart size={22} style={{ color: "var(--ms-accent-cyan)", opacity: 0.5 }} />
+              : <Briefcase size={22} style={{ color: "var(--ms-accent-cyan)", opacity: 0.5 }} />}
+          </div>
+          <div>
+            <p className="font-bold text-sm">
+              {showFavsOnly ? "No saved careers yet" : "No careers found"}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {showFavsOnly
+                ? "Click the ♡ button on any career card to save it."
+                : "Try a different search or category filter."}
+            </p>
+          </div>
+          {(search || selectedCat || showFavsOnly) && (
+            <button
+              onClick={() => { setSearch(""); setSelectedCat(null); setShowFavsOnly(false); }}
+              className="text-xs font-bold flex items-center gap-1.5 mx-auto"
+              style={{ color: "var(--ms-accent-sky)" }}>
+              <X size={12} /> Clear filters
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Career cards grid */}
+      {!loading && displayed.length > 0 && (
+        <>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+            {displayed.map(career => (
+              <CareerCard
+                key={career.id}
+                career={career}
+                isFav={favIds.has(career.id)}
+                onToggleFav={(e) => toggleFav(career.id, e)}
+                onClick={() => openDetail(career)}
+              />
+            ))}
+          </div>
+
+          {/* Results footer */}
+          <p className="text-xs text-center text-muted-foreground pb-2">
+            Showing {displayed.length} career{displayed.length !== 1 ? "s" : ""}
+            {selectedCat ? ` in "${categories.find(c => c.id === selectedCat)?.name}"` : ""}
+            {debouncedSearch ? ` matching "${debouncedSearch}"` : ""}
+            {showFavsOnly ? " (saved)" : ""}
+          </p>
+        </>
+      )}
+
+      {/* Detail modal */}
+      {modalCareer && (
+        <CareerModal
+          career={modalCareer}
+          isFav={favIds.has(modalCareer.id)}
+          onToggleFav={() => toggleFav(modalCareer.id)}
+          onClose={() => setModalCareer(null)}
+        />
       )}
     </div>
   );

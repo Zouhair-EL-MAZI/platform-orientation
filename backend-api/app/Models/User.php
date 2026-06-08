@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,11 +11,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -24,24 +18,43 @@ class User extends Authenticatable
         'email_verified_at',
         'email_verification_token',
         'google_id',
+        'avatar',
+        'role',
+        'status',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // ── Relationships ──────────────────────────────────────────────────────
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    public function testAnswers()
+    {
+        return $this->hasMany(TestAnswer::class);
+    }
+
+    /**
+     * NEW — tracks completed/in-progress orientation test sessions.
+     * Requires the user_test_sessions table (migration: 2026_05_29_000001).
+     */
+    // public function testSessions()
+    // {
+    //     return $this->hasMany(UserTestSession::class);
+    // }
+
+    public function recommendations()
+    {
+        return $this->hasMany(Recommendation::class);
+    }
 }

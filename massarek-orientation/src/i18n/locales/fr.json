@@ -36,30 +36,63 @@
       "highlight": "parcours académique",
       "subtitle": "Massarek utilise l'IA pour analyser vos compétences, vos centres d'intérêt et votre personnalité afin de recommander les meilleurs domaines d'études et parcours professionnels.",
       "startTest": "Commencer le test d'orientation",
-      "exploreCareers": "Explorer les carrières"
+      "exploreCareers": "Explorer les carrières",
+      "scrollHint": "Faites défiler pour en savoir plus"
     },
     "stats": [
-      { "value": "10K+", "label": "Étudiants accompagnés" },
-      { "value": "95%", "label": "Taux de satisfaction" },
-      { "value": "200+", "label": "Parcours professionnels" },
-      { "value": "50+", "label": "Modules de test" }
+      {
+        "value": "10K+",
+        "label": "Étudiants accompagnés"
+      },
+      {
+        "value": "95%",
+        "label": "Taux de satisfaction"
+      },
+      {
+        "value": "200+",
+        "label": "Parcours professionnels"
+      },
+      {
+        "value": "50+",
+        "label": "Modules de test"
+      }
     ],
     "statsSection": {
       "badge": "Résultats premium",
       "title": "Des métriques exploitables, modernes et hautement soignées.",
       "subtitle": "Ces chiffres sont intentionnellement statiques, mais la présentation est conçue pour paraître dynamique avec du glassmorphisme, du mouvement et un raffinement SaaS élégant.",
       "cards": [
-        { "label": "Étudiants accompagnés" },
-        { "label": "Précision des recommandations" },
-        { "label": "Parcours professionnels" },
-        { "label": "Modules d'orientation" }
+        {
+          "label": "Étudiants accompagnés"
+        },
+        {
+          "label": "Précision des recommandations"
+        },
+        {
+          "label": "Parcours professionnels"
+        },
+        {
+          "label": "Modules d'orientation"
+        }
       ]
     },
     "features": [
-      { "title": "Recommandations IA", "desc": "Recevez des suggestions de domaines personnalisées en fonction de votre profil et de vos résultats." },
-      { "title": "Tests intelligents", "desc": "Passez des tests d'orientation conçus pour révéler vos forces et vos intérêts." },
-      { "title": "Chatbot IA", "desc": "Discutez avec notre assistant IA pour obtenir des conseils sur les choix académiques et professionnels." },
-      { "title": "Explorateur de carrières", "desc": "Explorez des centaines de carrières avec des informations détaillées et des scores de compatibilité." }
+      {
+        "title": "Recommandations IA",
+        "desc": "Recevez des suggestions de domaines personnalisées en fonction de votre profil et de vos résultats."
+      },
+      {
+        "title": "Tests intelligents",
+        "desc": "Passez des tests d'orientation conçus pour révéler vos forces et vos intérêts."
+      },
+      {
+        "title": "Chatbot IA",
+        "desc": "Discutez avec notre assistant IA pour obtenir des conseils sur les choix académiques et professionnels."
+      },
+      {
+        "title": "Explorateur de carrières",
+        "desc": "Explorez des centaines de carrières avec des informations détaillées et des scores de compatibilité."
+      }
     ],
     "featuresSection": {
       "badge": "Fonctionnalités",
@@ -168,6 +201,8 @@
       "label": "Contact",
       "badge": "Contact",
       "title": "Répondons à vos questions",
+      "infoTitle": "Discutez avec notre équipe",
+      "infoSubtitle": "Partagez votre question et notre équipe de réussite étudiante vous répondra rapidement.",
       "subtitle": "Contactez-nous si vous avez besoin d'aide pour démarrer, si vous souhaitez en savoir plus sur nos outils ou si vous voulez une démo pour les étudiants ou partenaires.",
       "description": "Contactez-nous si vous avez besoin d'aide pour démarrer, si vous souhaitez en savoir plus sur nos tests ou si vous souhaitez une démo de Massarek.",
       "emailLabel": "Email",
@@ -245,19 +280,40 @@
       }
     },
     "sections": [
-      { "title": "Idée du projet", "description": "Massarek est une plateforme propulsée par l'IA qui aide les étudiants à trouver les meilleurs parcours académiques et professionnels en fonction de leurs compétences, de leurs intérêts et de leurs résultats. Elle apporte des conseils significatifs au processus d'orientation grâce à une intelligence moderne." },
-      { "title": "Pourquoi nous l'avons créé", "description": "De nombreux étudiants ont du mal à choisir la bonne voie académique en raison d'un manque de guidance et d'informations claires. Massarek a été créé pour combler cette lacune et fournir un soutien intelligent et basé sur les données pour la prise de décision académique." },
-      { "title": "Notre mission", "description": "Aider les étudiants à prendre des décisions plus intelligentes grâce à des recommandations IA. Nous aidons les apprenants à choisir la voie académique qui correspond vraiment à leurs forces et à leurs aspirations." }
+      {
+        "title": "Idée du projet",
+        "description": "Massarek est une plateforme propulsée par l'IA qui aide les étudiants à trouver les meilleurs parcours académiques et professionnels en fonction de leurs compétences, de leurs intérêts et de leurs résultats. Elle apporte des conseils significatifs au processus d'orientation grâce à une intelligence moderne."
+      },
+      {
+        "title": "Pourquoi nous l'avons créé",
+        "description": "De nombreux étudiants ont du mal à choisir la bonne voie académique en raison d'un manque de guidance et d'informations claires. Massarek a été créé pour combler cette lacune et fournir un soutien intelligent et basé sur les données pour la prise de décision académique."
+      },
+      {
+        "title": "Notre mission",
+        "description": "Aider les étudiants à prendre des décisions plus intelligentes grâce à des recommandations IA. Nous aidons les apprenants à choisir la voie académique qui correspond vraiment à leurs forces et à leurs aspirations."
+      }
     ],
     "benefits": {
       "label": "Avantages",
       "headline": "Pourquoi les étudiants adorent Massarek",
       "cta": "Essayez le test d'orientation",
       "items": [
-        { "title": "Orientation personnalisée", "description": "Une guidance adaptée à vos compétences, intérêts et résultats." },
-        { "title": "Recommandations IA", "description": "Des suggestions intelligentes qui correspondent aux meilleurs domaines et parcours." },
-        { "title": "Meilleure prise de décision", "description": "Des insights clairs et basés sur les données pour vous aider à choisir avec confiance." },
-        { "title": "Accès facile aux informations", "description": "Un accès rapide et complet aux détails sur les majeures, les carrières et les opportunités futures." }
+        {
+          "title": "Orientation personnalisée",
+          "description": "Une guidance adaptée à vos compétences, intérêts et résultats."
+        },
+        {
+          "title": "Recommandations IA",
+          "description": "Des suggestions intelligentes qui correspondent aux meilleurs domaines et parcours."
+        },
+        {
+          "title": "Meilleure prise de décision",
+          "description": "Des insights clairs et basés sur les données pour vous aider à choisir avec confiance."
+        },
+        {
+          "title": "Accès facile aux informations",
+          "description": "Un accès rapide et complet aux détails sur les majeures, les carrières et les opportunités futures."
+        }
       ]
     },
     "team": {
@@ -265,8 +321,16 @@
       "headline": "Créé par des étudiants, conçu pour les étudiants",
       "description": "Massarek a été développé par une équipe d'ingénieurs axés sur les étudiants qui se soucient de l'accessibilité, de la transparence et de l'aide aux apprenants pour choisir leur bonne voie académique.",
       "members": [
-        { "name": "Zouhair El Mazi", "role": "Développeur Full-Stack", "description": "Apportant expérience, créativité et une approche IA à chaque partie de l'expérience Massarek." },
-        { "name": "Aymane El Asri", "role": "Développeur Full-Stack", "description": "Apportant expérience, créativité et une approche IA à chaque partie de l'expérience Massarek." }
+        {
+          "name": "Zouhair El Mazi",
+          "role": "Développeur Full-Stack",
+          "description": "Apportant expérience, créativité et une approche IA à chaque partie de l'expérience Massarek."
+        },
+        {
+          "name": "Aymane El Asri",
+          "role": "Développeur Full-Stack",
+          "description": "Apportant expérience, créativité et une approche IA à chaque partie de l'expérience Massarek."
+        }
       ]
     }
   },
@@ -320,6 +384,7 @@
       "loading": "Création du compte...",
       "errorEmpty": "Veuillez remplir tous les champs.",
       "errorPasswordLength": "Le mot de passe doit contenir au moins 8 caractères.",
+      "errorDescription": "Une erreur s'est produite lors de l'inscription. Veuillez réessayer.",
       "successTitle": "Succès",
       "successMessage": "Compte créé avec succès ! Bienvenue sur Massarek.",
       "alreadyAccount": "Vous avez déjà un compte ?",
@@ -370,10 +435,26 @@
     "welcomeTitle": "Bon retour, étudiant ! 👋",
     "welcomeSubtitle": "Poursuivez votre parcours d'orientation et découvrez le chemin idéal pour votre avenir.",
     "quickActions": [
-      { "title": "Passer le test", "desc": "Commencer le test d'orientation", "to": "/test" },
-      { "title": "Résultats IA", "desc": "Voir les recommandations", "to": "/recommendations" },
-      { "title": "Carrières", "desc": "Explorer les parcours professionnels", "to": "/careers" },
-      { "title": "Chatbot", "desc": "Demander à l'assistant IA", "to": "/chatbot" }
+      {
+        "title": "Passer le test",
+        "desc": "Commencer le test d'orientation",
+        "to": "/test"
+      },
+      {
+        "title": "Résultats IA",
+        "desc": "Voir les recommandations",
+        "to": "/recommendations"
+      },
+      {
+        "title": "Carrières",
+        "desc": "Explorer les parcours professionnels",
+        "to": "/careers"
+      },
+      {
+        "title": "Chatbot",
+        "desc": "Demander à l'assistant IA",
+        "to": "/chatbot"
+      }
     ],
     "progress": {
       "profileCompletion": "Complétion du profil",
@@ -393,9 +474,31 @@
   },
   "profile": {
     "title": "Mon profil",
-    "educationOptions": ["Lycée", "Licence", "Master"],
-    "skills": ["Résolution de problèmes", "Esprit critique", "Communication", "Mathématiques", "Créativité", "Leadership", "Travail en équipe", "Recherche"],
-    "interests": ["Technologie", "Science", "Arts", "Affaires", "Médecine", "Ingénierie", "Éducation", "Droit"],
+    "educationOptions": [
+      "Lycée",
+      "Licence",
+      "Master"
+    ],
+    "skills": [
+      "Résolution de problèmes",
+      "Esprit critique",
+      "Communication",
+      "Mathématiques",
+      "Créativité",
+      "Leadership",
+      "Travail en équipe",
+      "Recherche"
+    ],
+    "interests": [
+      "Technologie",
+      "Science",
+      "Arts",
+      "Affaires",
+      "Médecine",
+      "Ingénierie",
+      "Éducation",
+      "Droit"
+    ],
     "saveProfile": "Enregistrer le profil"
   },
   "careerExplorer": {
@@ -496,33 +599,88 @@
     "questions": [
       {
         "question": "Quel type d'activités appréciez-vous le plus ?",
-        "options": ["Construire et créer des choses", "Analyser des données et résoudre des énigmes", "Aider et enseigner aux autres", "Concevoir et exprimer sa créativité"]
+        "options": [
+          "Construire et créer des choses",
+          "Analyser des données et résoudre des énigmes",
+          "Aider et enseigner aux autres",
+          "Concevoir et exprimer sa créativité"
+        ]
       },
       {
         "question": "Quelle matière scolaire vous intéresse le plus ?",
-        "options": ["Mathématiques", "Sciences", "Langue et littérature", "Sciences sociales"]
+        "options": [
+          "Mathématiques",
+          "Sciences",
+          "Langue et littérature",
+          "Sciences sociales"
+        ]
       },
       {
         "question": "Comment préférez-vous travailler ?",
-        "options": ["Indépendamment", "En petites équipes", "En dirigeant un groupe", "En collaborant avec plusieurs personnes"]
+        "options": [
+          "Indépendamment",
+          "En petites équipes",
+          "En dirigeant un groupe",
+          "En collaborant avec plusieurs personnes"
+        ]
       },
       {
         "question": "Qu'est-ce qui compte le plus dans une future carrière ?",
-        "options": ["Un salaire élevé", "Un équilibre travail-vie privée", "Avoir un impact", "La liberté créative"]
+        "options": [
+          "Un salaire élevé",
+          "Un équilibre travail-vie privée",
+          "Avoir un impact",
+          "La liberté créative"
+        ]
       },
       {
         "question": "Quel environnement vous attire ?",
-        "options": ["Bureau / Entreprise", "Laboratoire / Recherche", "En plein air / Terrain", "À distance / Digital"]
+        "options": [
+          "Bureau / Entreprise",
+          "Laboratoire / Recherche",
+          "En plein air / Terrain",
+          "À distance / Digital"
+        ]
       }
     ]
   },
   "admin": {
-    "title": "Tableau de bord admin",
-    "recentUsers": "Utilisateurs récents",
-    "name": "Nom",
-    "email": "Email",
-    "tests": "Tests",
-    "status": "Statut"
+    "title": "Tableau de bord Admin",
+    "users": {
+      "title": "Gestion des utilisateurs",
+      "addUser": "Ajouter un utilisateur",
+      "export": "Exporter",
+      "searchPlaceholder": "Rechercher des utilisateurs..."
+    },
+    "tests": {
+      "title": "Gestion des tests",
+      "newTest": "Nouveau test",
+      "searchPlaceholder": "Rechercher des tests..."
+    },
+    "careers": {
+      "title": "Gestion des carrières",
+      "addCareer": "Ajouter une carrière",
+      "searchPlaceholder": "Rechercher des carrières..."
+    },
+    "recommendations": {
+      "title": "Recommandations IA",
+      "regenerateAll": "Tout régénérer"
+    },
+    "analytics": {
+      "title": "Statistiques et analyses",
+      "period": "30 derniers jours"
+    },
+    "settings": {
+      "title": "Paramètres",
+      "save": "Enregistrer",
+      "tabs": {
+        "general": "Général",
+        "security": "Sécurité",
+        "notifications": "Notifications",
+        "localization": "Localisation",
+        "data": "Données"
+      }
+    }
   },
   "footer": {
     "quickLinks": "Liens rapides",
@@ -542,6 +700,7 @@
   "sidebar": {
     "main": "Principal",
     "account": "Compte",
+    "student": "Étudiant",
     "home": "Accueil",
     "dashboard": "Tableau de bord",
     "orientationTest": "Test d'orientation",
@@ -549,6 +708,7 @@
     "careers": "Explorateur de carrières",
     "chatbot": "Chatbot IA",
     "profile": "Profil",
+    "courses": "Cours",
     "admin": "Admin",
     "signOut": "Se déconnecter"
   },
@@ -556,5 +716,21 @@
     "title": "404",
     "message": "Oups ! Page introuvable",
     "returnHome": "Retour à l'accueil"
+  },
+  "adminSidebar": {
+    "management": "Gestion",
+    "system": "Système",
+    "dashboard": "Tableau de bord",
+    "users": "Utilisateurs",
+    "tests": "Tests",
+    "careers": "Carrières",
+    "recommendations": "Recommandations",
+    "analytics": "Statistiques",
+    "settings": "Paramètres",
+    "backToApp": "App Étudiants",
+    "signOut": "Se déconnecter"
+  },
+  "adminNavbar": {
+    "adminPanel": "Panneau Admin"
   }
 }

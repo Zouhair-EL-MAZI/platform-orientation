@@ -20,12 +20,30 @@ api.interceptors.response.use(
   (res) => res,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("role");
       window.location.href = "/login";
     }
     return Promise.reject(error);
   }
 );
+
+export function getApiError(error: unknown): string {
+  if (axios.isAxiosError(error)) {
+    return (
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      error.message ||
+      "An unexpected error occurred."
+    );
+  }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return String(error ?? "An unexpected error occurred.");
+}
 
 export default api;

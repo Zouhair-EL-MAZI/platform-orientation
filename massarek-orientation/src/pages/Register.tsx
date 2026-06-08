@@ -129,7 +129,7 @@ const Register = () => {
       if (emailErr) {
         setEmailError(t("auth.register.errorEmailExists", emailErr) as string);
       } else {
-        toast({ title: t("auth.register.errorTitle","Error"), description: error.response?.data?.message || t("auth.register.errorDescription"), variant:"destructive" });
+        toast({ title: t("auth.register.errorTitle","Error"), description: error.response?.data?.message || t("auth.register.errorDescription","Registration failed. Please try again."), variant:"destructive" });
       }
     } finally { setIsLoading(false); }
   };
@@ -145,10 +145,13 @@ const Register = () => {
       }
       const response = await api.post("/auth/google", { token: idToken });
       const { user, token } = response.data;
+      const role = response.data.role || user?.role || 'student';
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
       toast({ title: t("auth.register.successTitle","Success"), description: t("auth.register.successMessage","Logged in successfully") });
-      navigate("/dashboard");
+      if (role === 'admin') navigate('/admin/dashboard');
+      else navigate('/dashboard');
     } catch (error: any) {
       console.error("Google register error:", error);
       toast({

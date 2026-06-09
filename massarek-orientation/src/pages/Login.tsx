@@ -35,12 +35,31 @@ const Login = () => {
     try {
       const response = await api.post("/login", { email, password, remember_me: rememberMe });
       const { user, token } = response.data;
+      const role = response.data.role || user?.role || 'student';
       localStorage.setItem("user",  JSON.stringify(user));
       localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
       toast({ title: t("auth.login.successTitle"), description: t("auth.login.successMessage") });
       const intended = localStorage.getItem("intendedDestination");
-      if (intended) { localStorage.removeItem("intendedDestination"); navigate(intended); }
-      else { navigate("/dashboard"); }
+      if (intended) {
+        localStorage.removeItem("intendedDestination");
+        if (intended.startsWith("/admin")) {
+          if (role === 'admin') {
+            navigate(intended);
+          } else {
+            navigate('/dashboard');
+          }
+        } else {
+          if (role === 'admin') {
+            navigate('/admin/dashboard');
+          } else {
+            navigate(intended);
+          }
+        }
+      } else {
+        if (role === 'admin') navigate('/admin/dashboard');
+        else navigate('/dashboard');
+      }
     } catch (error: unknown) {
       console.error("Login error:", error);
       if (axios.isAxiosError(error) && error.response?.status === 403) {
@@ -66,9 +85,28 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("token", token);
       toast({ title: t("auth.login.successTitle"), description: t("auth.login.successMessage") });
+      const role = response.data.role || user?.role || 'student';
+      localStorage.setItem("role", role);
       const intended = localStorage.getItem("intendedDestination");
-      if (intended) { localStorage.removeItem("intendedDestination"); navigate(intended); }
-      else { navigate("/dashboard"); }
+      if (intended) {
+        localStorage.removeItem("intendedDestination");
+        if (intended.startsWith("/admin")) {
+          if (role === 'admin') {
+            navigate(intended);
+          } else {
+            navigate('/dashboard');
+          }
+        } else {
+          if (role === 'admin') {
+            navigate('/admin/dashboard');
+          } else {
+            navigate(intended);
+          }
+        }
+      } else {
+        if (role === 'admin') navigate('/admin/dashboard');
+        else navigate('/dashboard');
+      }
     } catch (error: any) {
       console.error("Google login error:", error);
       toast({

@@ -1,4 +1,4 @@
-import { Github, Linkedin, Twitter, Instagram, Sparkles, ArrowUpRight } from "lucide-react";
+import { Github, Linkedin, Instagram, Sparkles, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
@@ -20,7 +20,6 @@ const Footer = () => {
   ];
 
   const SOCIALS = [
-    { Icon:Twitter,   label:"Twitter",   grad:"from-sky-500 to-blue-400",   glow:"rgba(56,189,248,0.40)"   },
     { Icon:Linkedin,  label:"LinkedIn",  grad:"from-blue-600 to-indigo-500", glow:"rgba(37,99,235,0.40)"   },
     { Icon:Github,    label:"GitHub",    grad:"from-slate-600 to-slate-500", glow:"rgba(100,116,139,0.35)" },
     { Icon:Instagram, label:"Instagram", grad:"from-pink-500 to-rose-400",   glow:"rgba(236,72,153,0.38)"  },

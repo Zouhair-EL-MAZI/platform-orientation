@@ -173,7 +173,7 @@ const Landing = () => {
               animate={{ y:[0,4,0] }} transition={{ duration:2.5, repeat:Infinity, ease:"easeInOut" }}
             >
               <ChevronDown size={14}/>
-              Scroll to explore
+              {t("landing.hero.scrollHint")}
             </motion.div>
           </motion.div>
 

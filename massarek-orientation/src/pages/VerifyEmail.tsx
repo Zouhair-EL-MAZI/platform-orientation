@@ -22,7 +22,7 @@ const VerifyEmail = () => {
       .then(() => {
         localStorage.setItem("email_verified", "1");
         setStatus("success");
-        setTimeout(() => window.close(), 2000);
+        setTimeout(() => navigate('/login'), 1400);
       })
       .catch((err) => {
         setStatus("error");

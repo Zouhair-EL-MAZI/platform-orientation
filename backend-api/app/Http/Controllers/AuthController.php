@@ -113,20 +113,17 @@ class AuthController extends Controller
             ], 401);
         }
 
-        if (!$user->email_verified_at) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Please verify your email before logging in'
-            ], 403);
-        }
-
         // Revoke old tokens for security
         $user->tokens()->delete();
 
         $rememberMe = $request->boolean('remember_me', false);
         $expiresAt  = $rememberMe ? now()->addDays(30) : now()->addHours(24);
 
-        $token = $user->createToken('massarek-api', ['*'], $expiresAt)->plainTextToken;
+        $token = $user->createToken('massarek-api')->plainTextToken;
+
+        // Determine redirect path based on role
+        $role = $user->role ?? 'student';
+        $redirectPath = $role === 'admin' ? '/admin/dashboard' : '/dashboard';
 
         return response()->json([
             'success' => true,
@@ -135,9 +132,12 @@ class AuthController extends Controller
                 'id'    => $user->id,
                 'name'  => $user->name,
                 'email' => $user->email,
+                'role'  => $role,
             ],
             'token'      => $token,
             'expires_at' => $expiresAt->toISOString(),
+            'role'       => $role,
+            'redirect'   => $redirectPath,
         ]);
     }
 
@@ -346,7 +346,7 @@ class AuthController extends Controller
         }
 
         $payload = $response->json();
-        $email = $payload['email'] ?? null;
+        $email = isset($payload['email']) ? strtolower(trim($payload['email'])) : null;
         $name = $payload['name'] ?? null;
         $googleId = $payload['sub'] ?? null;
 
@@ -354,38 +354,101 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid Google token payload'], 400);
         }
 
-        $user = User::where('email', $email)->first();
+        // Case-insensitive lookup to match existing users regardless of email casing
+        $user = User::whereRaw('LOWER(email) = ?', [$email])->first();
 
-        if ($user) {
-            if (!$user->google_id) {
-                $user->google_id = $googleId;
-            }
-            if (!$user->email_verified_at) {
-                $user->email_verified_at = now();
-            }
-            $user->save();
-        } else {
-            $user = User::create([
-                'name' => $name ?? explode('@', $email)[0],
-                'email' => $email,
-                'password' => Hash::make(Str::random(16)),
-                'email_verified_at' => now(),
-                'google_id' => $googleId,
-            ]);
+        if (!$user || ($user->role ?? 'student') !== 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Google login is restricted to admin users.',
+            ], 403);
         }
 
-        $token = $user->createToken('massarek-api')->plainTextToken;
+        // Link Google account if needed and ensure email is verified.
+        if (!$user->google_id) {
+            $user->google_id = $googleId;
+        }
+        if (!$user->email_verified_at) {
+            $user->email_verified_at = now();
+        }
+        $user->save();
+
+        // Log in the admin user using the session guard as well.
+        Auth::login($user);
+
+        // Revoke previous tokens for security.
+        $user->tokens()->delete();
+
+        $token     = $user->createToken('massarek-api')->plainTextToken;
+        $expiresAt = now()->addHours(24);
+
+        $role         = $user->role ?? 'student';
+        $redirectPath = '/admin/dashboard';
 
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
+            'user'    => [
+                'id'    => $user->id,
+                'name'  => $user->name,
                 'email' => $user->email,
+                'role'  => $role,
             ],
-            'token' => $token
+            'token'      => $token,
+            'expires_at' => $expiresAt->toISOString(),
+            'role'       => $role,
+            'redirect'   => $redirectPath,
         ]);
+    }
+
+    /**
+     * Google callback for web-based admin login.
+     */
+    public function googleCallback(Request $request)
+    {
+        $idToken = $request->query('id_token') ?? $request->query('token');
+
+        if (!$idToken) {
+            return redirect()->away(rtrim(env('FRONTEND_URL', config('app.url')), '/') . '/login')
+                ->with('error', 'Missing Google ID token.');
+        }
+
+        $response = Http::get('https://oauth2.googleapis.com/tokeninfo', [
+            'id_token' => $idToken,
+        ]);
+
+        if (!$response->successful()) {
+            return redirect()->away(rtrim(env('FRONTEND_URL', config('app.url')), '/') . '/login')
+                ->with('error', 'Invalid Google token.');
+        }
+
+        $payload = $response->json();
+        $email = isset($payload['email']) ? strtolower(trim($payload['email'])) : null;
+        $googleId = $payload['sub'] ?? null;
+
+        if (!$email || !$googleId) {
+            return redirect()->away(rtrim(env('FRONTEND_URL', config('app.url')), '/') . '/login')
+                ->with('error', 'Invalid Google token payload.');
+        }
+
+        $user = User::whereRaw('LOWER(email) = ?', [$email])->first();
+
+        if (!$user || ($user->role ?? 'student') !== 'admin') {
+            return redirect()->away(rtrim(env('FRONTEND_URL', config('app.url')), '/') . '/login')
+                ->with('error', 'Google login is restricted to admin users.');
+        }
+
+        if (!$user->google_id) {
+            $user->google_id = $googleId;
+        }
+        if (!$user->email_verified_at) {
+            $user->email_verified_at = now();
+        }
+        $user->save();
+
+        Auth::login($user);
+
+        return redirect()->route('admin.dashboard');
     }
 
     /**

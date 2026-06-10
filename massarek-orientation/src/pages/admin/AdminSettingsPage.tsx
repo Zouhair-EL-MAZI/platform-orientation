@@ -1,13 +1,6 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Settings, Shield, Bell, Globe, Database, Save, RefreshCw, AlertTriangle } from "lucide-react";
-
-const tabs = [
-  { id: "general", label: "General", icon: Settings },
-  { id: "security", label: "Security", icon: Shield },
-  { id: "notifications", label: "Notifications", icon: Bell },
-  { id: "localization", label: "Localization", icon: Globe },
-  { id: "data", label: "Data & Storage", icon: Database },
-];
 
 const ToggleSwitch = ({ enabled, onChange }: { enabled: boolean; onChange: (v: boolean) => void }) => (
   <button
@@ -45,6 +38,7 @@ const inputStyle = {
 };
 
 const AdminSettingsPage = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("general");
 
   const [general, setGeneral] = useState({
@@ -69,6 +63,14 @@ const AdminSettingsPage = () => {
     systemAlerts: true,
   });
 
+  const tabs = [
+    { id: "general", label: t("admin.settings.tabs.general"), icon: Settings },
+    { id: "security", label: t("admin.settings.tabs.security"), icon: Shield },
+    { id: "notifications", label: t("admin.settings.tabs.notifications"), icon: Bell },
+    { id: "localization", label: t("admin.settings.tabs.localization"), icon: Globe },
+    { id: "data", label: t("admin.settings.tabs.data"), icon: Database },
+  ];
+
   const cardStyle = {
     background: "var(--ms-bg-card)",
     border: "1px solid var(--ms-border-subtle)",
@@ -83,10 +85,10 @@ const AdminSettingsPage = () => {
   const renderGeneral = () => (
     <div className="space-y-6">
       <div style={cardStyle}>
-        <h3 style={sectionTitle}>Platform Configuration</h3>
+        <h3 style={sectionTitle}>{t("admin.settings.general.platformConfig")}</h3>
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label style={labelStyle}>Platform Name</label>
+            <label style={labelStyle}>{t("admin.settings.general.platformName")}</label>
             <input
               style={inputStyle}
               value={general.platformName}
@@ -96,7 +98,7 @@ const AdminSettingsPage = () => {
             />
           </div>
           <div>
-            <label style={labelStyle}>Support Email</label>
+            <label style={labelStyle}>{t("admin.settings.general.supportEmail")}</label>
             <input
               style={inputStyle}
               value={general.supportEmail}
@@ -109,12 +111,12 @@ const AdminSettingsPage = () => {
       </div>
 
       <div style={cardStyle}>
-        <h3 style={sectionTitle}>Access Control</h3>
+        <h3 style={sectionTitle}>{t("admin.settings.general.accessControl")}</h3>
         <div className="space-y-4">
           {[
-            { key: "maintenanceMode", label: "Maintenance Mode", desc: "Temporarily disable access for all non-admin users" },
-            { key: "allowRegistrations", label: "Allow New Registrations", desc: "Enable or disable new user sign-ups" },
-            { key: "requireEmailVerification", label: "Require Email Verification", desc: "Users must verify email before accessing the platform" },
+            { key: "maintenanceMode", label: t("admin.settings.general.maintenanceMode"), desc: t("admin.settings.general.maintenanceModeDesc") },
+            { key: "allowRegistrations", label: t("admin.settings.general.allowRegistrations"), desc: t("admin.settings.general.allowRegistrationsDesc") },
+            { key: "requireEmailVerification", label: t("admin.settings.general.requireEmailVerification"), desc: t("admin.settings.general.requireEmailVerificationDesc") },
           ].map((item) => (
             <div key={item.key} className="flex items-center justify-between gap-4 py-1">
               <div>
@@ -137,9 +139,9 @@ const AdminSettingsPage = () => {
         >
           <AlertTriangle size={16} style={{ color: "#FBBF24", flexShrink: 0, marginTop: 2 }} />
           <div>
-            <div className="text-sm font-bold" style={{ color: "#FBBF24" }}>Maintenance Mode Active</div>
+            <div className="text-sm font-bold" style={{ color: "#FBBF24" }}>{t("admin.settings.general.maintenanceWarningTitle")}</div>
             <div className="text-xs mt-0.5" style={{ color: "hsl(var(--muted-foreground))" }}>
-              All students will see a maintenance page. Only admin accounts can log in.
+              {t("admin.settings.general.maintenanceWarningDesc")}
             </div>
           </div>
         </div>
@@ -150,33 +152,33 @@ const AdminSettingsPage = () => {
   const renderSecurity = () => (
     <div className="space-y-6">
       <div style={cardStyle}>
-        <h3 style={sectionTitle}>Authentication</h3>
+        <h3 style={sectionTitle}>{t("admin.settings.security.authentication")}</h3>
         <div className="space-y-4">
           <div className="flex items-center justify-between py-1">
             <div>
-              <div className="text-sm font-semibold">Two-Factor Auth for Admins</div>
-              <div className="text-xs mt-0.5" style={{ color: "hsl(var(--muted-foreground))" }}>Require 2FA for all administrator accounts</div>
+              <div className="text-sm font-semibold">{t("admin.settings.security.twoFactorAdmin")}</div>
+              <div className="text-xs mt-0.5" style={{ color: "hsl(var(--muted-foreground))" }}>{t("admin.settings.security.twoFactorAdminDesc")}</div>
             </div>
             <ToggleSwitch enabled={security.twoFactorAdmin} onChange={(v) => setSecurity({ ...security, twoFactorAdmin: v })} />
           </div>
           <div className="flex items-center justify-between py-1">
             <div>
-              <div className="text-sm font-semibold">IP Whitelist</div>
-              <div className="text-xs mt-0.5" style={{ color: "hsl(var(--muted-foreground))" }}>Restrict admin access to specific IP addresses</div>
+              <div className="text-sm font-semibold">{t("admin.settings.security.ipWhitelist")}</div>
+              <div className="text-xs mt-0.5" style={{ color: "hsl(var(--muted-foreground))" }}>{t("admin.settings.security.ipWhitelistDesc")}</div>
             </div>
             <ToggleSwitch enabled={security.ipWhitelist} onChange={(v) => setSecurity({ ...security, ipWhitelist: v })} />
           </div>
         </div>
       </div>
       <div style={cardStyle}>
-        <h3 style={sectionTitle}>Session Settings</h3>
+        <h3 style={sectionTitle}>{t("admin.settings.security.sessionSettings")}</h3>
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label style={labelStyle}>Session Timeout (minutes)</label>
+            <label style={labelStyle}>{t("admin.settings.security.sessionTimeout")}</label>
             <input style={inputStyle} value={security.sessionTimeout} onChange={(e) => setSecurity({ ...security, sessionTimeout: e.target.value })} type="number" />
           </div>
           <div>
-            <label style={labelStyle}>Max Login Attempts</label>
+            <label style={labelStyle}>{t("admin.settings.security.maxLoginAttempts")}</label>
             <input style={inputStyle} value={security.maxLoginAttempts} onChange={(e) => setSecurity({ ...security, maxLoginAttempts: e.target.value })} type="number" />
           </div>
         </div>
@@ -186,13 +188,13 @@ const AdminSettingsPage = () => {
 
   const renderNotifications = () => (
     <div style={cardStyle}>
-      <h3 style={sectionTitle}>Email Notification Preferences</h3>
+      <h3 style={sectionTitle}>{t("admin.settings.notifications.emailPreferences")}</h3>
       <div className="space-y-4">
         {[
-          { key: "newUserEmail", label: "New User Registration", desc: "Receive email when a new user signs up" },
-          { key: "testCompletionEmail", label: "Test Completions", desc: "Get notified when users complete orientation tests" },
-          { key: "weeklyReport", label: "Weekly Analytics Report", desc: "Automated weekly summary of platform activity" },
-          { key: "systemAlerts", label: "System Alerts", desc: "Critical notifications about system health and errors" },
+          { key: "newUserEmail", label: t("admin.settings.notifications.newUserEmail"), desc: t("admin.settings.notifications.newUserEmailDesc") },
+          { key: "testCompletionEmail", label: t("admin.settings.notifications.testCompletionEmail"), desc: t("admin.settings.notifications.testCompletionEmailDesc") },
+          { key: "weeklyReport", label: t("admin.settings.notifications.weeklyReport"), desc: t("admin.settings.notifications.weeklyReportDesc") },
+          { key: "systemAlerts", label: t("admin.settings.notifications.systemAlerts"), desc: t("admin.settings.notifications.systemAlertsDesc") },
         ].map((item) => (
           <div key={item.key} className="flex items-center justify-between gap-4 py-1" style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
             <div>
@@ -211,10 +213,10 @@ const AdminSettingsPage = () => {
 
   const renderLocalization = () => (
     <div style={cardStyle}>
-      <h3 style={sectionTitle}>Language & Region</h3>
+      <h3 style={sectionTitle}>{t("admin.settings.localization.languageRegion")}</h3>
       <div className="grid md:grid-cols-2 gap-4">
         <div>
-          <label style={labelStyle}>Default Language</label>
+          <label style={labelStyle}>{t("admin.settings.localization.defaultLanguage")}</label>
           <select
             style={{ ...inputStyle, cursor: "pointer" }}
             onFocus={(e) => (e.target.style.borderColor = "var(--ms-border-active)")}
@@ -226,7 +228,7 @@ const AdminSettingsPage = () => {
           </select>
         </div>
         <div>
-          <label style={labelStyle}>Default Region</label>
+          <label style={labelStyle}>{t("admin.settings.localization.defaultRegion")}</label>
           <select
             style={{ ...inputStyle, cursor: "pointer" }}
             onFocus={(e) => (e.target.style.borderColor = "var(--ms-border-active)")}
@@ -245,11 +247,11 @@ const AdminSettingsPage = () => {
   const renderData = () => (
     <div className="space-y-6">
       <div style={cardStyle}>
-        <h3 style={sectionTitle}>Database Management</h3>
+        <h3 style={sectionTitle}>{t("admin.settings.data.databaseManagement")}</h3>
         <div className="grid md:grid-cols-2 gap-3">
           {[
-            { label: "Export All Users", desc: "Download CSV of all users", icon: Database, color: "var(--ms-accent-sky)" },
-            { label: "Export Test Results", desc: "All test responses", icon: RefreshCw, color: "#A78BFA" },
+            { label: t("admin.settings.data.exportUsers"), desc: t("admin.settings.data.exportUsersDesc"), icon: Database, color: "var(--ms-accent-sky)" },
+            { label: t("admin.settings.data.exportTestResults"), desc: t("admin.settings.data.exportTestResultsDesc"), icon: RefreshCw, color: "#A78BFA" },
           ].map((action) => (
             <button
               key={action.label}
@@ -273,12 +275,12 @@ const AdminSettingsPage = () => {
       >
         <AlertTriangle size={16} style={{ color: "#F87171", flexShrink: 0, marginTop: 2 }} />
         <div>
-          <div className="text-sm font-bold" style={{ color: "#F87171" }}>Danger Zone</div>
+          <div className="text-sm font-bold" style={{ color: "#F87171" }}>{t("admin.settings.data.dangerZone")}</div>
           <div className="text-xs mt-1 mb-3" style={{ color: "hsl(var(--muted-foreground))" }}>
-            Irreversible actions. Proceed with extreme caution.
+            {t("admin.settings.data.dangerZoneDesc")}
           </div>
           <button className="text-xs font-bold px-3 py-1.5 rounded-lg" style={{ background: "rgba(248,113,113,0.10)", border: "1px solid rgba(248,113,113,0.25)", color: "#F87171" }}>
-            Clear All Test Data
+            {t("admin.settings.data.clearTestData")}
           </button>
         </div>
       </div>
@@ -301,10 +303,10 @@ const AdminSettingsPage = () => {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Settings size={22} style={{ color: "var(--ms-accent-cyan)" }} />
-            Settings
+            {t("admin.settings.title")}
           </h1>
           <p className="text-sm mt-1" style={{ color: "hsl(var(--muted-foreground))" }}>
-            Manage platform configuration and preferences
+            {t("admin.settings.subtitle")}
           </p>
         </div>
         <button
@@ -316,7 +318,7 @@ const AdminSettingsPage = () => {
           }}
         >
           <Save size={14} />
-          Save Changes
+          {t("admin.settings.save")}
         </button>
       </div>
 

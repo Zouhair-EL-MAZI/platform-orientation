@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { Sparkles, ArrowRight, ChevronDown } from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../hooks/use-auth";
 import FeaturesSection  from "../components/FeaturesSection";
@@ -166,15 +166,7 @@ const Landing = () => {
               </motion.button>
             </div>
 
-            {/* scroll hint */}
-            <motion.div
-              className="mt-12 hidden md:flex items-center gap-2 text-xs font-semibold"
-              style={{ color:"hsl(var(--muted-foreground))", opacity:.5 }}
-              animate={{ y:[0,4,0] }} transition={{ duration:2.5, repeat:Infinity, ease:"easeInOut" }}
-            >
-              <ChevronDown size={14}/>
-              {t("landing.hero.scrollHint")}
-            </motion.div>
+
           </motion.div>
 
           {/* ── right: image card ── */}

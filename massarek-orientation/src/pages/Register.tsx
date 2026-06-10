@@ -143,7 +143,7 @@ const Register = () => {
       if (!idToken) {
         throw new Error("Unable to retrieve Google ID token.");
       }
-      const response = await api.post("/auth/google", { token: idToken });
+      const response = await api.post("/auth/google", { token: idToken, name: result.user.displayName });
       const { user, token } = response.data;
       const role = response.data.role || user?.role || 'student';
       localStorage.setItem("user", JSON.stringify(user));

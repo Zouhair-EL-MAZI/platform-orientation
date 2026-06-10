@@ -21,6 +21,8 @@
     "saveProfile": "Enregistrer le profil",
     "continueWithGoogle": "Continuer avec Google",
     "noResults": "Aucun résultat trouvé.",
+    "yes": "Oui",
+    "no": "Non",
     "all": "Toutes",
     "or": "OU",
     "returnHome": "Retour à l'accueil",
@@ -438,44 +440,62 @@
     }
   },
   "dashboard": {
-    "welcomeTitle": "Bon retour, étudiant ! 👋",
-    "welcomeSubtitle": "Poursuivez votre parcours d'orientation et découvrez le chemin idéal pour votre avenir.",
-    "quickActions": [
-      {
-        "title": "Passer le test",
-        "desc": "Commencer le test d'orientation",
-        "to": "/test"
-      },
-      {
-        "title": "Résultats IA",
-        "desc": "Voir les recommandations",
-        "to": "/recommendations"
-      },
-      {
-        "title": "Carrières",
-        "desc": "Explorer les parcours professionnels",
-        "to": "/careers"
-      },
-      {
-        "title": "Chatbot",
-        "desc": "Demander à l'assistant IA",
-        "to": "/chatbot"
-      }
-    ],
-    "progress": {
-      "profileCompletion": "Complétion du profil",
-      "testsCompleted": "Tests terminés",
-      "careerExploration": "Exploration de carrière"
+    "welcomeTitle": "Bon retour, {{name}} ! 👋",
+    "welcomeSubtitle": "Poursuivez votre parcours d'orientation et découvrez la voie idéale pour votre avenir.",
+    "refresh": "Actualiser",
+    "errorTitle": "Impossible de charger le tableau de bord",
+    "tryAgain": "Réessayer",
+    "stats": {
+      "profile": "Profil",
+      "testsDone": "Tests effectués",
+      "aiMatches": "Correspondances IA",
+      "exploration": "Exploration",
+      "of": "sur",
+      "available": "disponibles",
+      "personalised": "Personnalisé pour vous",
+      "takeTestFirst": "Passez d'abord un test",
+      "active": "Actif",
+      "pending": "En attente",
+      "pathsFound": "parcours trouvé(s)",
+      "completeTest": "Compléter le test",
+      "incomplete": "Incomplet — ajoutez plus",
+      "lookingComplete": "Très bien !"
     },
-    "recommendationsSection": {
+    "progress": {
+      "title": "Votre progression",
+      "profile": "Profil",
+      "justStarted": "Tout juste commencé",
+      "almostComplete": "Presque complet",
+      "lookingGreat": "Excellent !",
+      "completeProfile": "Compléter le profil",
+      "profileCompletion": "Profil",
+      "testsCompleted": "Tests effectués",
+      "recommendations": "Recommandations",
+      "tests": "Tests",
+      "matches": "Correspondances",
+      "score": "Score"
+    },
+    "recommendations": {
       "title": "Recommandations IA",
-      "previewLink": "Voir →"
+      "viewAll": "Voir tout",
+      "basedOn": "Basé sur vos résultats.",
+      "seeFullAnalysis": "Voir l'analyse complète →",
+      "noTitle": "Aucune recommandation",
+      "noDesc": "Complétez le test d'orientation pour recevoir des correspondances de carrière personnalisées.",
+      "takeTest": "Passer le test d'orientation"
+    },
+    "analytics": {
+      "title": "Activité hebdomadaire",
+      "subtitle": "Engagement cette semaine",
+      "sessions": "Sessions",
+      "actions": "Actions",
+      "streak": "Série"
     },
     "activity": {
       "title": "Activité récente",
-      "completedTest": "Test de personnalité complété",
-      "exploredCareer": "Parcours Sciences Informatiques exploré",
-      "newRecommendations": "Nouvelles recommandations IA disponibles"
+      "noTitle": "Aucune activité",
+      "noDesc": "Vos actions — tests, recommandations — apparaîtront ici.",
+      "startTest": "Commencer par le test d'orientation"
     }
   },
   "profile": {
@@ -485,26 +505,120 @@
       "Licence",
       "Master"
     ],
-    "skills": [
-      "Résolution de problèmes",
-      "Esprit critique",
-      "Communication",
-      "Mathématiques",
-      "Créativité",
-      "Leadership",
-      "Travail en équipe",
-      "Recherche"
+    "educationLevels": [
+      "Collège",
+      "Lycée",
+      "Bac",
+      "Bac+2 (BTS/DUT)",
+      "Bac+3 (Licence)",
+      "Bac+4",
+      "Bac+5 (Master)",
+      "Bac+8 (Doctorat)"
     ],
-    "interests": [
+    "interestOptions": [
       "Technologie",
-      "Science",
-      "Arts",
-      "Affaires",
+      "Informatique",
+      "Sciences",
+      "Mathématiques",
       "Médecine",
-      "Ingénierie",
+      "Biologie",
+      "Droit",
+      "Économie",
+      "Commerce",
+      "Arts & Design",
+      "Communication",
+      "Lettres",
       "Éducation",
-      "Droit"
+      "Environnement",
+      "Architecture",
+      "Sport",
+      "Musique",
+      "Finance"
     ],
+    "fieldOptions": [
+      "Génie Informatique",
+      "Génie Civil",
+      "Génie Électrique",
+      "Médecine Générale",
+      "Pharmacie",
+      "Droit",
+      "Économie & Gestion",
+      "Marketing",
+      "Sciences Politiques",
+      "Architecture",
+      "Design Graphique",
+      "Journalisme",
+      "Éducation",
+      "Psychologie",
+      "Environnement",
+      "Finance & Comptabilité",
+      "Biologie",
+      "Chimie"
+    ],
+    "labels": {
+      "fullName": "Nom complet",
+      "age": "Âge",
+      "phone": "Téléphone",
+      "city": "Ville",
+      "educationLevel": "Niveau d'études",
+      "bio": "Bio",
+      "emailAddress": "Email",
+      "role": "Rôle",
+      "preferredFields": "Domaines préférés"
+    },
+    "titles": {
+      "personalInformation": "Informations personnelles",
+      "accountInformation": "Informations du compte",
+      "academicProfile": "Profil académique",
+      "orientationSummary": "Résumé d'orientation"
+    },
+    "placeholders": {
+      "fullName": "Votre nom complet",
+      "age": "Votre âge",
+      "phone": "+212 6XX XXX XXX",
+      "city": "Casablanca, Rabat…",
+      "selectEducationLevel": "Sélectionner le niveau…",
+      "bio": "Parlez-nous de vous, de vos objectifs et de vos centres d'intérêt…"
+    },
+    "buttons": {
+      "editProfile": "Modifier le profil",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "changeAvatar": "Changer l'avatar",
+      "takeOrientationTest": "Passer le test d'orientation"
+    },
+    "quickStats": {
+      "interests": "Intérêts",
+      "fields": "Domaines",
+      "completion": "Complétion"
+    },
+    "emptyStates": {
+      "bio": "Aucune bio ajoutée. Modifiez votre profil pour en ajouter une.",
+      "interests": "Aucun intérêt ajouté. Modifiez votre profil pour en ajouter.",
+      "preferredFields": "Aucun domaine préféré ajouté. Modifiez votre profil pour en ajouter."
+    },
+    "orientation": {
+      "noResultsTitle": "Pas encore de résultats d'orientation",
+      "noResultsDesc": "Complétez le test d'orientation pour voir vos parcours professionnels recommandés ici.",
+      "action": "Passer le test d'orientation"
+    },
+    "completion": {
+      "title": "Complétion du profil",
+      "incompleteMessage": "Complétez votre profil pour obtenir de meilleures recommandations IA"
+    },
+    "status": {
+      "verified": "Compte vérifié et actif"
+    },
+    "success": {
+      "saved": "Profil enregistré avec succès !"
+    },
+    "errors": {
+      "loadFailed": "Impossible de charger le profil.",
+      "saveFailed": "Échec de l'enregistrement du profil.",
+      "avatarSize": "L'image doit être inférieure à 2 Mo.",
+      "avatarUpload": "Échec du téléchargement de l'avatar."
+    },
     "saveProfile": "Enregistrer le profil"
   },
   "careerExplorer": {
@@ -583,7 +697,7 @@
   "chatbot": {
     "title": "Assistant IA",
     "subtitle": "Propulsé par l'IA",
-    "initialMessage": "Bonjour ! Je suis votre assistant d'orientation IA. 🎓 Je peux vous aider à explorer des carrières, comprendre vos résultats de tests ou répondre à toutes vos questions sur les domaines académiques. Que souhaitez-vous savoir ?",
+    "initialMessage": "Bonjour ! Je suis Massarek AI, votre conseiller d'orientation. 🎓\nJe suis là pour vous aider à :\n• Choisir votre filière d'études\n• Explorer des carrières professionnelles\n• Découvrir des universités et programmes\n• Développer vos compétences\nComment puis-je vous aider aujourd'hui ?",
     "responseMessage": "C'est une excellente question ! D'après votre profil et vos résultats, je vous recommanderais d'explorer des domaines qui combinent vos compétences analytiques et vos intérêts créatifs. Voulez-vous des détails sur des programmes spécifiques ?",
     "inputPlaceholder": "Demandez des informations sur les carrières, les domaines ou vos résultats..."
   },
@@ -691,9 +805,9 @@
     "testCompletedAll": "Vous avez complété les 3 tests. Vos recommandations IA sont débloquées !",
     "testCompletedPartial": "Vos réponses ont été enregistrées. Complétez les tests restants pour débloquer les recommandations IA.",
     "category": "Catégorie",
-    "catAptitude": "Aptitude",
-    "catPersonality": "Personnalité",
-    "catSkills": "Compétences",
+    "catAptitude": "Évaluation des aptitudes et des intérêts",
+    "catPersonality": "Profil des valeurs et de la personnalité",
+    "catSkills": "Test des compétences et de la force académique",
     "questionWord": "Question",
     "questionAria": "Question {{number}}",
     "status": "Statut",
@@ -707,76 +821,189 @@
     "inProgressBadge": "En cours",
     "notStartedBadge": "Non commencé",
     "retry": "Réessayer",
-    "submittedSuccess": "Test soumis avec succés !",
-    "questions": [
-      {
-        "question": "Quel type d'activités appréciez-vous le plus ?",
-        "options": [
-          "Construire et créer des choses",
-          "Analyser des données et résoudre des énigmes",
-          "Aider et enseigner aux autres",
-          "Concevoir et exprimer sa créativité"
-        ]
-      },
-      {
-        "question": "Quelle matière scolaire vous intéresse le plus ?",
-        "options": [
-          "Mathématiques",
-          "Sciences",
-          "Langue et littérature",
-          "Sciences sociales"
-        ]
-      },
-      {
-        "question": "Comment préférez-vous travailler ?",
-        "options": [
-          "Indépendamment",
-          "En petites équipes",
-          "En dirigeant un groupe",
-          "En collaborant avec plusieurs personnes"
-        ]
-      },
-      {
-        "question": "Qu'est-ce qui compte le plus dans une future carrière ?",
-        "options": [
-          "Un salaire élevé",
-          "Un équilibre travail-vie privée",
-          "Avoir un impact",
-          "La liberté créative"
-        ]
-      },
-      {
-        "question": "Quel environnement vous attire ?",
-        "options": [
-          "Bureau / Entreprise",
-          "Laboratoire / Recherche",
-          "En plein air / Terrain",
-          "À distance / Digital"
-        ]
-      }
-    ]
+    "submittedSuccess": "Test soumis avec succés !"
   },
   "admin": {
     "title": "Tableau de bord Admin",
+    "welcomeAdmin": "Bienvenue, Administrateur 🛡️",
+    "welcomeSubtitle": "Surveiller l'activité de la plateforme, gérer les utilisateurs et le contenu.",
+    "recentUsers": "Utilisateurs récents",
+    "viewAll": "Voir tout →",
+    "manageUsers": "Gérer les utilisateurs",
+    "manageUsersDesc": "Voir et modifier tous les utilisateurs",
+    "manageTests": "Gérer les tests",
+    "manageTestsDesc": "Modifier les tests d'orientation",
+    "careersDb": "Base carrières",
+    "careersDbDesc": "Mettre à jour les parcours professionnels",
+    "recommendationsDesc": "Examiner les dernières correspondances étudiantes",
+    "statTotalUsers": "Total utilisateurs",
+    "statVerifiedUsers": "Utilisateurs vérifiés",
+    "statSubmissions": "Soumissions de tests",
+    "statActiveTests": "Tests actifs",
+    "statRecommendations": "Recommandations",
+    "statCareerPaths": "Parcours professionnels",
+    "statCareerCategories": "Catégories de carrières",
+    "statAvgScore": "Score moyen",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
     "users": {
       "title": "Gestion des utilisateurs",
       "addUser": "Ajouter un utilisateur",
       "export": "Exporter",
-      "searchPlaceholder": "Rechercher des utilisateurs..."
+      "searchPlaceholder": "Rechercher des utilisateurs...",
+      "totalUsers": "utilisateurs au total",
+      "active": "actifs",
+      "selected": "sélectionné(s)",
+      "showing": "Affichage",
+      "of": "sur",
+      "users": "utilisateurs",
+      "allFieldsRequired": "Tous les champs sont requis",
+      "passwordMinLength": "Le mot de passe doit contenir au moins 8 caractères",
+      "nameEmailRequired": "Le nom et l'email sont requis",
+      "addUserTitle": "Ajouter un utilisateur",
+      "userDetails": "Détails de l'utilisateur",
+      "editUser": "Modifier l'utilisateur",
+      "createUser": "Créer l'utilisateur",
+      "creating": "Création...",
+      "saveChanges": "Enregistrer les modifications",
+      "confirmDeleteUser": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+      "confirmDeleteSelected": "Supprimer {{count}} utilisateur(s) ?",
+      "updatedSuccess": "Utilisateur mis à jour avec succès !",
+      "deletedSuccess": "Utilisateur supprimé avec succès !",
+      "deletedMultiSuccess": "Utilisateurs supprimés avec succès !",
+      "createdSuccess": "Utilisateur créé avec succès !",
+      "exportSuccess": "Excel exporté avec succès !",
+      "exportFailed": "Échec de l'export Excel",
+      "unableToLoad": "Impossible de charger les utilisateurs depuis le serveur.",
+      "columns": {
+        "user": "Utilisateur",
+        "name": "Nom",
+        "email": "Email",
+        "role": "Rôle",
+        "tests": "Tests",
+        "status": "Statut",
+        "verified": "Vérifié",
+        "joined": "Inscrit le",
+        "lastActive": "Dernière activité"
+      },
+      "filterAll": "Tous",
+      "filterActive": "Actif",
+      "filterInactive": "Inactif",
+      "filterPending": "En attente",
+      "roleStudent": "Étudiant",
+      "roleAdmin": "Admin",
+      "labelName": "Nom",
+      "labelEmail": "Email",
+      "labelPassword": "Mot de passe",
+      "labelRole": "Rôle"
     },
     "tests": {
       "title": "Gestion des tests",
       "newTest": "Nouveau test",
-      "searchPlaceholder": "Rechercher des tests..."
+      "searchPlaceholder": "Rechercher des tests...",
+      "testsCount": "tests",
+      "activeCount": "actifs",
+      "editTest": "Modifier le test",
+      "newTestTitle": "Nouveau test",
+      "labelTitle": "Titre",
+      "labelDescription": "Description",
+      "labelCategory": "Catégorie",
+      "labelDuration": "Durée (min)",
+      "filterAll": "Tous",
+      "category": {
+        "personality": "Personnalité",
+        "aptitude": "Aptitude",
+        "skills": "Compétences"
+      },
+      "option": "Option",
+      "durationUnit": "min",
+      "titleRequired": "Le titre est requis",
+      "createdSuccess": "Test créé avec succès !",
+      "updatedSuccess": "Test mis à jour avec succès !",
+      "deletedSuccess": "Test supprimé avec succès !",
+      "confirmDelete": "Supprimer ce test et toutes ses questions ?",
+      "questions": "questions",
+      "noQuestionsYet": "Aucune question pour l'instant. Ajoutez votre première question ci-dessous.",
+      "addQuestion": "Ajouter une question",
+      "adding": "Ajout...",
+      "questionText": "Texte de la question...",
+      "singleChoice": "Choix unique",
+      "scale": "Échelle",
+      "text": "Texte",
+      "confirmDeleteQuestion": "Supprimer cette question ?",
+      "deactivate": "Désactiver",
+      "activate": "Activer",
+      "manageQuestions": "Gérer les questions"
     },
     "careers": {
       "title": "Gestion des carrières",
       "addCareer": "Ajouter une carrière",
-      "searchPlaceholder": "Rechercher des carrières..."
+      "searchPlaceholder": "Rechercher des carrières...",
+      "filterAll": "Tous",
+      "titleExample": "ex. Génie logiciel",
+      "salaryExample": "ex. 80k$–130k$",
+      "skillsExample": "ex. Python, Analyse de données, SQL",
+      "careerPaths": "parcours professionnels",
+      "categories": "catégories",
+      "showing": "Affichage",
+      "of": "sur",
+      "careers": "carrières",
+      "addCareerTitle": "Ajouter une carrière",
+      "editCareerTitle": "Modifier la carrière",
+      "labelTitle": "Titre",
+      "labelDescription": "Description",
+      "labelCategory": "Catégorie",
+      "labelDemand": "Niveau de demande",
+      "labelSalary": "Fourchette salariale",
+      "labelSkills": "Compétences requises",
+      "labelSkillsHint": "(séparées par des virgules)",
+      "labelFutureScope": "Perspectives futures",
+      "titleRequired": "Le titre est requis",
+      "categoryRequired": "La catégorie est requise",
+      "updatedSuccess": "Carrière mise à jour avec succès !",
+      "addedSuccess": "Carrière ajoutée avec succès !",
+      "deletedSuccess": "Carrière supprimée avec succès !",
+      "confirmDelete": "Supprimer cette carrière ?",
+      "failedSave": "Échec de l'enregistrement de la carrière."
     },
     "recommendations": {
       "title": "Recommandations IA",
-      "regenerateAll": "Tout régénérer"
+      "subtitle": "Examiner et gérer les recommandations des étudiants",
+      "regenerateAll": "Tout régénérer",
+      "summary": {
+        "totalGenerated": "Total recommandations générées",
+        "pendingGeneration": "Génération en attente",
+        "adminReviewed": "Revu par l'admin",
+        "avgTopScore": "Score moyen"
+      },
+      "searchPlaceholder": "Rechercher par utilisateur...",
+      "filters": {
+        "all": "Tous",
+        "reviewed": "Revu",
+        "unreviewed": "Non revu"
+      },
+      "table": {
+        "student": "Étudiant",
+        "topRecommendations": "Principales recommandations",
+        "topScore": "Score max",
+        "testDate": "Date du test",
+        "status": "Statut",
+        "reviewed": "Revu"
+      },
+      "status": {
+        "generated": "Généré",
+        "pending": "En attente"
+      },
+      "view": "Voir",
+      "viewUser": "Voir l'utilisateur",
+      "viewDetails": "Détails de la recommandation",
+      "editDetails": "Modifier la recommandation",
+      "markReviewed": "Marquer comme examiné",
+      "failedLoad": "Échec du chargement des recommandations."
     },
     "analytics": {
       "title": "Statistiques et analyses",
@@ -784,6 +1011,7 @@
     },
     "settings": {
       "title": "Paramètres",
+      "subtitle": "Gérer la configuration et les préférences de la plateforme",
       "save": "Enregistrer",
       "tabs": {
         "general": "Général",
@@ -791,6 +1019,56 @@
         "notifications": "Notifications",
         "localization": "Localisation",
         "data": "Données"
+      },
+      "general": {
+        "platformConfig": "Configuration de la plateforme",
+        "platformName": "Nom de la plateforme",
+        "supportEmail": "Email de support",
+        "accessControl": "Contrôle d'accès",
+        "maintenanceMode": "Mode maintenance",
+        "maintenanceModeDesc": "Désactiver temporairement l'accès pour les non-administrateurs",
+        "allowRegistrations": "Autoriser les nouvelles inscriptions",
+        "allowRegistrationsDesc": "Activer ou désactiver les nouvelles inscriptions",
+        "requireEmailVerification": "Exiger la vérification de l'email",
+        "requireEmailVerificationDesc": "Les utilisateurs doivent vérifier leur email avant d'accéder à la plateforme",
+        "maintenanceWarningTitle": "Mode maintenance actif",
+        "maintenanceWarningDesc": "Tous les étudiants verront une page de maintenance. Seuls les comptes admin peuvent se connecter."
+      },
+      "security": {
+        "authentication": "Authentification",
+        "twoFactorAdmin": "Authentification à deux facteurs pour les admins",
+        "twoFactorAdminDesc": "Exiger la 2FA pour tous les comptes administrateurs",
+        "ipWhitelist": "Liste blanche IP",
+        "ipWhitelistDesc": "Restreindre l'accès admin à des adresses IP spécifiques",
+        "sessionSettings": "Paramètres de session",
+        "sessionTimeout": "Délai d'expiration de session (minutes)",
+        "maxLoginAttempts": "Tentatives de connexion max"
+      },
+      "notifications": {
+        "emailPreferences": "Préférences de notifications email",
+        "newUserEmail": "Nouvel utilisateur inscrit",
+        "newUserEmailDesc": "Recevoir un email quand un nouvel utilisateur s'inscrit",
+        "testCompletionEmail": "Tests complétés",
+        "testCompletionEmailDesc": "Être notifié quand les utilisateurs terminent les tests",
+        "weeklyReport": "Rapport analytique hebdomadaire",
+        "weeklyReportDesc": "Résumé hebdomadaire automatique de l'activité",
+        "systemAlerts": "Alertes système",
+        "systemAlertsDesc": "Notifications critiques sur la santé et les erreurs du système"
+      },
+      "localization": {
+        "languageRegion": "Langue et région",
+        "defaultLanguage": "Langue par défaut",
+        "defaultRegion": "Région par défaut"
+      },
+      "data": {
+        "databaseManagement": "Gestion de la base de données",
+        "exportUsers": "Exporter tous les utilisateurs",
+        "exportUsersDesc": "Télécharger CSV de tous les utilisateurs",
+        "exportTestResults": "Exporter les résultats des tests",
+        "exportTestResultsDesc": "Toutes les réponses aux tests",
+        "dangerZone": "Zone dangereuse",
+        "dangerZoneDesc": "Actions irréversibles. Procéder avec une extrême prudence.",
+        "clearTestData": "Effacer toutes les données de test"
       }
     }
   },
@@ -844,5 +1122,70 @@
   },
   "adminNavbar": {
     "adminPanel": "Panneau Admin"
+  }
+  ,
+  "chatbot": {
+    "title": "Assistant IA",
+    "subtitle": "Conseiller d'orientation · Propulsé par Gemini",
+    "initialMessage": "Bonjour ! Je suis **Massarek AI**, votre conseiller d'orientation. 🎓\n\nJe suis là pour vous aider à :\n- Choisir votre filière d'études\n- Explorer des carrières professionnelles\n- Découvrir des universités et programmes\n- Développer vos compétences\n\nComment puis-je vous aider aujourd'hui ?",
+    "suggestedQuestions": [
+      "Quelles filières correspondent à un profil scientifique ?",
+      "Comment choisir entre ingénierie et médecine ?",
+      "Quelles universités recommandes-tu au Maroc ?",
+      "Quelles compétences faut-il pour travailler en informatique ?"
+    ],
+    "inputPlaceholder": "Posez votre question sur l'orientation…",
+    "clearTitle": "Effacer la conversation",
+    "newChat": "Nouveau chat",
+    "note": "Massarek AI répond uniquement aux questions d'orientation scolaire et professionnelle.",
+    "serviceUnavailable": "Service temporairement indisponible. Veuillez réessayer."
+  }
+  ,
+  "career": {
+    "title": "Explorateur de carrières",
+    "subtitle": "Découvrez les parcours professionnels dans les principaux secteurs du Maroc.",
+    "saved": "Enregistrées ({{count}})",
+    "searchPlaceholder": "Recherchez des carrières, compétences ou descriptions…",
+    "all": "Toutes",
+    "retry": "Réessayer",
+    "empty": {
+      "savedTitle": "Aucune carrière enregistrée",
+      "savedDesc": "Cliquez sur ♡ sur une carte de carrière pour l'enregistrer.",
+      "noResultsTitle": "Aucune carrière trouvée",
+      "noResultsDesc": "Essayez une autre recherche ou un autre filtre de catégorie."
+    },
+    "clearFilters": "Effacer les filtres",
+    "card": {
+      "clickToExplore": "Cliquez pour explorer",
+      "details": "Détails →"
+    },
+    "save": {
+      "add": "Enregistrer la carrière",
+      "remove": "Retirer des favoris"
+    },
+    "toast": {
+      "removed": "Retiré des carrières enregistrées",
+      "saved": "Carrière enregistrée !"
+    },
+    "modal": {
+      "tab": {
+        "overview": "Aperçu",
+        "morocco": "🇲🇦 Maroc",
+        "skills": "Compétences & Études"
+      },
+      "careerProspects": "Perspectives de carrière",
+      "moroccanContext": "Contexte du marché marocain",
+      "recommendedSchools": "Écoles recommandées au Maroc",
+      "requiredSkills": "Compétences requises",
+      "studyPaths": "Parcours d'études"
+    },
+    "results": {
+      "showing": "Affichage",
+      "careers": "carrière",
+      "careers_plural": "carrières",
+      "in": "dans",
+      "matching": "correspondant à",
+      "saved": "(enregistré)"
+    }
   }
 }

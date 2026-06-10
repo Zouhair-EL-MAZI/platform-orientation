@@ -21,6 +21,8 @@
     "saveProfile": "Save Profile",
     "continueWithGoogle": "Continue with Google",
     "noResults": "No results found.",
+    "yes": "Yes",
+    "no": "No",
     "all": "All",
     "or": "OR",
     "returnHome": "Return to Home",
@@ -416,44 +418,68 @@
     }
   },
   "dashboard": {
-    "welcomeTitle": "Welcome back, Student! 👋",
+    "welcomeTitle": "Welcome back, {{name}}! 👋",
     "welcomeSubtitle": "Continue your orientation journey and discover the perfect path for your future.",
+    "refresh": "Refresh",
+    "errorTitle": "Could not load dashboard",
+    "tryAgain": "Try again",
     "quickActions": [
-      {
-        "title": "Take Test",
-        "desc": "Start orientation test",
-        "to": "/test"
-      },
-      {
-        "title": "AI Results",
-        "desc": "View recommendations",
-        "to": "/recommendations"
-      },
-      {
-        "title": "Careers",
-        "desc": "Explore career paths",
-        "to": "/careers"
-      },
-      {
-        "title": "Chatbot",
-        "desc": "Ask AI assistant",
-        "to": "/chatbot"
-      }
+      { "title": "Take Test", "desc": "Start orientation", "to": "/test" },
+      { "title": "AI Results", "desc": "View recommendations", "to": "/recommendations" },
+      { "title": "Careers", "desc": "Explore paths", "to": "/careers" },
+      { "title": "AI Chatbot", "desc": "Ask anything", "to": "/chatbot" }
     ],
-    "progress": {
-      "profileCompletion": "Profile completion",
-      "testsCompleted": "Tests completed",
-      "careerExploration": "Career exploration"
+    "stats": {
+      "profile": "Profile",
+      "testsDone": "Tests Done",
+      "aiMatches": "AI Matches",
+      "exploration": "Exploration",
+      "of": "of",
+      "available": "available",
+      "personalised": "Personalised for you",
+      "takeTestFirst": "Take a test first",
+      "active": "Active",
+      "pending": "Pending",
+      "pathsFound": "path(s) found",
+      "completeTest": "Complete test",
+      "incomplete": "Incomplete — add more",
+      "lookingComplete": "Looking complete!"
     },
-    "recommendationsSection": {
-      "title": "AI Recommendations",
-      "previewLink": "View →"
+    "progress": {
+      "title": "Your Progress",
+      "profile": "Profile",
+      "justStarted": "Just getting started",
+      "almostComplete": "Almost complete",
+      "lookingGreat": "Looking great!",
+      "completeProfile": "Complete profile",
+      "profileCompletion": "Profile",
+      "testsCompleted": "Tests completed",
+      "recommendations": "Recommendations",
+      "tests": "Tests",
+      "matches": "Matches",
+      "score": "Score"
+    },
+    "recommendations": {
+      "title": "AI Career Recommendations",
+      "viewAll": "View all",
+      "basedOn": "Based on your test results.",
+      "seeFullAnalysis": "See full analysis →",
+      "noTitle": "No recommendations yet",
+      "noDesc": "Complete the orientation test to receive AI-powered career matches tailored to your profile.",
+      "takeTest": "Take the orientation test"
+    },
+    "analytics": {
+      "title": "Weekly Activity",
+      "subtitle": "Engagement this week",
+      "sessions": "Sessions",
+      "actions": "Actions",
+      "streak": "Streak"
     },
     "activity": {
       "title": "Recent Activity",
-      "completedTest": "Completed Personality Test",
-      "exploredCareer": "Explored Computer Science career path",
-      "newRecommendations": "New AI recommendations available"
+      "noTitle": "No activity yet",
+      "noDesc": "Your actions — tests, recommendations — will appear here.",
+      "startTest": "Start with the orientation test"
     }
   },
   "profile": {
@@ -463,26 +489,120 @@
       "Bachelor's",
       "Master's"
     ],
-    "skills": [
-      "Problem Solving",
-      "Critical Thinking",
-      "Communication",
-      "Mathematics",
-      "Creativity",
-      "Leadership",
-      "Teamwork",
-      "Research"
+    "educationLevels": [
+      "Middle School",
+      "High School",
+      "Baccalaureate",
+      "BTS/DUT (2-year)",
+      "Bachelor's (3-year)",
+      "Bachelor's (4-year)",
+      "Master's",
+      "Doctorate"
     ],
-    "interests": [
+    "interestOptions": [
       "Technology",
-      "Science",
-      "Arts",
-      "Business",
+      "Computer Science",
+      "Sciences",
+      "Mathematics",
       "Medicine",
-      "Engineering",
+      "Biology",
+      "Law",
+      "Economics",
+      "Business",
+      "Arts & Design",
+      "Communication",
+      "Humanities",
       "Education",
-      "Law"
+      "Environment",
+      "Architecture",
+      "Sports",
+      "Music",
+      "Finance"
     ],
+    "fieldOptions": [
+      "Computer Engineering",
+      "Civil Engineering",
+      "Electrical Engineering",
+      "General Medicine",
+      "Pharmacy",
+      "Law",
+      "Economics & Management",
+      "Marketing",
+      "Political Science",
+      "Architecture",
+      "Graphic Design",
+      "Journalism",
+      "Education",
+      "Psychology",
+      "Environmental Science",
+      "Finance & Accounting",
+      "Biology",
+      "Chemistry"
+    ],
+    "labels": {
+      "fullName": "Full Name",
+      "age": "Age",
+      "phone": "Phone",
+      "city": "City",
+      "educationLevel": "Education Level",
+      "bio": "Bio",
+      "emailAddress": "Email Address",
+      "role": "Role",
+      "preferredFields": "Preferred Fields"
+    },
+    "titles": {
+      "personalInformation": "Personal Information",
+      "accountInformation": "Account Information",
+      "academicProfile": "Academic Profile",
+      "orientationSummary": "Orientation Summary"
+    },
+    "placeholders": {
+      "fullName": "Your full name",
+      "age": "Your age",
+      "phone": "+212 6XX XXX XXX",
+      "city": "Casablanca, Rabat…",
+      "selectEducationLevel": "Select level…",
+      "bio": "Tell us about yourself, your goals, and your interests…"
+    },
+    "buttons": {
+      "editProfile": "Edit Profile",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "changeAvatar": "Change avatar",
+      "takeOrientationTest": "Take orientation test"
+    },
+    "quickStats": {
+      "interests": "Interests",
+      "fields": "Fields",
+      "completion": "Completion"
+    },
+    "emptyStates": {
+      "bio": "No bio added yet. Edit your profile to add one.",
+      "interests": "No interests added. Edit your profile to add some.",
+      "preferredFields": "No preferred fields added. Edit your profile to add some."
+    },
+    "orientation": {
+      "noResultsTitle": "No orientation results yet",
+      "noResultsDesc": "Complete the orientation test to see your recommended career paths here.",
+      "action": "Take orientation test"
+    },
+    "completion": {
+      "title": "Profile Completion",
+      "incompleteMessage": "Complete your profile to get better AI recommendations"
+    },
+    "status": {
+      "verified": "Account verified and active"
+    },
+    "success": {
+      "saved": "Profile saved successfully!"
+    },
+    "errors": {
+      "loadFailed": "Failed to load profile.",
+      "saveFailed": "Failed to save profile.",
+      "avatarSize": "Image must be under 2MB.",
+      "avatarUpload": "Failed to upload avatar."
+    },
     "saveProfile": "Save Profile"
   },
   "careerExplorer": {
@@ -563,7 +683,17 @@
     "subtitle": "Powered by AI",
     "initialMessage": "Hi! I'm your AI orientation assistant. 🎓 I can help you explore career paths, understand your test results, or answer any questions about academic fields. What would you like to know?",
     "responseMessage": "That's a great question! Based on your profile and test results, I'd recommend exploring fields that combine your analytical skills with your creative interests. Would you like me to go into more detail about specific programs?",
-    "inputPlaceholder": "Ask about careers, fields, or your results..."
+    "inputPlaceholder": "Ask about careers, fields, or your results...",
+    "suggestedQuestions": [
+      "Which fields match a science-oriented profile?",
+      "How do I choose between engineering and medicine?",
+      "Which universities do you recommend in Morocco?",
+      "What skills are needed to work in computer science?"
+    ],
+    "clearTitle": "Clear conversation",
+    "newChat": "New chat",
+    "note": "Massarek AI only answers academic and career orientation questions.",
+    "serviceUnavailable": "Service temporarily unavailable. Please try again."
   },
   "recommendations": {
     "title": "AI Recommendations",
@@ -669,9 +799,9 @@
     "testCompletedAll": "You've completed all 3 orientation tests. Your AI Recommendations are now unlocked!",
     "testCompletedPartial": "Your answers have been saved. Complete the remaining tests to unlock AI recommendations.",
     "category": "Category",
-    "catAptitude": "Aptitude",
-    "catPersonality": "Personality",
-    "catSkills": "Skills",
+    "catAptitude": "Aptitude & Interest Assessment",
+    "catPersonality": "Values & Personality Profile",
+    "catSkills": "Skills & Academic Strength Test",
     "questionWord": "Question",
     "questionAria": "Question {{number}}",
     "status": "Status",
@@ -695,34 +825,185 @@
   },
   "admin": {
     "title": "Admin Dashboard",
+    "welcomeAdmin": "Welcome, Administrator 🛡️",
+    "welcomeSubtitle": "Monitor platform activity, manage users and content.",
+    "recentUsers": "Recent Users",
+    "viewAll": "View all →",
+    "manageUsers": "Manage Users",
+    "manageUsersDesc": "View and edit all users",
+    "manageTests": "Manage Tests",
+    "manageTestsDesc": "Edit orientation tests",
+    "careersDb": "Careers DB",
+    "careersDbDesc": "Update career paths",
+    "recommendationsDesc": "Review latest student matches",
+    "statTotalUsers": "Total Users",
+    "statVerifiedUsers": "Verified Users",
+    "statSubmissions": "Tests Submissions",
+    "statActiveTests": "Active Tests",
+    "statRecommendations": "Recommendations",
+    "statCareerPaths": "Career Paths",
+    "statCareerCategories": "Career Categories",
+    "statAvgScore": "Avg Match Score",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
     "users": {
       "title": "Users Management",
       "addUser": "Add User",
       "export": "Export",
       "searchPlaceholder": "Search users...",
+      "totalUsers": "total users",
+      "active": "active",
+      "selected": "selected",
+      "showing": "Showing",
+      "of": "of",
+      "users": "users",
+      "allFieldsRequired": "All fields are required",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "nameEmailRequired": "Name and email are required",
+      "addUserTitle": "Add User",
+      "userDetails": "User Details",
+      "editUser": "Edit User",
+      "createUser": "Create User",
+      "creating": "Creating...",
+      "saveChanges": "Save Changes",
+      "confirmDeleteUser": "Are you sure you want to delete this user?",
+      "confirmDeleteSelected": "Delete {{count}} user(s)?",
+      "updatedSuccess": "User updated successfully!",
+      "deletedSuccess": "User deleted successfully!",
+      "deletedMultiSuccess": "Users deleted successfully!",
+      "createdSuccess": "User created successfully!",
+      "exportSuccess": "Excel exported successfully!",
+      "exportFailed": "Excel export failed",
+      "unableToLoad": "Unable to load users from the server.",
       "columns": {
+        "user": "User",
         "name": "Name",
+        "email": "Email",
         "role": "Role",
         "tests": "Tests",
         "status": "Status",
         "verified": "Verified",
         "joined": "Joined",
         "lastActive": "Last Active"
-      }
+      },
+      "filterAll": "All",
+      "filterActive": "Active",
+      "filterInactive": "Inactive",
+      "filterPending": "Pending",
+      "roleStudent": "Student",
+      "roleAdmin": "Admin",
+      "labelName": "Name",
+      "labelEmail": "Email",
+      "labelPassword": "Password",
+      "labelRole": "Role"
     },
     "tests": {
       "title": "Tests Management",
       "newTest": "New Test",
-      "searchPlaceholder": "Search tests..."
+      "searchPlaceholder": "Search tests...",
+      "testsCount": "tests",
+      "activeCount": "active",
+      "editTest": "New Test",
+      "newTestTitle": "New Test",
+      "labelTitle": "Title",
+      "labelDescription": "Description",
+      "labelCategory": "Category",
+      "labelDuration": "Duration (min)",
+      "filterAll": "All",
+      "category": {
+        "personality": "Personality",
+        "aptitude": "Aptitude",
+        "skills": "Skills"
+      },
+      "option": "Option",
+      "durationUnit": "min",
+      "titleRequired": "Title is required",
+      "createdSuccess": "Test created successfully!",
+      "updatedSuccess": "Test updated successfully!",
+      "deletedSuccess": "Test deleted successfully!",
+      "confirmDelete": "Delete this test and all its questions?",
+      "questions": "questions",
+      "noQuestionsYet": "No questions yet. Add your first question below.",
+      "addQuestion": "Add Question",
+      "adding": "Adding...",
+      "questionText": "Question text...",
+      "singleChoice": "Single Choice",
+      "scale": "Scale",
+      "text": "Text",
+      "confirmDeleteQuestion": "Delete this question?",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "manageQuestions": "Manage Questions"
     },
     "careers": {
       "title": "Careers Management",
       "addCareer": "Add Career",
-      "searchPlaceholder": "Search careers..."
+      "searchPlaceholder": "Search careers...",
+        "filterAll": "All",
+      "careerPaths": "career paths",
+      "categories": "categories",
+        "titleExample": "e.g. Software Engineering",
+        "salaryExample": "e.g. $80k–$130k",
+        "skillsExample": "e.g. Python, Data Analysis, SQL",
+      "showing": "Showing",
+      "of": "of",
+      "careers": "careers",
+      "addCareerTitle": "Add Career",
+      "editCareerTitle": "Edit Career",
+      "labelTitle": "Title",
+      "labelDescription": "Description",
+      "labelCategory": "Category",
+      "labelDemand": "Demand Level",
+      "labelSalary": "Salary Range",
+      "labelSkills": "Required Skills",
+      "labelSkillsHint": "(comma separated)",
+      "labelFutureScope": "Future Scope",
+      "titleRequired": "Title is required",
+      "categoryRequired": "Category is required",
+      "updatedSuccess": "Career updated successfully!",
+      "addedSuccess": "Career added successfully!",
+      "deletedSuccess": "Career deleted successfully!",
+      "confirmDelete": "Delete this career?",
+      "failedSave": "Failed to save career."
     },
     "recommendations": {
       "title": "AI Recommendations",
-      "regenerateAll": "Regenerate All"
+      "subtitle": "Review and manage student recommendations",
+      "regenerateAll": "Regenerate All",
+      "summary": {
+        "totalGenerated": "Total Rec. Generated",
+        "pendingGeneration": "Pending Generation",
+        "adminReviewed": "Admin Reviewed",
+        "avgTopScore": "Avg Top Score"
+      },
+      "searchPlaceholder": "Search by user...",
+      "filters": {
+        "all": "All",
+        "reviewed": "Reviewed",
+        "unreviewed": "Unreviewed"
+      },
+      "table": {
+        "student": "Student",
+        "topRecommendations": "Top Recommendations",
+        "topScore": "Top Score",
+        "testDate": "Test Date",
+        "status": "Status",
+        "reviewed": "Reviewed"
+      },
+      "status": {
+        "generated": "Generated",
+        "pending": "Pending"
+      },
+      "view": "View",
+      "viewUser": "View User",
+      "viewDetails": "Recommendation Details",
+      "editDetails": "Edit Recommendation",
+      "markReviewed": "Mark as reviewed",
+      "failedLoad": "Failed to load recommendations."
     },
     "analytics": {
       "title": "Analytics & Statistics",
@@ -730,6 +1011,7 @@
     },
     "settings": {
       "title": "Settings",
+      "subtitle": "Manage platform configuration and preferences",
       "save": "Save Changes",
       "tabs": {
         "general": "General",
@@ -737,6 +1019,56 @@
         "notifications": "Notifications",
         "localization": "Localization",
         "data": "Data & Storage"
+      },
+      "general": {
+        "platformConfig": "Platform Configuration",
+        "platformName": "Platform Name",
+        "supportEmail": "Support Email",
+        "accessControl": "Access Control",
+        "maintenanceMode": "Maintenance Mode",
+        "maintenanceModeDesc": "Temporarily disable access for all non-admin users",
+        "allowRegistrations": "Allow New Registrations",
+        "allowRegistrationsDesc": "Enable or disable new user sign-ups",
+        "requireEmailVerification": "Require Email Verification",
+        "requireEmailVerificationDesc": "Users must verify email before accessing the platform",
+        "maintenanceWarningTitle": "Maintenance Mode Active",
+        "maintenanceWarningDesc": "All students will see a maintenance page. Only admin accounts can log in."
+      },
+      "security": {
+        "authentication": "Authentication",
+        "twoFactorAdmin": "Two-Factor Auth for Admins",
+        "twoFactorAdminDesc": "Require 2FA for all administrator accounts",
+        "ipWhitelist": "IP Whitelist",
+        "ipWhitelistDesc": "Restrict admin access to specific IP addresses",
+        "sessionSettings": "Session Settings",
+        "sessionTimeout": "Session Timeout (minutes)",
+        "maxLoginAttempts": "Max Login Attempts"
+      },
+      "notifications": {
+        "emailPreferences": "Email Notification Preferences",
+        "newUserEmail": "New User Registration",
+        "newUserEmailDesc": "Receive email when a new user signs up",
+        "testCompletionEmail": "Test Completions",
+        "testCompletionEmailDesc": "Get notified when users complete orientation tests",
+        "weeklyReport": "Weekly Analytics Report",
+        "weeklyReportDesc": "Automated weekly summary of platform activity",
+        "systemAlerts": "System Alerts",
+        "systemAlertsDesc": "Critical notifications about system health and errors"
+      },
+      "localization": {
+        "languageRegion": "Language & Region",
+        "defaultLanguage": "Default Language",
+        "defaultRegion": "Default Region"
+      },
+      "data": {
+        "databaseManagement": "Database Management",
+        "exportUsers": "Export All Users",
+        "exportUsersDesc": "Download CSV of all users",
+        "exportTestResults": "Export Test Results",
+        "exportTestResultsDesc": "All test responses",
+        "dangerZone": "Danger Zone",
+        "dangerZoneDesc": "Irreversible actions. Proceed with extreme caution.",
+        "clearTestData": "Clear All Test Data"
       }
     }
   },

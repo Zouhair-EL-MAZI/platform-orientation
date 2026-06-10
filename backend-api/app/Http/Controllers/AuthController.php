@@ -327,6 +327,7 @@ class AuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'token' => 'required|string',
+            'name'  => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -347,7 +348,7 @@ class AuthController extends Controller
 
         $payload = $response->json();
         $email = isset($payload['email']) ? strtolower(trim($payload['email'])) : null;
-        $name = $payload['name'] ?? null;
+        $name = $request->input('name') ?? $payload['name'] ?? $payload['given_name'] ?? explode('@', $email)[0];
         $googleId = $payload['sub'] ?? null;
 
         if (!$email || !$googleId) {
@@ -357,23 +358,27 @@ class AuthController extends Controller
         // Case-insensitive lookup to match existing users regardless of email casing
         $user = User::whereRaw('LOWER(email) = ?', [$email])->first();
 
-        if (!$user || ($user->role ?? 'student') !== 'admin') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Google login is restricted to admin users.',
-            ], 403);
+        if (!$user) {
+            // Auto-create account for new Google users
+            $user = User::create([
+                'name'              => $name,
+                'email'             => $email,
+                'password'          => Hash::make(Str::random(32)),
+                'google_id'         => $googleId,
+                'email_verified_at' => now(),
+                'role'              => 'student',
+            ]);
+        } else {
+            // Link Google account if needed and ensure email is verified.
+            if (!$user->google_id) {
+                $user->google_id = $googleId;
+            }
+            if (!$user->email_verified_at) {
+                $user->email_verified_at = now();
+            }
+            $user->save();
         }
 
-        // Link Google account if needed and ensure email is verified.
-        if (!$user->google_id) {
-            $user->google_id = $googleId;
-        }
-        if (!$user->email_verified_at) {
-            $user->email_verified_at = now();
-        }
-        $user->save();
-
-        // Log in the admin user using the session guard as well.
         Auth::login($user);
 
         // Revoke previous tokens for security.
@@ -383,7 +388,7 @@ class AuthController extends Controller
         $expiresAt = now()->addHours(24);
 
         $role         = $user->role ?? 'student';
-        $redirectPath = '/admin/dashboard';
+        $redirectPath = $role === 'admin' ? '/admin/dashboard' : '/dashboard';
 
         return response()->json([
             'success' => true,

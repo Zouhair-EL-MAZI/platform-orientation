@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Search, Briefcase, TrendingUp, DollarSign, X, ChevronDown,
   ChevronUp, Heart, BookOpen, MapPin, GraduationCap, Star,
@@ -47,6 +48,7 @@ function CareerModal({
   career: Career; isFav: boolean; onToggleFav: () => void; onClose: () => void;
 }) {
   const ds = demandStyle(career.demand_level);
+  const { t } = useTranslation();
   const [tab, setTab] = useState<"overview" | "morocco" | "skills">("overview");
 
   return (
@@ -91,7 +93,7 @@ function CareerModal({
                 } : {
                   background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-subtle)",
                 }}
-                aria-label={isFav ? "Remove from favorites" : "Save to favorites"}
+                aria-label={isFav ? t("career.save.remove") : t("career.save.add")}
               >
                 <Heart size={15} fill={isFav ? "#EF4444" : "none"}
                   style={{ color: isFav ? "#EF4444" : "var(--ms-accent-sky)" }} />
@@ -117,9 +119,9 @@ function CareerModal({
         <div className="flex gap-1 px-5 pt-3 flex-shrink-0"
           style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
           {[
-            { key: "overview", label: "Overview" },
-            { key: "morocco",  label: "🇲🇦 Morocco" },
-            { key: "skills",   label: "Skills & Study" },
+            { key: "overview", label: t("career.modal.tab.overview") },
+            { key: "morocco",  label: t("career.modal.tab.morocco") },
+            { key: "skills",   label: t("career.modal.tab.skills") },
           ].map(t => (
             <button key={t.key}
               onClick={() => setTab(t.key as any)}
@@ -149,7 +151,7 @@ function CareerModal({
                   <div className="flex items-center gap-1.5 mb-2">
                     <TrendingUp size={13} style={{ color: "#34D399" }} />
                     <span className="text-xs font-bold uppercase tracking-wider" style={{ color: "#34D399" }}>
-                      Career Prospects
+                      {t("career.modal.careerProspects")}
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed">{career.future_scope}</p>
@@ -167,7 +169,7 @@ function CareerModal({
                   <div className="flex items-center gap-1.5 mb-2">
                     <MapPin size={13} style={{ color: "var(--ms-accent-sky)" }} />
                     <span className="text-xs font-bold uppercase tracking-wider"
-                      style={{ color: "var(--ms-accent-sky)" }}>Moroccan Market Context</span>
+                      style={{ color: "var(--ms-accent-sky)" }}>{t("career.modal.moroccanContext")}</span>
                   </div>
                   <p className="text-sm leading-relaxed" style={{ color: "hsl(var(--foreground))" }}>
                     {career.moroccan_context}
@@ -185,7 +187,7 @@ function CareerModal({
                   <div className="flex items-center gap-1.5 mb-3">
                     <GraduationCap size={13} style={{ color: "#A78BFA" }} />
                     <span className="text-xs font-bold uppercase tracking-wider"
-                      style={{ color: "#A78BFA" }}>Recommended Schools in Morocco</span>
+                      style={{ color: "#A78BFA" }}>{t("career.modal.recommendedSchools")}</span>
                   </div>
                   <div className="space-y-1.5">
                     {career.recommended_schools.map(s => (
@@ -209,7 +211,7 @@ function CareerModal({
                   <div className="flex items-center gap-1.5 mb-3">
                     <BookOpen size={13} style={{ color: "var(--ms-accent-cyan)" }} />
                     <span className="text-xs font-bold uppercase tracking-wider"
-                      style={{ color: "var(--ms-accent-cyan)" }}>Required Skills</span>
+                      style={{ color: "var(--ms-accent-cyan)" }}>{t("career.modal.requiredSkills")}</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {career.required_skills.map(s => (
@@ -229,7 +231,7 @@ function CareerModal({
                   <div className="flex items-center gap-1.5 mb-3">
                     <GraduationCap size={13} style={{ color: "#F59E0B" }} />
                     <span className="text-xs font-bold uppercase tracking-wider"
-                      style={{ color: "#F59E0B" }}>Study Paths</span>
+                      style={{ color: "#F59E0B" }}>{t("career.modal.studyPaths")}</span>
                   </div>
                   <div className="space-y-2">
                     {career.study_paths.map((p, i) => (
@@ -262,6 +264,7 @@ function CareerCard({
 }) {
   const ds = demandStyle(career.demand_level);
   const skills = career.required_skills ?? [];
+  const { t } = useTranslation();
 
   return (
     <div
@@ -298,7 +301,7 @@ function CareerCard({
             } : {
               background: "var(--ms-bg-layer3)", border: "1px solid var(--ms-border-subtle)",
             }}
-            aria-label={isFav ? "Remove from favorites" : "Save career"}
+            aria-label={isFav ? t("career.save.remove") : t("career.save.add")}
           >
             <Heart size={13} fill={isFav ? "#EF4444" : "none"}
               style={{ color: isFav ? "#EF4444" : "var(--ms-accent-sky)" }} />
@@ -342,9 +345,9 @@ function CareerCard({
         {/* Footer CTA */}
         <div className="flex items-center justify-between mt-auto pt-2"
           style={{ borderTop: "1px solid var(--ms-border-subtle)" }}>
-          <span className="text-xs text-muted-foreground">Click to explore</span>
+          <span className="text-xs text-muted-foreground">{t("career.card.clickToExplore")}</span>
           <span className="text-xs font-bold" style={{ color: "var(--ms-accent-cyan)" }}>
-            Details →
+            {t("career.card.details")}
           </span>
         </div>
       </div>
@@ -356,6 +359,15 @@ function CareerCard({
 // CareerExplorer — main page
 // ─────────────────────────────────────────────────────────────────────────────
 const CareerExplorer = () => {
+  const { t } = useTranslation();
+  type CareerPaginator = {
+    current_page?: number | string;
+    last_page?: number | string;
+    total?: number | string;
+    per_page?: number | string;
+    data?: Career[];
+  };
+
   const [careers, setCareers]         = useState<Career[]>([]);
   const [categories, setCategories]   = useState<CareerCategory[]>([]);
   const [loading, setLoading]         = useState(true);
@@ -363,6 +375,8 @@ const CareerExplorer = () => {
   const [search, setSearch]           = useState("");
   const [debouncedSearch, setDbSearch]= useState("");
   const [selectedCat, setSelectedCat] = useState<number | null>(null);
+  const [page, setPage]               = useState(1);
+  const [pagination, setPagination]   = useState<{ current_page: number; last_page: number; total: number; per_page: number } | null>(null);
   const [showFavsOnly, setShowFavsOnly] = useState(false);
   const [modalCareer, setModalCareer] = useState<Career | null>(null);
   const [favIds, setFavIds]           = useState<Set<number>>(() => readFavs());
@@ -384,24 +398,50 @@ const CareerExplorer = () => {
 
   // Load careers on filter change
   const loadCareers = useCallback(async () => {
+    console.log("CareerExplorer.loadCareers start", { selectedCat, debouncedSearch });
     setLoading(true);
     setError(null);
     try {
-      const params: Record<string, any> = {};
+      const params: Record<string, number | string> = { page };
       if (debouncedSearch) params.search      = debouncedSearch;
       if (selectedCat)     params.category_id = selectedCat;
       const res = await getCareers(params);
-      setCareers(res.data.data);
-    } catch (e: any) {
-      const msg = e?.response?.data?.message || "Failed to load careers.";
+      console.log("CareerExplorer API response", res.data);
+      const responseData = res.data.data as unknown;
+      const responseObject = responseData as CareerPaginator;
+      const careersArray = Array.isArray(responseData)
+        ? responseData
+        : Array.isArray(responseObject.data)
+          ? responseObject.data
+          : [];
+      const paginationInfo = !Array.isArray(responseData) && responseData && typeof responseData === "object"
+        ? {
+            current_page: Number(responseObject.current_page ?? 1),
+            last_page: Number(responseObject.last_page ?? 1),
+            total: Number(responseObject.total ?? careersArray.length),
+            per_page: Number(responseObject.per_page ?? careersArray.length),
+          }
+        : null;
+      console.log("CareerExplorer careersArray", careersArray, paginationInfo);
+      setCareers(careersArray);
+      setPagination(paginationInfo);
+    } catch (error: unknown) {
+      console.error("CareerExplorer load error", error);
+      const err = error as { response?: { data?: { message?: string } } };
+      const msg = err?.response?.data?.message || "Failed to load careers.";
       setError(msg);
       setCareers([]);
+      setPagination(null);
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearch, selectedCat]);
+  }, [debouncedSearch, selectedCat, page]);
 
   useEffect(() => { loadCareers(); }, [loadCareers]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, selectedCat]);
 
   // Open modal with full detail
   const openDetail = async (career: Career) => {
@@ -420,10 +460,10 @@ const CareerExplorer = () => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
-        toast.success("Removed from saved careers");
+        toast.success(t("career.toast.removed"));
       } else {
         next.add(id);
-        toast.success("Career saved!");
+        toast.success(t("career.toast.saved"));
       }
       writeFavs(next);
       return next;
@@ -439,6 +479,19 @@ const CareerExplorer = () => {
     ? categories.find(c => c.id === selectedCat)?.careers_count ?? 0
     : categories.reduce((s, c) => s + c.careers_count, 0);
 
+  useEffect(() => {
+    console.log("CareerExplorer state", {
+      loading,
+      error,
+      careers,
+      displayed,
+      selectedCat,
+      debouncedSearch,
+      showFavsOnly,
+      totalCareersInCat,
+    });
+  }, [loading, error, careers, displayed, selectedCat, debouncedSearch, showFavsOnly, totalCareersInCat]);
+
   return (
     <div className="max-w-6xl mx-auto space-y-5 ms-page-enter">
 
@@ -447,10 +500,10 @@ const CareerExplorer = () => {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2.5">
             <Briefcase size={22} style={{ color: "var(--ms-accent-cyan)" }} />
-            Career Explorer
+            {t("career.title")}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Discover career paths across Morocco's key sectors.
+            {t("career.subtitle")}
           </p>
         </div>
 
@@ -469,7 +522,7 @@ const CareerExplorer = () => {
           }}>
           <Heart size={14} fill={showFavsOnly ? "#EF4444" : "none"}
             style={{ color: showFavsOnly ? "#EF4444" : "var(--ms-accent-sky)" }} />
-          Saved ({favIds.size})
+          {t("career.saved", { count: favIds.size })}
         </button>
       </div>
 
@@ -482,7 +535,7 @@ const CareerExplorer = () => {
             ref={searchInputRef}
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Search careers, skills, or descriptions…"
+            placeholder={t("career.searchPlaceholder")}
             className="w-full pl-11 pr-10 py-3 rounded-xl text-sm focus:outline-none transition-all"
             style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)" }}
           />
@@ -506,7 +559,7 @@ const CareerExplorer = () => {
 
       {/* Category filters */}
       <div className={`flex gap-2 flex-wrap transition-all ${showFilters || "hidden sm:flex"}`}>
-        <button
+          <button
           onClick={() => setSelectedCat(null)}
           className="px-4 py-2 rounded-xl text-xs font-bold transition-all"
           style={selectedCat === null ? {
@@ -516,7 +569,7 @@ const CareerExplorer = () => {
             background: "var(--ms-bg-card)",
             border: "1px solid var(--ms-border-subtle)",
           }}>
-          All {totalCareersInCat > 0 ? `(${totalCareersInCat})` : ""}
+          {t("career.all")}{totalCareersInCat > 0 ? ` (${totalCareersInCat})` : ""}
         </button>
         {categories.map(cat => (
           <button key={cat.id}
@@ -543,7 +596,7 @@ const CareerExplorer = () => {
           <button onClick={loadCareers}
             className="text-xs font-bold flex items-center gap-1 flex-shrink-0"
             style={{ color: "#EF4444" }}>
-            <RefreshCw size={12} /> Retry
+            <RefreshCw size={12} /> {t("career.retry")}
           </button>
         </div>
       )}
@@ -568,20 +621,26 @@ const CareerExplorer = () => {
           </div>
           <div>
             <p className="font-bold text-sm">
-              {showFavsOnly ? "No saved careers yet" : "No careers found"}
+              {showFavsOnly
+                ? t("career.empty.savedTitle")
+                : careers.length === 0
+                  ? "No careers available right now. Check the API response in the console."
+                  : t("career.empty.noResultsTitle")}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {showFavsOnly
-                ? "Click the ♡ button on any career card to save it."
-                : "Try a different search or category filter."}
+                ? t("career.empty.savedDesc")
+                : careers.length === 0
+                  ? "The career API returned no careers for your current session. See console logs for details."
+                  : t("career.empty.noResultsDesc")}
             </p>
           </div>
           {(search || selectedCat || showFavsOnly) && (
-            <button
+              <button
               onClick={() => { setSearch(""); setSelectedCat(null); setShowFavsOnly(false); }}
               className="text-xs font-bold flex items-center gap-1.5 mx-auto"
               style={{ color: "var(--ms-accent-sky)" }}>
-              <X size={12} /> Clear filters
+              <X size={12} /> {t("career.clearFilters")}
             </button>
           )}
         </div>
@@ -604,11 +663,40 @@ const CareerExplorer = () => {
 
           {/* Results footer */}
           <p className="text-xs text-center text-muted-foreground pb-2">
-            Showing {displayed.length} career{displayed.length !== 1 ? "s" : ""}
-            {selectedCat ? ` in "${categories.find(c => c.id === selectedCat)?.name}"` : ""}
-            {debouncedSearch ? ` matching "${debouncedSearch}"` : ""}
-            {showFavsOnly ? " (saved)" : ""}
+            {t("career.results.showing")} {displayed.length} {displayed.length !== 1 ? t("career.results.careers_plural") : t("career.results.careers")}
+            {selectedCat ? ` ${t("career.results.in")} "${categories.find(c => c.id === selectedCat)?.name}"` : ""}
+            {debouncedSearch ? ` ${t("career.results.matching")} "${debouncedSearch}"` : ""}
+            {showFavsOnly ? ` ${t("career.results.saved")}` : ""}
           </p>
+          {pagination?.last_page > 1 && (
+            <div className="flex items-center justify-center gap-3 py-3">
+              <button
+                onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+                disabled={pagination.current_page <= 1}
+                className="px-4 py-2 rounded-xl text-sm font-semibold transition-opacity"
+                style={{
+                  background: "var(--ms-bg-card)",
+                  border: "1px solid var(--ms-border-subtle)",
+                  opacity: pagination.current_page <= 1 ? 0.45 : 1,
+                }}>
+                {t("career.pagination.prev", "Previous")}
+              </button>
+              <span className="text-xs text-muted-foreground">
+                {t("career.pagination.page", "Page")} {pagination.current_page} / {pagination.last_page}
+              </span>
+              <button
+                onClick={() => setPage(prev => Math.min(prev + 1, pagination.last_page))}
+                disabled={pagination.current_page >= pagination.last_page}
+                className="px-4 py-2 rounded-xl text-sm font-semibold transition-opacity"
+                style={{
+                  background: "var(--ms-bg-card)",
+                  border: "1px solid var(--ms-border-subtle)",
+                  opacity: pagination.current_page >= pagination.last_page ? 0.45 : 1,
+                }}>
+                {t("career.pagination.next", "Next")}
+              </button>
+            </div>
+          )}
         </>
       )}
 

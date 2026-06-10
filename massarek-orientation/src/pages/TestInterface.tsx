@@ -602,7 +602,7 @@ function TestTaker({ testId, onComplete }: { testId: number; onComplete: () => v
     }));
     try {
       const res = await submitTest(testId, payload);
-      setAllTestsDone((res.data as any).all_tests_completed === true);
+      setAllTestsDone((res.data as any).all_completed === true);
       setDone(true);
       toast.success(t("test.submittedSuccess"));
     } catch (e) {

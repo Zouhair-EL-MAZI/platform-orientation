@@ -21,6 +21,8 @@
     "saveProfile": "حفظ الملف الشخصي",
     "continueWithGoogle": "المتابعة باستخدام Google",
     "noResults": "لم يتم العثور على نتائج.",
+    "yes": "نعم",
+    "no": "لا",
     "all": "الكل",
     "or": "أو",
     "returnHome": "العودة إلى الصفحة الرئيسية",
@@ -432,44 +434,62 @@
     }
   },
   "dashboard": {
-    "welcomeTitle": "مرحبًا بعودتك، أيها الطالب! 👋",
-    "welcomeSubtitle": "تابع رحلة التوجيه الخاصة بك واكتشف المسار المثالي لمستقبلك.",
-    "quickActions": [
-      {
-        "title": "أداء الاختبار",
-        "desc": "ابدأ اختبار التوجيه",
-        "to": "/test"
-      },
-      {
-        "title": "نتائج الذكاء الاصطناعي",
-        "desc": "عرض التوصيات",
-        "to": "/recommendations"
-      },
-      {
-        "title": "الوظائف",
-        "desc": "استكشف المسارات المهنية",
-        "to": "/careers"
-      },
-      {
-        "title": "بوت الدردشة",
-        "desc": "اسأل المساعد الذكي",
-        "to": "/chatbot"
-      }
-    ],
-    "progress": {
-      "profileCompletion": "اكتمال الملف الشخصي",
-      "testsCompleted": "الاختبارات المكتملة",
-      "careerExploration": "استكشاف المهنة"
+    "welcomeTitle": "مرحبًا بعودتك، {{name}}! 👋",
+    "welcomeSubtitle": "تابع رحلة التوجيه واكتشف المسار المثالي لمستقبلك.",
+    "refresh": "تحديث",
+    "errorTitle": "تعذّر تحميل لوحة التحكم",
+    "tryAgain": "حاول مجددًا",
+    "stats": {
+      "profile": "الملف الشخصي",
+      "testsDone": "الاختبارات المنجزة",
+      "aiMatches": "تطابقات الذكاء الاصطناعي",
+      "exploration": "استكشاف",
+      "of": "من",
+      "available": "متاحة",
+      "personalised": "مخصص لك",
+      "takeTestFirst": "أجرِ اختبارًا أولاً",
+      "active": "نشط",
+      "pending": "معلّق",
+      "pathsFound": "مسارات وجدت",
+      "completeTest": "أكمل الاختبار",
+      "incomplete": "غير مكتمل — أضف المزيد",
+      "lookingComplete": "رائع!"
     },
-    "recommendationsSection": {
+    "progress": {
+      "title": "تقدمك",
+      "profile": "الملف الشخصي",
+      "justStarted": "بداية متأخرة",
+      "almostComplete": "شبه مكتمل",
+      "lookingGreat": "رائع!",
+      "completeProfile": "أكمل الملف",
+      "profileCompletion": "الملف",
+      "testsCompleted": "الاختبارات",
+      "recommendations": "التوصيات",
+      "tests": "الاختبارات",
+      "matches": "تطابقات",
+      "score": "الدرجة"
+    },
+    "recommendations": {
       "title": "توصيات الذكاء الاصطناعي",
-      "previewLink": "عرض →"
+      "viewAll": "عرض الكل",
+      "basedOn": "بناءً على نتائج اختباراتك.",
+      "seeFullAnalysis": "عرض التحليل الكامل ←",
+      "noTitle": "لا توصيات بعد",
+      "noDesc": "أكمل اختبار التوجيه للحصول على تطابقات مهنية مخصصة.",
+      "takeTest": "أجرِ اختبار التوجيه"
+    },
+    "analytics": {
+      "title": "النشاط الأسبوعي",
+      "subtitle": "التفاعل هذا الأسبوع",
+      "sessions": "جلسات",
+      "actions": "إجراءات",
+      "streak": "سلسلة"
     },
     "activity": {
       "title": "النشاط الأخير",
-      "completedTest": "اكتمل اختبار الشخصية",
-      "exploredCareer": "تم استكشاف مسار علوم الحاسوب",
-      "newRecommendations": "توصيات جديدة من الذكاء الاصطناعي متاحة"
+      "noTitle": "لا نشاط بعد",
+      "noDesc": "إجراءاتك — الاختبارات، التوصيات — ستظهر هنا.",
+      "startTest": "ابدأ باختبار التوجيه"
     }
   },
   "profile": {
@@ -479,26 +499,120 @@
       "البكالوريوس",
       "الماجستير"
     ],
-    "skills": [
-      "حل المشكلات",
-      "التفكير النقدي",
-      "التواصل",
-      "الرياضيات",
-      "الإبداع",
-      "القيادة",
-      "العمل الجماعي",
-      "البحث"
+    "educationLevels": [
+      "المدرسة الإعدادية",
+      "الثانوية",
+      "البكالوريا",
+      "بكالوريوس+2 (BTS/DUT)",
+      "بكالوريوس",
+      "بكالوريوس+4",
+      "ماجستير",
+      "دكتوراه"
     ],
-    "interests": [
+    "interestOptions": [
       "التكنولوجيا",
+      "علوم الحاسوب",
       "العلوم",
-      "الفنون",
-      "الأعمال",
+      "الرياضيات",
       "الطب",
-      "الهندسة",
+      "علم الأحياء",
+      "القانون",
+      "الاقتصاد",
+      "الأعمال",
+      "الفنون والتصميم",
+      "الاتصال",
+      "العلوم الإنسانية",
       "التعليم",
-      "القانون"
+      "البيئة",
+      "الهندسة المعمارية",
+      "الرياضة",
+      "الموسيقى",
+      "المالية"
     ],
+    "fieldOptions": [
+      "الهندسة المعلوماتية",
+      "الهندسة المدنية",
+      "الهندسة الكهربائية",
+      "الطب العام",
+      "الصيدلة",
+      "القانون",
+      "الاقتصاد والإدارة",
+      "التسويق",
+      "العلوم السياسية",
+      "الهندسة المعمارية",
+      "التصميم الجرافيكي",
+      "الصحافة",
+      "التربية",
+      "علم النفس",
+      "البيئة",
+      "المالية والمحاسبة",
+      "علم الأحياء",
+      "الكيمياء"
+    ],
+    "labels": {
+      "fullName": "الاسم الكامل",
+      "age": "العمر",
+      "phone": "الهاتف",
+      "city": "المدينة",
+      "educationLevel": "المستوى التعليمي",
+      "bio": "نبذة",
+      "emailAddress": "البريد الإلكتروني",
+      "role": "الدور",
+      "preferredFields": "المجالات المفضلة"
+    },
+    "titles": {
+      "personalInformation": "المعلومات الشخصية",
+      "accountInformation": "معلومات الحساب",
+      "academicProfile": "الملف الأكاديمي",
+      "orientationSummary": "ملخص التوجيه"
+    },
+    "placeholders": {
+      "fullName": "اسمك الكامل",
+      "age": "عمرك",
+      "phone": "+212 6XX XXX XXX",
+      "city": "الدار البيضاء، الرباط…",
+      "selectEducationLevel": "اختر المستوى…",
+      "bio": "أخبرنا عن نفسك، أهدافك، واهتماماتك…"
+    },
+    "buttons": {
+      "editProfile": "تعديل الملف الشخصي",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ…",
+      "changeAvatar": "تغيير الصورة",
+      "takeOrientationTest": "أخذ اختبار التوجيه"
+    },
+    "quickStats": {
+      "interests": "الاهتمامات",
+      "fields": "المجالات",
+      "completion": "اكتمال"
+    },
+    "emptyStates": {
+      "bio": "لم تتم إضافة نبذة بعد. حرر ملفك لإضافتها.",
+      "interests": "لم تتم إضافة اهتمامات بعد. حرر ملفك لإضافتها.",
+      "preferredFields": "لم تتم إضافة مجالات مفضلة بعد. حرر ملفك لإضافتها."
+    },
+    "orientation": {
+      "noResultsTitle": "لا توجد نتائج توجيه بعد",
+      "noResultsDesc": "أكمل اختبار التوجيه لرؤية المسارات المهنية الموصى بها هنا.",
+      "action": "أخذ اختبار التوجيه"
+    },
+    "completion": {
+      "title": "إكمال الملف الشخصي",
+      "incompleteMessage": "أكمل ملفك الشخصي للحصول على توصيات AI أفضل"
+    },
+    "status": {
+      "verified": "الحساب موثّق ونشط"
+    },
+    "success": {
+      "saved": "تم حفظ الملف الشخصي بنجاح!"
+    },
+    "errors": {
+      "loadFailed": "فشل تحميل الملف الشخصي.",
+      "saveFailed": "فشل حفظ الملف الشخصي.",
+      "avatarSize": "يجب أن تكون الصورة أقل من 2 ميغابايت.",
+      "avatarUpload": "فشل تحميل الصورة."
+    },
     "saveProfile": "حفظ الملف الشخصي"
   },
   "careerExplorer": {
@@ -577,7 +691,7 @@
   "chatbot": {
     "title": "المساعد الذكي",
     "subtitle": "مدعوم بالذكاء الاصطناعي",
-    "initialMessage": "مرحبًا! أنا مساعد التوجيه الذكي الخاص بك. 🎓 يمكنني مساعدتك في استكشاف المسارات المهنية، وفهم نتائج اختباراتك، أو الإجابة على أي أسئلة حول التخصصات الأكاديمية. ماذا تود أن تعرف؟",
+    "initialMessage": "مساعد الذكاء الاصطناعي\nمستشار التوجيه · مدعوم من Gemini\n\nمرحبًا! أنا Massarek AI، مستشارك في التوجيه. 🎓\nأنا هنا لمساعدتك في:\n• اختيار تخصصك الدراسي\n• استكشاف المسارات المهنية\n• اكتشاف الجامعات والبرامج\n• تطوير مهاراتك\nكيف يمكنني مساعدتك اليوم؟",
     "responseMessage": "سؤال رائع! بناءً على ملفك الشخصي ونتائجك، أوصي باستكشاف المجالات التي تجمع بين مهاراتك التحليلية واهتماماتك الإبداعية. هل تود تفاصيل حول برامج محددة؟",
     "inputPlaceholder": "اسأل عن المهن أو التخصصات أو نتائجك..."
   },
@@ -685,7 +799,7 @@
     "testCompletedAll": "أكملت الاختبارات الثلاثة. توصيات الذكاء الاصطناعي مفتوحة الآن!",
     "testCompletedPartial": "تم حفظ إجاباتك. أكمل الاختبارات المتبقية لفتح توصيات الذكاء الاصطناعي.",
     "category": "الفئة",
-    "catAptitude": "القدرات",
+    "catAptitude": "تقييم القدرات والاهتمامات",
     "catPersonality": "الشخصية",
     "catSkills": "المهارات",
     "questionWord": "سؤال",
@@ -701,8 +815,7 @@
     "inProgressBadge": "جارٍ",
     "notStartedBadge": "لم يبدأ",
     "retry": "إعادة المحاولة",
-    "submittedSuccess": "تم إرسال الاختبار بنجاح!",
-    "retry": "إعادة المحاولة"
+    "submittedSuccess": "تم إرسال الاختبار بنجاح!"
   },
   "errors": {
     "tooManyRequests": "الطلبات كثيرة جدًا. الرجاء الانتظار قليلاً.",
@@ -712,25 +825,184 @@
   },
   "admin": {
     "title": "لوحة تحكم المدير",
+    "welcomeAdmin": "مرحبًا أيها المدير 🛡️",
+    "welcomeSubtitle": "راقب نشاط المنصة وإدارة المستخدمين والمحتوى.",
+    "recentUsers": "المستخدمون الأخيرون",
+    "viewAll": "عرض الكل ←",
+    "manageUsers": "إدارة المستخدمين",
+    "manageUsersDesc": "عرض وتعديل جميع المستخدمين",
+    "manageTests": "إدارة الاختبارات",
+    "manageTestsDesc": "تعديل اختبارات التوجيه",
+    "careersDb": "قاعدة بيانات المهن",
+    "careersDbDesc": "تحديث المسارات المهنية",
+    "recommendationsDesc": "مراجعة أحدث مطابقات الطلاب",
+    "statTotalUsers": "إجمالي المستخدمين",
+    "statVerifiedUsers": "المستخدمون الموثقون",
+    "statSubmissions": "إرسالات الاختبارات",
+    "statActiveTests": "الاختبارات النشطة",
+    "statRecommendations": "التوصيات",
+    "statCareerPaths": "المسارات المهنية",
+    "statCareerCategories": "تصنيفات المهن",
+    "statAvgScore": "متوسط درجة التطابق",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "saving": "جارٍ الحفظ...",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "close": "إغلاق",
     "users": {
       "title": "إدارة المستخدمين",
       "addUser": "إضافة مستخدم",
       "export": "تصدير",
-      "searchPlaceholder": "البحث عن مستخدمين..."
+      "searchPlaceholder": "البحث عن مستخدمين...",
+      "totalUsers": "إجمالي المستخدمين",
+      "active": "نشط",
+      "selected": "محدد",
+      "showing": "عرض",
+      "of": "من",
+      "users": "مستخدمين",
+      "allFieldsRequired": "جميع الحقول مطلوبة",
+      "passwordMinLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+      "nameEmailRequired": "الاسم والبريد الإلكتروني مطلوبان",
+      "addUserTitle": "إضافة مستخدم",
+      "userDetails": "تفاصيل المستخدم",
+      "editUser": "تعديل المستخدم",
+      "createUser": "إنشاء المستخدم",
+      "creating": "جارٍ الإنشاء...",
+      "saveChanges": "حفظ التغييرات",
+      "confirmDeleteUser": "هل أنت متأكد من حذف هذا المستخدم؟",
+      "confirmDeleteSelected": "حذف {{count}} مستخدم(مستخدمين)؟",
+      "updatedSuccess": "تم تحديث المستخدم بنجاح!",
+      "deletedSuccess": "تم حذف المستخدم بنجاح!",
+      "deletedMultiSuccess": "تم حذف المستخدمين بنجاح!",
+      "createdSuccess": "تم إنشاء المستخدم بنجاح!",
+      "exportSuccess": "تم تصدير Excel بنجاح!",
+      "exportFailed": "فشل تصدير Excel",
+      "unableToLoad": "تعذر تحميل المستخدمين من الخادم.",
+      "columns": {
+        "user": "المستخدم",
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "role": "الدور",
+        "tests": "الاختبارات",
+        "status": "الحالة",
+        "verified": "موثق",
+        "joined": "تاريخ الانضمام",
+        "lastActive": "آخر نشاط"
+      },
+      "filterAll": "الكل",
+      "filterActive": "نشط",
+      "filterInactive": "غير نشط",
+      "filterPending": "معلق",
+      "roleStudent": "طالب",
+      "roleAdmin": "مدير",
+      "labelName": "الاسم",
+      "labelEmail": "البريد الإلكتروني",
+      "labelPassword": "كلمة المرور",
+      "labelRole": "الدور"
     },
     "tests": {
       "title": "إدارة الاختبارات",
       "newTest": "اختبار جديد",
-      "searchPlaceholder": "البحث عن اختبارات..."
+      "searchPlaceholder": "البحث عن اختبارات...",
+      "testsCount": "اختبارات",
+      "activeCount": "نشط",
+      "editTest": "تعديل الاختبار",
+      "newTestTitle": "اختبار جديد",
+      "labelTitle": "العنوان",
+      "labelDescription": "الوصف",
+      "labelCategory": "الفئة",
+      "labelDuration": "المدة (دقيقة)",
+      "filterAll": "الكل",
+      "category": {
+        "personality": "الشخصية",
+        "aptitude": "القدرات",
+        "skills": "المهارات"
+      },
+      "option": "خيار",
+      "durationUnit": "دقيقة",
+      "titleRequired": "العنوان مطلوب",
+      "updatedSuccess": "تم تحديث الاختبار بنجاح!",
+      "deletedSuccess": "تم حذف الاختبار بنجاح!",
+      "confirmDelete": "هل تريد حذف هذا الاختبار وجميع أسئلته؟",
+      "questions": "أسئلة",
+      "noQuestionsYet": "لا توجد أسئلة بعد. أضف سؤالك الأول أدناه.",
+      "addQuestion": "إضافة سؤال",
+      "adding": "جارٍ الإضافة...",
+      "questionText": "نص السؤال...",
+      "singleChoice": "اختيار واحد",
+      "scale": "مقياس",
+      "text": "نص",
+      "confirmDeleteQuestion": "هل تريد حذف هذا السؤال؟",
+      "deactivate": "تعطيل",
+      "activate": "تفعيل",
+      "manageQuestions": "إدارة الأسئلة"
     },
     "careers": {
       "title": "إدارة المسارات المهنية",
       "addCareer": "إضافة مسار",
-      "searchPlaceholder": "البحث عن مسارات..."
+      "searchPlaceholder": "البحث عن مسارات...",
+      "filterAll": "الكل",
+      "titleExample": "مثال: هندسة برمجيات",
+      "salaryExample": "مثال: 80k$–130k$",
+      "skillsExample": "مثال: بايثون، تحليل البيانات، SQL",
+      "careerPaths": "مسار مهني",
+      "categories": "تصنيفات",
+      "showing": "عرض",
+      "of": "من",
+      "careers": "مسارات",
+      "addCareerTitle": "إضافة مسار مهني",
+      "editCareerTitle": "تعديل المسار المهني",
+      "labelTitle": "العنوان",
+      "labelDescription": "الوصف",
+      "labelCategory": "الفئة",
+      "labelDemand": "مستوى الطلب",
+      "labelSalary": "نطاق الراتب",
+      "labelSkills": "المهارات المطلوبة",
+      "labelSkillsHint": "(مفصولة بفاصلة)",
+      "labelFutureScope": "النطاق المستقبلي",
+      "titleRequired": "العنوان مطلوب",
+      "categoryRequired": "الفئة مطلوبة",
+      "updatedSuccess": "تم تحديث المسار المهني بنجاح!",
+      "addedSuccess": "تم إضافة المسار المهني بنجاح!",
+      "deletedSuccess": "تم حذف المسار المهني بنجاح!",
+      "confirmDelete": "هل تريد حذف هذا المسار المهني؟",
+      "failedSave": "فشل حفظ المسار المهني."
     },
     "recommendations": {
       "title": "توصيات الذكاء الاصطناعي",
-      "regenerateAll": "إعادة توليد الكل"
+      "subtitle": "مراجعة وإدارة توصيات الطلاب",
+      "regenerateAll": "إعادة توليد الكل",
+      "summary": {
+        "totalGenerated": "إجمالي التوصيات المولدة",
+        "pendingGeneration": "قيد الانتظار",
+        "adminReviewed": "تمت مراجعة الإدارة",
+        "avgTopScore": "متوسط أعلى درجة"
+      },
+      "searchPlaceholder": "البحث بالمستخدم...",
+      "filters": {
+        "all": "الكل",
+        "reviewed": "مراجعة",
+        "unreviewed": "غير مراجعة"
+      },
+      "table": {
+        "student": "المستخدم",
+        "topRecommendations": "أفضل التوصيات",
+        "topScore": "أعلى نتيجة",
+        "testDate": "تاريخ الاختبار",
+        "status": "الحالة",
+        "reviewed": "تمت المراجعة"
+      },
+      "status": {
+        "generated": "مولد",
+        "pending": "قيد الانتظار"
+      },
+      "view": "عرض",
+      "viewUser": "عرض المستخدم",
+      "viewDetails": "تفاصيل التوصية",
+      "editDetails": "تعديل التوصية",
+      "markReviewed": "تحديد كمراجع",
+      "failedLoad": "فشل تحميل التوصيات."
     },
     "analytics": {
       "title": "الإحصائيات والتحليلات",
@@ -738,6 +1010,7 @@
     },
     "settings": {
       "title": "الإعدادات",
+      "subtitle": "إدارة إعدادات وتفضيلات المنصة",
       "save": "حفظ التغييرات",
       "tabs": {
         "general": "عام",
@@ -745,6 +1018,56 @@
         "notifications": "الإشعارات",
         "localization": "اللغة والمنطقة",
         "data": "البيانات والتخزين"
+      },
+      "general": {
+        "platformConfig": "إعداد المنصة",
+        "platformName": "اسم المنصة",
+        "supportEmail": "البريد الإلكتروني للدعم",
+        "accessControl": "التحكم في الوصول",
+        "maintenanceMode": "وضع الصيانة",
+        "maintenanceModeDesc": "تعطيل الوصول مؤقتاً لجميع غير المسؤولين",
+        "allowRegistrations": "السماح بالتسجيلات الجديدة",
+        "allowRegistrationsDesc": "تفعيل أو تعطيل تسجيل المستخدمين الجدد",
+        "requireEmailVerification": "طلب التحقق من البريد الإلكتروني",
+        "requireEmailVerificationDesc": "يجب على المستخدمين التحقق من بريدهم قبل الوصول للمنصة",
+        "maintenanceWarningTitle": "وضع الصيانة مفعّل",
+        "maintenanceWarningDesc": "سيرى جميع الطلاب صفحة صيانة. فقط حسابات المسؤولين يمكنها تسجيل الدخول."
+      },
+      "security": {
+        "authentication": "المصادقة",
+        "twoFactorAdmin": "المصادقة الثنائية للمسؤولين",
+        "twoFactorAdminDesc": "طلب المصادقة الثنائية لجميع حسابات المسؤولين",
+        "ipWhitelist": "القائمة البيضاء للـ IP",
+        "ipWhitelistDesc": "تقييد وصول المسؤولين لعناوين IP محددة",
+        "sessionSettings": "إعدادات الجلسة",
+        "sessionTimeout": "انتهاء مهلة الجلسة (دقائق)",
+        "maxLoginAttempts": "الحد الأقصى لمحاولات تسجيل الدخول"
+      },
+      "notifications": {
+        "emailPreferences": "تفضيلات إشعارات البريد الإلكتروني",
+        "newUserEmail": "تسجيل مستخدم جديد",
+        "newUserEmailDesc": "تلقي بريد إلكتروني عند تسجيل مستخدم جديد",
+        "testCompletionEmail": "إكمال الاختبارات",
+        "testCompletionEmailDesc": "إشعار عند إكمال المستخدمين لاختبارات التوجيه",
+        "weeklyReport": "تقرير تحليلي أسبوعي",
+        "weeklyReportDesc": "ملخص أسبوعي تلقائي لنشاط المنصة",
+        "systemAlerts": "تنبيهات النظام",
+        "systemAlertsDesc": "إشعارات حرجة حول صحة النظام والأخطاء"
+      },
+      "localization": {
+        "languageRegion": "اللغة والمنطقة",
+        "defaultLanguage": "اللغة الافتراضية",
+        "defaultRegion": "المنطقة الافتراضية"
+      },
+      "data": {
+        "databaseManagement": "إدارة قاعدة البيانات",
+        "exportUsers": "تصدير جميع المستخدمين",
+        "exportUsersDesc": "تنزيل CSV لجميع المستخدمين",
+        "exportTestResults": "تصدير نتائج الاختبارات",
+        "exportTestResultsDesc": "جميع ردود الاختبارات",
+        "dangerZone": "منطقة الخطر",
+        "dangerZoneDesc": "إجراءات لا يمكن التراجع عنها. تصرف بحذر شديد.",
+        "clearTestData": "مسح جميع بيانات الاختبارات"
       }
     }
   },
@@ -798,5 +1121,69 @@
   },
   "adminNavbar": {
     "adminPanel": "لوحة الإدارة"
+  },
+  "career": {
+    "title": "مستكشف الوظائف",
+    "subtitle": "اكتشف المسارات المهنية عبر القطاعات الرئيسية في المغرب.",
+    "saved": "المحفوظة ({{count}})",
+    "searchPlaceholder": "ابحث عن وظائف أو مهارات أو وصف…",
+    "all": "الكل",
+    "retry": "إعادة المحاولة",
+    "empty": {
+      "savedTitle": "لا توجد وظائف محفوظة بعد",
+      "savedDesc": "انقر على زر ♡ في أي بطاقة وظيفة لحفظها.",
+      "noResultsTitle": "لم يتم العثور على وظائف",
+      "noResultsDesc": "جرّب بحثًا مختلفًا أو مرشح فئة آخر."
+    },
+    "clearFilters": "مسح الفلاتر",
+    "card": {
+      "clickToExplore": "انقر للاستكشاف",
+      "details": "تفاصيل →"
+    },
+    "save": {
+      "add": "حفظ الوظيفة",
+      "remove": "إزالة من المفضلات"
+    },
+    "toast": {
+      "removed": "تمت إزالتها من الوظائف المحفوظة",
+      "saved": "تم حفظ الوظيفة!"
+    },
+    "modal": {
+      "tab": {
+        "overview": "نظرة عامة",
+        "morocco": "🇲🇦 المغرب",
+        "skills": "المهارات والدراسة"
+      },
+      "careerProspects": "آفاق المهنة",
+      "moroccanContext": "سياق السوق المغربي",
+      "recommendedSchools": "المدارس الموصى بها في المغرب",
+      "requiredSkills": "المهارات المطلوبة",
+      "studyPaths": "مسارات الدراسة"
+    },
+    "results": {
+      "showing": "يعرض",
+      "careers": "وظيفة",
+      "careers_plural": "وظائف",
+      "in": "في",
+      "matching": "مطابقة",
+      "saved": "(محفوظ)"
+    }
+  }
+  ,
+  "chatbot": {
+    "title": "مساعد الذكاء الاصطناعي",
+    "subtitle": "مستشار التوجيه · مدعوم من Gemini",
+    "initialMessage": "مرحبًا! أنا **Massarek AI**، مستشارك في التوجيه. 🎓\n\nأنا هنا لمساعدتك في:\n- اختيار مجال دراستك\n- استكشاف المسارات المهنية\n- اكتشاف الجامعات والبرامج\n- تطوير مهاراتك\n\nكيف يمكنني مساعدتك اليوم؟",
+    "suggestedQuestions": [
+      "ما هي التخصصات المناسبة لملف علمي؟",
+      "كيف أختار بين الهندسة والطب؟",
+      "ما الجامعات التي توصي بها في المغرب؟",
+      "ما المهارات المطلوبة للعمل في مجال الحاسوب؟"
+    ],
+    "inputPlaceholder": "اسأل سؤالًا عن التوجيه…",
+    "clearTitle": "مسح المحادثة",
+    "newChat": "محادثة جديدة",
+    "note": "يجيب Massarek AI على أسئلة التوجيه الدراسي والمهني فقط.",
+    "serviceUnavailable": "الخدمة غير متاحة مؤقتًا. الرجاء المحاولة مرة أخرى."
   }
 }

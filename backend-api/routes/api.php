@@ -10,6 +10,7 @@ use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,11 +73,25 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/ping', fn() => response()->json(['message' => 'ok']));
         Route::get('/dashboard', [AdminController::class, 'dashboard']);
         Route::get('/users', [AdminController::class, 'users']);
+        Route::post('/users', [AdminController::class, 'createUser']);
+        Route::get('/users/export/csv', [AdminController::class, 'exportUsers']);
+        Route::get('/users/{id}', [AdminController::class, 'showUser']);
+        Route::put('/users/{id}', [AdminController::class, 'updateUser']);
         Route::delete('/users/{id}', [AdminController::class, 'deleteUser']);
         Route::get('/tests', [AdminController::class, 'tests']);
+        Route::post('/tests', [AdminController::class, 'createTest']);
+        Route::put('/tests/{id}', [AdminController::class, 'updateTest']);
+        Route::delete('/tests/{id}', [AdminController::class, 'deleteTest']);
         Route::put('/tests/{id}/status', [AdminController::class, 'updateTestStatus']);
+        Route::get('/tests/{id}/questions', [AdminController::class, 'testQuestions']);
+        Route::post('/tests/{id}/questions', [AdminController::class, 'createQuestion']);
+        Route::put('/tests/{id}/questions/{qid}', [AdminController::class, 'updateQuestion']);
+        Route::delete('/tests/{id}/questions/{qid}', [AdminController::class, 'deleteQuestion']);
         Route::get('/recommendations', [AdminController::class, 'recommendations']);
         Route::get('/careers', [CareerController::class, 'index']);
+        Route::post('/careers', [AdminController::class, 'createCareer']);
+        Route::put('/careers/{id}', [AdminController::class, 'updateCareer']);
+        Route::delete('/careers/{id}', [AdminController::class, 'deleteCareer']);
         Route::get('/career-categories', [CareerController::class, 'categories']);
     });
 });

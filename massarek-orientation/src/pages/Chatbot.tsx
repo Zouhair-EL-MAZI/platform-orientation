@@ -1,12 +1,9 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Send, Bot, User, Sparkles, RefreshCw, AlertCircle } from "lucide-react";
 import { sendChatMessage, type ChatMessage } from "@/services/studentApi";
 
-const INITIAL_MESSAGE: ChatMessage = {
-  role: "assistant",
-  content:
-    "Bonjour ! Je suis **Massarek AI**, votre conseiller d'orientation. 🎓\n\nJe suis là pour vous aider à :\n- Choisir votre filière d'études\n- Explorer des carrières professionnelles\n- Découvrir des universités et programmes\n- Développer vos compétences\n\nComment puis-je vous aider aujourd'hui ?",
-};
+// initial message moved into component to allow translations
 
 function TypingIndicator() {
   return (
@@ -101,15 +98,13 @@ function MessageBubble({ msg }: { msg: ChatMessage }) {
   );
 }
 
-const SUGGESTED_QUESTIONS = [
-  "Quelles filières correspondent à un profil scientifique ?",
-  "Comment choisir entre ingénierie et médecine ?",
-  "Quelles universités recommandes-tu au Maroc ?",
-  "Quelles compétences faut-il pour travailler en informatique ?",
-];
+// suggested questions moved into component for translations
 
 const Chatbot = () => {
-  const [messages, setMessages] = useState<ChatMessage[]>([INITIAL_MESSAGE]);
+  const { t, i18n } = useTranslation();
+  const [messages, setMessages] = useState<ChatMessage[]>(() => [
+    { role: "assistant", content: t("chatbot.initialMessage") },
+  ]);
   const [input, setInput]       = useState("");
   const [loading, setLoading]   = useState(false);
   const [error, setError]       = useState<string | null>(null);
@@ -124,6 +119,35 @@ const Chatbot = () => {
   const send = async (text?: string) => {
     const content = (text ?? input).trim();
     if (!content || loading) return;
+
+    // language detection heuristic for first user message
+    const detectLanguage = (s: string) => {
+      try {
+        if (/\p{Script=Arabic}/u.test(s)) return "ar";
+      } catch (err) {
+        // fallback if JS engine doesn't support Unicode property escapes
+        if (/[\u0600-\u06FF]/.test(s)) return "ar";
+      }
+      if (/\b(bonjour|je|merci|quel|quelle|vous)\b|[éàèùâêîôûçœ]/i.test(s)) return "fr";
+      return "en";
+    };
+
+    // If this is the first user message, detect language and switch translations
+    try {
+      if (messages.length === 1) {
+        const lang = detectLanguage(content);
+        if (lang && lang !== i18n.language) {
+          await i18n.changeLanguage(lang);
+          // update the initial assistant message to the newly selected language
+          setMessages((prev) => [
+            { role: "assistant", content: t("chatbot.initialMessage") },
+            ...prev.slice(1),
+          ]);
+        }
+      }
+    } catch (err) {
+      // ignore language switch errors and proceed
+    }
 
     const userMsg: ChatMessage = { role: "user", content };
     const history = messages.slice(1); // exclude initial greeting from history
@@ -141,9 +165,7 @@ const Chatbot = () => {
       };
       setMessages((prev) => [...prev, assistantMsg]);
     } catch (e: any) {
-      const errMsg =
-        e?.response?.data?.message ||
-        "Service temporarily unavailable. Please try again.";
+      const errMsg = e?.response?.data?.message || t("chatbot.serviceUnavailable");
       setError(errMsg);
       // Remove the user message if it failed
       setMessages((prev) => prev.filter((m) => m !== userMsg));
@@ -154,7 +176,7 @@ const Chatbot = () => {
   };
 
   const clearChat = () => {
-    setMessages([INITIAL_MESSAGE]);
+    setMessages([{ role: "assistant", content: t("chatbot.initialMessage") }]);
     setError(null);
   };
 
@@ -173,10 +195,10 @@ const Chatbot = () => {
             <Bot size={20} className="text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold">Massarek AI</h1>
+            <h1 className="text-lg font-bold">{t("chatbot.title")}</h1>
             <p className="text-xs text-muted-foreground flex items-center gap-1">
               <Sparkles size={10} style={{ color: "var(--ms-accent-cyan)" }} />
-              Conseiller d'orientation · Powered by Gemini
+              {t("chatbot.subtitle")}
             </p>
           </div>
         </div>
@@ -185,9 +207,9 @@ const Chatbot = () => {
           onClick={clearChat}
           className="flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-all"
           style={{ background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-subtle)", color: "var(--ms-accent-sky)" }}
-          title="Clear conversation"
+          title={t("chatbot.clearTitle")}
         >
-          <RefreshCw size={12} /> New chat
+          <RefreshCw size={12} /> {t("chatbot.newChat")}
         </button>
       </div>
 
@@ -215,7 +237,7 @@ const Chatbot = () => {
       {/* Suggested Questions (shown only at start) */}
       {messages.length === 1 && (
         <div className="py-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {SUGGESTED_QUESTIONS.map((q) => (
+          {(t("chatbot.suggestedQuestions", { returnObjects: true }) as string[]).map((q) => (
             <button
               key={q}
               onClick={() => send(q)}
@@ -235,7 +257,7 @@ const Chatbot = () => {
       )}
 
       {/* Input */}
-      <div
+        <div
         className="mt-3 flex gap-2 p-3 rounded-2xl"
         style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", backdropFilter: "blur(12px)" }}
       >
@@ -244,7 +266,7 @@ const Chatbot = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && send()}
-          placeholder="Posez votre question sur l'orientation…"
+            placeholder={t("chatbot.inputPlaceholder")}
           disabled={loading}
           className="flex-1 bg-transparent text-sm focus:outline-none disabled:opacity-60"
           style={{
@@ -274,7 +296,7 @@ const Chatbot = () => {
       </div>
 
       <p className="text-[10px] text-center mt-2 text-muted-foreground opacity-50">
-        Massarek AI répond uniquement aux questions d'orientation scolaire et professionnelle.
+        {t("chatbot.note")}
       </p>
 
       {/* Bounce animation */}

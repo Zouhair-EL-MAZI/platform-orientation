@@ -32,9 +32,11 @@ class CareerController extends Controller
             $query->whereJsonContains('required_skills', $skill);
         }
 
-        $careers = $query->orderBy('title')
-            ->get()
-            ->map(fn($c) => $this->formatCareer($c));
+        // Admin gets all, student gets paginated
+        $isAdmin = auth()->user()?->role === 'admin';
+        $careers = $isAdmin
+            ? $query->orderBy('title')->get()->map(fn($c) => $this->formatCareer($c))
+            : $query->orderBy('title')->paginate(10)->through(fn($c) => $this->formatCareer($c));
 
         return response()->json(['success' => true, 'data' => $careers]);
     }

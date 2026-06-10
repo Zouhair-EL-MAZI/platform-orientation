@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Users, FileQuestion, Briefcase, TrendingUp,
   Sparkles, Activity, ArrowUpRight, Clock, UserPlus, CheckCircle, AlertCircle,
@@ -20,16 +21,17 @@ interface DashboardData {
   recent_users: { id: number; name: string; email: string; role: string; tests: number; status: string; verified: boolean; joined: string; lastActive: string }[];
 }
 
-const quickLinks = [
-  { icon: Users,        title: "Manage Users",    desc: "View and edit all users",          to: "/admin/users",           primary: true  },
-  { icon: FileQuestion, title: "Manage Tests",    desc: "Edit orientation tests",           to: "/admin/tests",           primary: false },
-  { icon: Briefcase,    title: "Careers DB",      desc: "Update career paths",              to: "/admin/careers",         primary: false },
-  { icon: Sparkles,     title: "Recommendations", desc: "Review latest student matches",   to: "/admin/recommendations", primary: false },
-];
-
 const AdminDashboardPage = () => {
+  const { t } = useTranslation();
   const [data, setData]       = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const quickLinks = [
+    { icon: Users,        title: t("admin.manageUsers"),             desc: t("admin.manageUsersDesc"),          to: "/admin/users",           primary: true  },
+    { icon: FileQuestion, title: t("admin.manageTests"),             desc: t("admin.manageTestsDesc"),          to: "/admin/tests",           primary: false },
+    { icon: Briefcase,    title: t("admin.careersDb"),               desc: t("admin.careersDbDesc"),            to: "/admin/careers",         primary: false },
+    { icon: Sparkles,     title: t("admin.recommendations.title"),   desc: t("admin.recommendationsDesc"),      to: "/admin/recommendations", primary: false },
+  ];
 
   useEffect(() => {
     api.get("/admin/dashboard")
@@ -38,14 +40,14 @@ const AdminDashboardPage = () => {
   }, []);
 
   const stats = data ? [
-    { label: "Total Users",          value: data.stats.total_users,        icon: Users,        color: "var(--ms-accent-cyan)", glow: "rgba(34,211,238,0.15)" },
-    { label: "Verified Users",       value: data.stats.total_verified_users, icon: CheckCircle, color: "#34D399",             glow: "rgba(52,211,153,0.15)" },
-    { label: "Tests Submissions",    value: data.stats.total_submissions,  icon: FileQuestion, color: "var(--ms-accent-sky)",  glow: "rgba(14,165,233,0.15)"  },
-    { label: "Active Tests",         value: data.stats.total_tests,        icon: Activity,     color: "#A78BFA",               glow: "rgba(167,139,250,0.15)" },
-    { label: "Recommendations",      value: data.stats.total_recommendations, icon: Sparkles, color: "#F97316",             glow: "rgba(249,115,22,0.15)" },
-    { label: "Career Paths",         value: data.stats.total_careers,      icon: Briefcase,   color: "#8B5CF6",               glow: "rgba(139,92,246,0.15)" },
-    { label: "Career Categories",    value: data.stats.total_categories,   icon: TrendingUp,  color: "#38BDF8",               glow: "rgba(56,189,248,0.15)" },
-    { label: "Avg Match Score",      value: `${data.stats.avg_match_score}%`, icon: TrendingUp, color: "#10B981",             glow: "rgba(16,185,129,0.15)" },
+    { label: t("admin.statTotalUsers"),       value: data.stats.total_users,           icon: Users,        color: "var(--ms-accent-cyan)", glow: "rgba(34,211,238,0.15)" },
+    { label: t("admin.statVerifiedUsers"),    value: data.stats.total_verified_users,  icon: CheckCircle,  color: "#34D399",               glow: "rgba(52,211,153,0.15)" },
+    { label: t("admin.statSubmissions"),      value: data.stats.total_submissions,     icon: FileQuestion, color: "var(--ms-accent-sky)",  glow: "rgba(14,165,233,0.15)" },
+    { label: t("admin.statActiveTests"),      value: data.stats.total_tests,           icon: Activity,     color: "#A78BFA",               glow: "rgba(167,139,250,0.15)" },
+    { label: t("admin.statRecommendations"),  value: data.stats.total_recommendations, icon: Sparkles,     color: "#F97316",               glow: "rgba(249,115,22,0.15)" },
+    { label: t("admin.statCareerPaths"),      value: data.stats.total_careers,         icon: Briefcase,    color: "#8B5CF6",               glow: "rgba(139,92,246,0.15)" },
+    { label: t("admin.statCareerCategories"), value: data.stats.total_categories,      icon: TrendingUp,   color: "#38BDF8",               glow: "rgba(56,189,248,0.15)" },
+    { label: t("admin.statAvgScore"),         value: `${data.stats.avg_match_score}%`, icon: TrendingUp,   color: "#10B981",               glow: "rgba(16,185,129,0.15)" },
   ] : [];
 
   return (
@@ -56,8 +58,8 @@ const AdminDashboardPage = () => {
         style={{ background: "linear-gradient(120deg, #1E3A8A 0%, #0E7490 50%, #1E40AF 100%)", border: "1px solid rgba(34,211,238,0.20)", boxShadow: "0 8px 40px rgba(14,116,144,0.28)" }}>
         <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold mb-1 text-white">Welcome, Administrator 🛡️</h1>
-            <p className="text-white/65 text-sm">Monitor platform activity, manage users and content.</p>
+            <h1 className="text-2xl md:text-3xl font-bold mb-1 text-white">{t("admin.welcomeAdmin")}</h1>
+            <p className="text-white/65 text-sm">{t("admin.welcomeSubtitle")}</p>
           </div>
         </div>
       </div>
@@ -113,15 +115,15 @@ const AdminDashboardPage = () => {
           <div className="px-6 py-4 flex items-center justify-between"
             style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
             <h2 className="font-bold flex items-center gap-2 text-base">
-              <Users size={16} style={{ color: "var(--ms-accent-cyan)" }} /> Recent Users
+              <Users size={16} style={{ color: "var(--ms-accent-cyan)" }} /> {t("admin.recentUsers")}
             </h2>
-            <Link to="/admin/users" className="text-xs font-bold hover:opacity-80" style={{ color: "var(--ms-accent-sky)" }}>View all →</Link>
+            <Link to="/admin/users" className="text-xs font-bold hover:opacity-80" style={{ color: "var(--ms-accent-sky)" }}>{t("admin.viewAll")}</Link>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
-                  {["Name", "Email", "Tests", "Status", "Joined"].map(h => (
+                  {[t("admin.users.columns.name"), t("common.email"), t("admin.users.columns.tests"), t("admin.users.columns.status"), t("admin.users.columns.joined")].map(h => (
                     <th key={h} className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider"
                       style={{ color: "var(--ms-accent-cyan)", opacity: 0.65 }}>{h}</th>
                   ))}

@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import {
   Sparkles,
@@ -125,7 +126,7 @@ function SkeletonDashboard() {
   return (
     <div className="max-w-6xl mx-auto space-y-5">
       {/* Banner */}
-      <Bone className="h-28 rounded-2xl" />
+              className="rounded-2xl p-12 flex flex-col items-center text-center gap-4"
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[0, 1, 2, 3].map((i) => (
@@ -151,7 +152,7 @@ function SkeletonDashboard() {
         {[0, 1, 2, 3].map((i) => (
           <div
             key={i}
-            className="rounded-2xl p-5 space-y-2"
+            className="rounded-2xl p-5 space-y-3"
             style={{
               background: "var(--ms-bg-card)",
               border: "1px solid var(--ms-border-subtle)",
@@ -314,6 +315,7 @@ const RANK = [
 // ─── Main component ───────────────────────────────────────────────────────────
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const { user: authUser } = useAuth();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -326,7 +328,7 @@ const Dashboard = () => {
       const res = await getDashboard();
       setData(res.data.data);
     } catch {
-      setError("Failed to load dashboard. Please refresh.");
+      setError(t("dashboard.errorTitle"));
     } finally {
       setLoading(false);
     }
@@ -377,7 +379,7 @@ const Dashboard = () => {
           </div>
           <div>
             <p className="font-semibold text-base mb-1">
-              Could not load dashboard
+              {t("dashboard.errorTitle")}
             </p>
             <p className="text-sm text-muted-foreground">{error}</p>
           </div>
@@ -400,9 +402,9 @@ const Dashboard = () => {
   const STAT_CARDS = [
     {
       icon: User,
-      label: "Profile",
+      label: t("dashboard.stats.profile"),
       value: `${profilePct}%`,
-      sub: profilePct < 80 ? "Incomplete — add more" : "Looking complete!",
+      sub: profilePct < 80 ? t("dashboard.stats.incomplete") : t("dashboard.stats.lookingComplete"),
       color: "var(--ms-accent-cyan)",
       glow: "var(--ms-accent-glow)",
       pct: profilePct,
@@ -410,9 +412,9 @@ const Dashboard = () => {
     },
     {
       icon: FileQuestion,
-      label: "Tests Done",
+      label: t("dashboard.stats.testsDone"),
       value: `${testsDone}`,
-      sub: `of ${testsTotal} available`,
+      sub: `${t("dashboard.stats.of")} ${testsTotal} ${t("dashboard.stats.available")}`,
       color: "#A78BFA",
       glow: "rgba(167,139,250,0.13)",
       pct: testsPct,
@@ -420,9 +422,9 @@ const Dashboard = () => {
     },
     {
       icon: Sparkles,
-      label: "AI Matches",
+      label: t("dashboard.stats.aiMatches"),
       value: `${recCount}`,
-      sub: recCount > 0 ? "Personalised for you" : "Take a test first",
+      sub: recCount > 0 ? t("dashboard.stats.personalised") : t("dashboard.stats.takeTestFirst"),
       color: "#34D399",
       glow: "rgba(52,211,153,0.13)",
       pct: Math.min(recCount * 34, 100),
@@ -430,12 +432,12 @@ const Dashboard = () => {
     },
     {
       icon: Target,
-      label: "Exploration",
-      value: recCount > 0 ? "Active" : "Pending",
+      label: t("dashboard.stats.exploration"),
+      value: recCount > 0 ? t("dashboard.stats.active") : t("dashboard.stats.pending"),
       sub:
         recCount > 0
-          ? `${recCount} path${recCount !== 1 ? "s" : ""} found`
-          : "Complete test",
+          ? `${recCount} ${t("dashboard.stats.pathsFound")}`
+          : t("dashboard.stats.completeTest"),
       color: "var(--ms-accent-sky)",
       glow: "rgba(56,189,248,0.13)",
       pct: recCount > 0 ? 100 : 0,
@@ -475,12 +477,9 @@ const Dashboard = () => {
         <div className="relative z-10 flex items-center justify-between">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold mb-2 text-white">
-              Welcome back, {userName}! 👋
+              {t("dashboard.welcomeTitle", { name: userName })}
             </h1>
-            <p className="text-white/65 font-sans">
-              Continue your orientation journey and discover the perfect path
-              for your future.
-            </p>
+            <p className="text-white/65 font-sans">{t("dashboard.welcomeSubtitle")}</p>
           </div>
           <button
             onClick={load}
@@ -491,7 +490,7 @@ const Dashboard = () => {
               color: "#fff",
             }}
           >
-            <RefreshCw size={14} /> Refresh
+              <RefreshCw size={14} /> {t("dashboard.refresh")}
           </button>
         </div>
       </div>
@@ -612,21 +611,29 @@ const Dashboard = () => {
               />
             </div>
 
-            <div
-              className="font-bold text-sm mb-0.5"
-              style={{ color: a.primary ? "#fff" : undefined }}
-            >
-              {a.title}
-            </div>
-            <div
-              className="text-xs"
-              style={{
-                color: a.primary ? "rgba(255,255,255,0.62)" : undefined,
-                opacity: a.primary ? 1 : 0.65,
-              }}
-            >
-              {a.desc}
-            </div>
+            {(() => {
+              const translations = t("dashboard.quickActions", { returnObjects: true }) as any[];
+              const tx = translations && translations[i] ? translations[i] : { title: a.title, desc: a.desc };
+              return (
+                <>
+                  <div
+                    className="font-bold text-sm mb-0.5"
+                    style={{ color: a.primary ? "#fff" : undefined }}
+                  >
+                    {tx.title}
+                  </div>
+                  <div
+                    className="text-xs"
+                    style={{
+                      color: a.primary ? "rgba(255,255,255,0.62)" : undefined,
+                      opacity: a.primary ? 1 : 0.65,
+                    }}
+                  >
+                    {tx.desc}
+                  </div>
+                </>
+              );
+            })()}
 
             <ArrowRight
               size={12}
@@ -655,7 +662,7 @@ const Dashboard = () => {
         >
           <h2 className="font-bold mb-4 flex items-center gap-2 text-sm">
             <TrendingUp size={15} style={{ color: "var(--ms-accent-cyan)" }} />
-            Your Progress
+            {t("dashboard.progress.title")}
           </h2>
 
           {/* Radial ring + label */}
@@ -678,13 +685,13 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="min-w-0">
-              <div className="text-sm font-bold">Profile</div>
+              <div className="text-sm font-bold">{t("dashboard.progress.profile")}</div>
               <div className="text-xs text-muted-foreground leading-snug">
                 {profilePct < 40
-                  ? "Just getting started"
+                  ? t("dashboard.progress.justStarted")
                   : profilePct < 80
-                    ? "Almost complete"
-                    : "Looking great!"}
+                    ? t("dashboard.progress.almostComplete")
+                    : t("dashboard.progress.lookingGreat")}
               </div>
               {profilePct < 100 && (
                 <Link
@@ -692,7 +699,7 @@ const Dashboard = () => {
                   className="text-[10px] font-bold mt-1 flex items-center gap-0.5 w-fit"
                   style={{ color: "var(--ms-accent-sky)" }}
                 >
-                  Complete profile <ArrowRight size={9} />
+                  {t("dashboard.progress.completeProfile")} <ArrowRight size={9} />
                 </Link>
               )}
             </div>
@@ -702,21 +709,21 @@ const Dashboard = () => {
           <div className="space-y-4">
             {[
               {
-                label: "Profile",
+                label: t("dashboard.progress.profile"),
                 val: `${profilePct}%`,
                 pct: profilePct,
                 delay: 0,
                 color: "var(--ms-accent-cyan)",
               },
               {
-                label: "Tests completed",
+                label: t("dashboard.progress.testsCompleted"),
                 val: `${testsDone}/${testsTotal}`,
                 pct: testsPct,
                 delay: 100,
                 color: "#A78BFA",
               },
               {
-                label: "Recommendations",
+                label: t("dashboard.progress.recommendations"),
                 val: `${recCount}`,
                 pct: Math.min(recCount * 34, 100),
                 delay: 200,
@@ -744,19 +751,19 @@ const Dashboard = () => {
             {[
               {
                 icon: Trophy,
-                label: "Tests",
+                label: t("dashboard.progress.tests"),
                 value: testsDone,
                 color: "#FBBF24",
               },
               {
                 icon: Sparkles,
-                label: "Matches",
+                label: t("dashboard.progress.matches"),
                 value: recCount,
                 color: "#34D399",
               },
               {
                 icon: Target,
-                label: "Score",
+                label: t("dashboard.progress.score"),
                 value: profilePct > 0 ? `${profilePct}` : "—",
                 color: "var(--ms-accent-sky)",
               },
@@ -801,7 +808,7 @@ const Dashboard = () => {
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold flex items-center gap-2 text-sm">
               <Sparkles size={15} style={{ color: "var(--ms-accent-cyan)" }} />
-              AI Career Recommendations
+              {t("dashboard.recommendations.title")}
             </h2>
             {topRecs.length > 0 && (
               <Link
@@ -809,7 +816,7 @@ const Dashboard = () => {
                 className="text-xs font-bold flex items-center gap-1 transition-all hover:gap-1.5"
                 style={{ color: "var(--ms-accent-sky)" }}
               >
-                View all <ArrowRight size={11} />
+                {t("dashboard.recommendations.viewAll")} <ArrowRight size={11} />
               </Link>
             )}
           </div>
@@ -899,13 +906,13 @@ const Dashboard = () => {
                 );
               })}
               <p className="text-[10px] text-muted-foreground pt-1">
-                Based on your test results.{" "}
+                {t("dashboard.recommendations.basedOn")} {" "}
                 <Link
                   to="/recommendations"
                   className="underline"
                   style={{ color: "var(--ms-accent-cyan)" }}
                 >
-                  See full analysis →
+                  {t("dashboard.recommendations.seeFullAnalysis")}
                 </Link>
               </p>
             </div>
@@ -924,13 +931,8 @@ const Dashboard = () => {
                   style={{ color: "var(--ms-accent-cyan)", opacity: 0.55 }}
                 />
               </div>
-              <p className="font-semibold text-sm mb-1">
-                No recommendations yet
-              </p>
-              <p className="text-xs text-muted-foreground mb-5 max-w-[260px] leading-relaxed">
-                Complete the orientation test to receive AI-powered career
-                matches tailored to your profile.
-              </p>
+              <p className="font-semibold text-sm mb-1">{t("dashboard.recommendations.noTitle")}</p>
+              <p className="text-xs text-muted-foreground mb-5 max-w-[260px] leading-relaxed">{t("dashboard.recommendations.noDesc")}</p>
               <Link
                 to="/test"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105"
@@ -940,7 +942,7 @@ const Dashboard = () => {
                   boxShadow: "0 4px 16px var(--ms-accent-glow-strong)",
                 }}
               >
-                <FileQuestion size={14} /> Take the orientation test
+                <FileQuestion size={14} /> {t("dashboard.recommendations.takeTest")}
               </Link>
             </div>
           )}
@@ -961,11 +963,9 @@ const Dashboard = () => {
         >
           <h2 className="font-bold flex items-center gap-2 text-sm mb-0.5">
             <TrendingUp size={15} style={{ color: "var(--ms-accent-cyan)" }} />
-            Weekly Activity
+            {t("dashboard.analytics.title")}
           </h2>
-          <p className="text-xs text-muted-foreground mb-4">
-            Engagement this week
-          </p>
+          <p className="text-xs text-muted-foreground mb-4">{t("dashboard.analytics.subtitle")}</p>
 
           <ResponsiveContainer width="100%" height={76}>
             <AreaChart
@@ -1018,9 +1018,9 @@ const Dashboard = () => {
           {/* Mini stat row */}
           <div className="grid grid-cols-3 gap-2 mt-4">
             {[
-              { label: "Sessions", value: "7" },
-              { label: "Actions", value: String(testsDone + recCount) },
-              { label: "Streak", value: "1d" },
+              { label: t("dashboard.analytics.sessions"), value: "7" },
+              { label: t("dashboard.analytics.actions"), value: String(testsDone + recCount) },
+              { label: t("dashboard.analytics.streak"), value: "1d" },
             ].map((m) => (
               <div key={m.label} className="text-center">
                 <div className="font-extrabold text-base tabular-nums">
@@ -1046,7 +1046,7 @@ const Dashboard = () => {
         >
           <h2 className="font-bold flex items-center gap-2 text-sm mb-5">
             <Clock size={15} style={{ color: "var(--ms-accent-cyan)" }} />
-            Recent Activity
+            {t("dashboard.activity.title")}
           </h2>
 
           {activity.length > 0 ? (
@@ -1117,16 +1117,14 @@ const Dashboard = () => {
                   style={{ color: "var(--ms-accent-cyan)", opacity: 0.5 }}
                 />
               </div>
-              <p className="text-sm font-semibold mb-1">No activity yet</p>
-              <p className="text-xs text-muted-foreground mb-4">
-                Your actions — tests, recommendations — will appear here.
-              </p>
+              <p className="text-sm font-semibold mb-1">{t("dashboard.activity.noTitle")}</p>
+              <p className="text-xs text-muted-foreground mb-4">{t("dashboard.activity.noDesc")}</p>
               <Link
                 to="/test"
                 className="text-xs font-bold flex items-center gap-1 transition-all hover:gap-1.5"
                 style={{ color: "var(--ms-accent-sky)" }}
               >
-                Start with the orientation test <ArrowRight size={11} />
+                {t("dashboard.activity.startTest")} <ArrowRight size={11} />
               </Link>
             </div>
           )}

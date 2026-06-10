@@ -71,11 +71,31 @@ class RecommendationController extends Controller
                 ]),
             ]);
         } catch (\RuntimeException $e) {
+            $message = $e->getMessage();
+
+            // Map known Gemini error types to appropriate HTTP status codes
+            $statusCode = match (true) {
+                str_contains($message, 'quota')         => 429,  // rate limit / quota
+                str_contains($message, 'unavailable')   => 503,  // service down
+                str_contains($message, 'Network error') => 503,  // network failure
+                default                                 => 422,  // validation / logic error
+            };
+
+            \Illuminate\Support\Facades\Log::warning('RecommendationController: generation failed', [
+                'user_id' => $request->user()?->id,
+                'error'   => $message,
+                'status'  => $statusCode,
+            ]);
+
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
-            ], 422);
+                'message' => $message,
+            ], $statusCode);
+
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('RecommendationController: unexpected error', [
+                'error' => $e->getMessage(),
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'An unexpected error occurred. Please try again.',

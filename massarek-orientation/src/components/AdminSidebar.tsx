@@ -17,7 +17,7 @@
 // export default AdminSidebar;
 import {
   LayoutDashboard, Users, FileQuestion, Briefcase,
-  Sparkles, Settings, LogOut, Shield,
+  Sparkles, Settings, LogOut, Shield, BarChart3,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "@/components/NavLink";
@@ -71,6 +71,12 @@ export function AdminSidebar() {
       url: "/admin/recommendations",
       icon: Sparkles,
       roles: ["admin", "counselor"],
+    },
+    {
+      title: t("adminSidebar.analytics", "Analytics"),
+      url: "/admin/analytics",
+      icon: BarChart3,
+      roles: ["admin"],
     },
   ];
 

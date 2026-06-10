@@ -10,6 +10,10 @@ use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminCareerController;
+use App\Http\Controllers\AdminRecommendationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,8 +75,27 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('admin')->prefix('admin')->group(function () {
         Route::get('/ping', fn() => response()->json(['message' => 'ok']));
 
-        // Admin can also view all recommendations and careers (for management)
-        Route::get('/careers', [CareerController::class, 'index']);
-        Route::get('/career-categories', [CareerController::class, 'categories']);
+        // Dashboard
+        Route::get('/dashboard', [AdminController::class, 'dashboard']);
+        Route::get('/analytics', [AdminController::class, 'analytics']);
+
+        // Users
+        Route::get('/users',         [AdminUserController::class, 'index']);
+        Route::get('/users/stats',   [AdminUserController::class, 'stats']);
+        Route::get('/users/{id}',    [AdminUserController::class, 'show']);
+
+        // Careers (full CRUD)
+        Route::get('/careers',                   [AdminCareerController::class, 'index']);
+        Route::post('/careers',                  [AdminCareerController::class, 'store']);
+        Route::put('/careers/{id}',              [AdminCareerController::class, 'update']);
+        Route::delete('/careers/{id}',           [AdminCareerController::class, 'destroy']);
+        Route::get('/career-categories',         [AdminCareerController::class, 'categories']);
+        Route::post('/career-categories',        [AdminCareerController::class, 'storeCategory']);
+
+        // Recommendations (read-only analytics)
+        Route::get('/recommendations',           [AdminRecommendationController::class, 'index']);
+
+        // Tests (reuse existing student controller — same data, admin sees all)
+        Route::get('/tests',         [TestController::class, 'adminIndex']);
     });
 });

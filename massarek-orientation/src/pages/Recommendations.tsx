@@ -60,19 +60,22 @@ function clearCache(): void {
 // ─────────────────────────────────────────────────────────────────────────────
 // Error extractor — no external dependency
 // ─────────────────────────────────────────────────────────────────────────────
-function extractError(e: unknown): { msg: string; isRateLimit: boolean; isNetwork: boolean } {
-  const err = e as any;
+function extractError(e: unknown): { msg: string; isRateLimit: boolean; isNetwork: boolean; isServiceDown: boolean } {
+  const err    = e as any;
   const status = err?.response?.status;
   const msg =
     err?.response?.data?.message ||
-    (err?.code === "ECONNABORTED" ? "Request timed out." : null) ||
+    (err?.code === "ECONNABORTED" ? "Request timed out. Please try again." : null) ||
     (!err?.response ? "Network error. Check your connection." : null) ||
+    (status === 429 ? "AI quota exceeded. Please wait a moment and try again." : null) ||
+    (status === 503 ? "AI service is temporarily unavailable. Please try again shortly." : null) ||
     err?.message ||
     "An unexpected error occurred.";
   return {
     msg,
-    isRateLimit: status === 429,
-    isNetwork: !err?.response,
+    isRateLimit:   status === 429,
+    isNetwork:     !err?.response,
+    isServiceDown: status === 503 || status === 500,
   };
 }
 
@@ -501,11 +504,19 @@ function RecommendationCard({
 // GenErrorBanner — retry-aware error display
 // ─────────────────────────────────────────────────────────────────────────────
 function GenErrorBanner({
-  msg, isRateLimit, isNetwork, retryCount, onRetry,
+  msg, isRateLimit, isNetwork, isServiceDown, retryCount, onRetry,
 }: {
-  msg: string; isRateLimit: boolean; isNetwork: boolean;
+  msg: string; isRateLimit: boolean; isNetwork: boolean; isServiceDown: boolean;
   retryCount: number; onRetry: () => void;
 }) {
+  const title = isRateLimit
+    ? "Rate limit reached"
+    : isNetwork
+      ? "Network error"
+      : isServiceDown
+        ? "AI service unavailable"
+        : "Generation failed";
+
   return (
     <div className="rounded-2xl p-4 md:p-5 relative overflow-hidden"
       style={{ background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.20)" }}>
@@ -517,14 +528,17 @@ function GenErrorBanner({
             : <AlertCircle size={16} style={{ color: "#EF4444" }} />}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-sm mb-0.5" style={{ color: "#EF4444" }}>
-            {isRateLimit ? "Rate limit reached" : isNetwork ? "Network error" : "Generation failed"}
-          </p>
+          <p className="font-bold text-sm mb-0.5" style={{ color: "#EF4444" }}>{title}</p>
           <p className="text-xs text-muted-foreground leading-relaxed">{msg}</p>
 
           {isRateLimit && (
             <p className="text-xs mt-1.5 flex items-center gap-1" style={{ color: "#D97706" }}>
               <Clock size={11} /> You can try again after a short wait.
+            </p>
+          )}
+          {isServiceDown && (
+            <p className="text-xs mt-1.5 flex items-center gap-1" style={{ color: "#D97706" }}>
+              <Clock size={11} /> The AI service is temporarily down. Your cached results are shown below.
             </p>
           )}
         </div>
@@ -551,11 +565,24 @@ const Recommendations = () => {
   const [loading, setLoading]       = useState(true);
   const [generating, setGenerating] = useState(false);
   const [loadError, setLoadError]   = useState<string | null>(null);
-  const [genError, setGenError]     = useState<{ msg: string; isRateLimit: boolean; isNetwork: boolean } | null>(null);
+  const [genError, setGenError]     = useState<{
+    msg: string; isRateLimit: boolean; isNetwork: boolean; isServiceDown: boolean;
+  } | null>(null);
   const [expanded, setExpanded]     = useState<number | null>(null);
   const [locked, setLocked]         = useState(false);
   const [fromCache, setFromCache]   = useState(false);
   const retryCountRef               = useRef(0);
+  const retryTimerRef               = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef                  = useRef(true);
+
+  // Cleanup on unmount — cancel any pending retry timer
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
+    };
+  }, []);
 
   // ── Load tests status + recommendations (cache-first) ──────────────────────
   const load = useCallback(async () => {
@@ -613,38 +640,45 @@ const Recommendations = () => {
     try {
       const res  = await generateRecommendations();
       const data: Recommendation[] = res.data.data;
+      if (!mountedRef.current) return;
       setRecs(data);
-      writeCache(data);          // update cache with fresh data
+      writeCache(data);
       setFromCache(false);
       setExpanded(null);
       toast.success("AI recommendations generated!");
       retryCountRef.current = 0;
     } catch (e: unknown) {
+      if (!mountedRef.current) return;
       const err = extractError(e);
 
-      // Auto-retry once after delay (not for rate limits)
+      // Auto-retry once after delay (not for quota/rate-limit errors)
       if (!isRetry && !err.isRateLimit && retryCountRef.current < MAX_RETRIES) {
         retryCountRef.current += 1;
         toast.info("Retrying in 3 seconds…");
-        setTimeout(() => generate(true), RETRY_DELAY_MS);
+        retryTimerRef.current = setTimeout(() => {
+          if (mountedRef.current) generate(true);
+        }, RETRY_DELAY_MS);
         return; // keep generating=true during delay
       }
 
-      // Exhausted retries — show error, fall back to cache if possible
+      // Retries exhausted — show error banner
       setGenError(err);
       toast.error(err.msg);
 
+      // Fall back to cache if we have nothing to show
       const cached = readCache();
       if (cached && cached.data.length > 0 && recs.length === 0) {
         setRecs(cached.data);
         setFromCache(true);
         toast.info("Showing previously cached recommendations.");
       }
-    } finally {
-      if (isRetry || retryCountRef.current === 0) {
-        setGenerating(false);
-      }
+
+      // Only stop the generating spinner after retries are exhausted
+      setGenerating(false);
+      return;
     }
+    // Success path always stops spinner
+    setGenerating(false);
   }, [recs.length]);
 
   useEffect(() => { load(); }, [load]);
@@ -739,6 +773,7 @@ const Recommendations = () => {
           msg={genError.msg}
           isRateLimit={genError.isRateLimit}
           isNetwork={genError.isNetwork}
+          isServiceDown={genError.isServiceDown}
           retryCount={retryCountRef.current}
           onRetry={handleRetry}
         />

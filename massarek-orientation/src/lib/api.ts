@@ -15,14 +15,20 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// If 401 → token expired or invalid → clear session
+// If 401 → token expired or invalid → clear session and redirect
+// Exception: skip redirect if already on /login to avoid redirect loops
 api.interceptors.response.use(
   (res) => res,
   (error) => {
-    if (error.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        localStorage.removeItem("role");
+    if (
+      error.response?.status === 401 &&
+      !window.location.pathname.startsWith("/login") &&
+      !window.location.pathname.startsWith("/register") &&
+      !window.location.pathname.startsWith("/verify-email")
+    ) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("role");
       window.location.href = "/login";
     }
     return Promise.reject(error);

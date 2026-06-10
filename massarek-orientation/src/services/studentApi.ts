@@ -170,7 +170,12 @@ export const getCareerCategories = () =>
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const sendChatMessage = (message: string, history: ChatMessage[]) =>
-  api.post<{ success: boolean; message: string }>("/student/chat", {
+  api.post<{
+    success: boolean;
+    message: string;
+    fallback?: string;       // populated when AI is down but a graceful fallback exists
+    is_fallback?: boolean;
+  }>("/student/chat", {
     message,
     history,
   });

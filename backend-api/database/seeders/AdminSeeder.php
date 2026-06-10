@@ -14,14 +14,17 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'Zouhair El Mazi',
-            'email' => 'zouhairmazi@gmail.com',
-            // 'password' => bcrypt('password12345'),
-            'password' => Hash::make('password12345'),
-            'role' => 'admin',
-            'status' => 'active'
-            
-        ]);
+
+        User::firstOrCreate(
+            ['email' => 'zouhairmazi@gmail.com'],
+            [
+                'name'     => 'Zouhair El Mazi',
+                'password' => bcrypt('password12345'),
+                // 'password' => Hash::make('password12345'),
+                'role'     => 'admin',
+                'status'   => 'active',
+            ]
+        );
+        
     }
 }

@@ -17,7 +17,7 @@ class AdminSeeder extends Seeder
         $admins = [
             [
             'name' => 'Zouhair El Mazi',
-            'email' => 'rajao7002@gmail.com',
+            'email' => 'zouhairmazi@gmail.com',
             'password' =>'Zouhair12345',
             'role' => 'admin',
             'status' => 'active'

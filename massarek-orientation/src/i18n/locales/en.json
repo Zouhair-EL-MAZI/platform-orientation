@@ -771,6 +771,7 @@
     "questions": "questions",
     "resume": "resume",
     "retake": "Retake",
+    "retakeAll": "Retake All",
     "continue": "Continue",
     "start": "Start",
     "lockedTitle": "AI Recommendations are locked",
@@ -1070,6 +1071,26 @@
         "dangerZoneDesc": "Irreversible actions. Proceed with extreme caution.",
         "clearTestData": "Clear All Test Data"
       }
+    },
+    "profile": {
+      "title": "Profile Settings",
+      "subtitle": "Manage your administrator account",
+      "changeName": "Change Name",
+      "name": "Name",
+      "saveChanges": "Save Changes",
+      "changePassword": "Change Password",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "nameRequired": "Name is required",
+      "nameUpdatedSuccess": "Name updated successfully!",
+      "failedUpdateName": "Failed to update name.",
+      "allFieldsRequired": "All fields are required",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "passwordMismatch": "Passwords do not match",
+      "passwordUpdatedSuccess": "Password updated successfully!",
+      "failedUpdatePassword": "Failed to update password.",
+      "saving": "Saving..."
     }
   },
   "footer": {

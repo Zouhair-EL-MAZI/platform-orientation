@@ -1,4 +1,4 @@
-import { Bell, Shield } from "lucide-react";
+import { Shield } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import MassarekLogo from "./MassarekLogo";
@@ -69,20 +69,6 @@ const AdminNavbar = () => {
         >
           <ThemeToggle />
         </div>
-        <button
-          className="relative rounded-full p-2 text-muted-foreground transition-all hover:text-[var(--ms-accent-cyan)]"
-          style={{ border: "1px solid var(--ms-border-subtle)", background: "var(--ms-bg-card)" }}
-        >
-          <Bell size={16} />
-          <span
-            className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full border-2"
-            style={{
-              background: "var(--ms-accent-cyan)",
-              boxShadow: "0 0 6px var(--ms-accent-cyan)",
-              borderColor: "var(--ms-bg-base)",
-            }}
-          />
-        </button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
@@ -101,14 +87,7 @@ const AdminNavbar = () => {
             sideOffset={8}
             className="min-w-[160px] rounded-2xl border border-[var(--ms-border-subtle)] bg-[var(--ms-bg-card)] p-1 shadow-xl"
           >
-            <DropdownMenuItem asChild>
-              <Link
-                to="/profile"
-                className="block w-full rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-[var(--ms-accent-glow)] hover:text-[var(--ms-accent-cyan)]"
-              >
-                {t("common.profile")}
-              </Link>
-            </DropdownMenuItem>
+            {/* Profile link removed as requested */}
             <DropdownMenuItem asChild>
               <Link
                 to="/admin/settings"

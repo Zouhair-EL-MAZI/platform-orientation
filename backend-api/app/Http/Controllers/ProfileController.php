@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -45,6 +46,8 @@ class ProfileController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'             => 'sometimes|string|max:255',
+            'current_password' => 'sometimes|required_with:password|string',
+            'password'         => 'sometimes|string|min:8|confirmed',
             'age'              => 'sometimes|nullable|integer|min:10|max:100',
             'education_level'  => 'sometimes|nullable|string|max:255',
             'interests'        => 'sometimes|nullable|array',
@@ -65,6 +68,15 @@ class ProfileController extends Controller
         }
 
         $user = $request->user();
+
+        // Update password if provided
+        if ($request->filled('password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json(['success' => false, 'message' => 'Current password is incorrect.'], 422);
+            }
+            $user->password = Hash::make($request->password);
+            $user->save();
+        }
 
         // Update the user's name if provided
         if ($request->has('name') && !empty($request->name)) {

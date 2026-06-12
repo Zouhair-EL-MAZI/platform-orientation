@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
 import {
@@ -222,19 +222,16 @@ function TestList({ onSelect }: { onSelect: (test: OrientationTest) => void }) {
 
       {/* All done unlock banner */}
       {allDone && (
-        <div className="rounded-2xl p-4 flex items-center gap-3"
-          style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.25)" }}>
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: "rgba(16,185,129,0.15)" }}>
-            <Sparkles size={18} style={{ color: "#059669" }} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-bold text-sm" style={{ color: "#059669" }}>{t("test.allDoneTitle")}</p>
-            <p className="text-xs text-muted-foreground">{t("test.allDoneSubtitle")}</p>
-          </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => { const first = tests[0]; if (first) onSelect(first); }}
+            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-105"
+            style={{ background: "rgba(16,185,129,0.10)", border: "1px solid rgba(16,185,129,0.25)", color: "#059669" }}>
+            <RefreshCw size={13} /> {t("test.retakeAll")}
+          </button>
           <button
             onClick={() => window.location.href = "/recommendations"}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold flex-shrink-0 transition-all hover:scale-105"
+            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-105"
             style={{ background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.30)", color: "#059669" }}>
             {t("test.view")} <ArrowRight size={13} />
           </button>
@@ -439,6 +436,7 @@ function CompletionScreen({
   onComplete: () => void; navigate: (path: string) => void;
 }) {
   const { t } = useTranslation();
+  const loc = useLocation();
   const cat = useCat(test.category);
   const catLabel = cat.labelKey ? t(cat.labelKey) : (cat.raw ?? "");
 
@@ -518,7 +516,7 @@ function CompletionScreen({
         {/* PRIMARY — big gradient button */}
         {allTestsDone ? (
           <button
-            onClick={() => navigate("/recommendations")}
+            onClick={() => navigate((loc.state as any)?.returnTo ?? "/recommendations", { state: { autoGenerate: true } })}
             className="w-full flex items-center justify-center gap-2.5 font-bold py-4 rounded-xl text-white transition-all hover:opacity-90"
             style={{
               background: "linear-gradient(135deg, #1E40AF, #0E7490)",

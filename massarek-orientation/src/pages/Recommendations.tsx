@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Sparkles, RefreshCw, AlertCircle, Briefcase, TrendingUp,
@@ -131,7 +131,7 @@ function LockedGate({ tests }: { tests: OrientationTest[] }) {
             </div>
           </div>
 
-          <Link to="/test"
+          <Link to="/test" state={{ returnTo: "/recommendations", autoGenerate: true }}
             className="inline-flex items-center gap-2 font-bold px-8 py-3.5 rounded-xl text-white transition-all hover:opacity-90 relative z-10"
             style={{ background: "linear-gradient(135deg, #1E40AF, #0E7490)", boxShadow: "0 6px 20px rgba(14,116,144,0.35)" }}>
             <FileQuestion size={16} />
@@ -388,8 +388,11 @@ function GenErrorBanner({ msg, isRateLimit, isNetwork, retryCount, onRetry }: {
 const Recommendations = () => {
   const { t, i18n } = useTranslation();
   const dir = i18n.language?.startsWith("ar") ? "rtl" : "ltr";
-
-  const [recs, setRecs]             = useState<Recommendation[]>([]);
+  const location = useLocation();
+  const autoGenTriggered = useRef(false);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const recs = recommendations;
+  const setRecs = setRecommendations;
   const [tests, setTests]           = useState<OrientationTest[]>([]);
   const [loading, setLoading]       = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -445,6 +448,14 @@ const Recommendations = () => {
   }, [recs.length, t]);
 
   useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    if (!loading && !locked && !autoGenTriggered.current && location.state?.autoGenerate === true) {
+      autoGenTriggered.current = true;
+      clearCache();
+      generate(false);
+    }
+  }, [loading, locked, location.state, generate]);
 
   const chartData = recs.map((r, i) => ({
     name:  r.career.title.length > 22 ? r.career.title.slice(0, 22) + "…" : r.career.title,
@@ -508,7 +519,7 @@ const Recommendations = () => {
           </button>
         )}
         {(recs.length > 0) && !canRegenerate && (
-          <Link to="/test"
+          <Link to="/test" state={{ returnTo: "/recommendations", autoGenerate: true }}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold flex-shrink-0 transition-all hover:opacity-90"
             style={{ background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-glow)", color: "var(--ms-accent-sky)" }}>
             <RefreshCw size={15} /> {t("recommendations.retakeTests")}

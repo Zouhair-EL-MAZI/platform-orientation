@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/hooks/use-auth";
 import {
   Users, FileQuestion, Briefcase, TrendingUp,
   Sparkles, Activity, ArrowUpRight, Clock, UserPlus, CheckCircle, AlertCircle,
@@ -23,6 +24,7 @@ interface DashboardData {
 
 const AdminDashboardPage = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [data, setData]       = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -58,7 +60,7 @@ const AdminDashboardPage = () => {
         style={{ background: "linear-gradient(120deg, #1E3A8A 0%, #0E7490 50%, #1E40AF 100%)", border: "1px solid rgba(34,211,238,0.20)", boxShadow: "0 8px 40px rgba(14,116,144,0.28)" }}>
         <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold mb-1 text-white">{t("admin.welcomeAdmin")}</h1>
+            <h1 className="text-2xl md:text-3xl font-bold mb-1 text-white">Bienvenue, {user?.name || t("admin.welcomeAdmin")}</h1>
             <p className="text-white/65 text-sm">{t("admin.welcomeSubtitle")}</p>
           </div>
         </div>

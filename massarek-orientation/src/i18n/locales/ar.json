@@ -771,6 +771,7 @@
     "questions": "سؤالاً",
     "resume": "استئناف",
     "retake": "إعادة",
+    "retakeAll": "إعادة الكل",
     "continue": "متابعة",
     "start": "ابدأ",
     "lockedTitle": "توصيات الذكاء الاصطناعي مقفلة",
@@ -1069,6 +1070,26 @@
         "dangerZoneDesc": "إجراءات لا يمكن التراجع عنها. تصرف بحذر شديد.",
         "clearTestData": "مسح جميع بيانات الاختبارات"
       }
+    },
+    "profile": {
+      "title": "إعدادات الملف الشخصي",
+      "subtitle": "إدارة حساب المسؤول الخاص بك",
+      "changeName": "تغيير الاسم",
+      "name": "الاسم",
+      "saveChanges": "حفظ التغييرات",
+      "changePassword": "تغيير كلمة المرور",
+      "currentPassword": "كلمة المرور الحالية",
+      "newPassword": "كلمة المرور الجديدة",
+      "confirmPassword": "تأكيد كلمة المرور الجديدة",
+      "nameRequired": "الاسم مطلوب",
+      "nameUpdatedSuccess": "تم تحديث الاسم بنجاح!",
+      "failedUpdateName": "فشل تحديث الاسم.",
+      "allFieldsRequired": "جميع الحقول مطلوبة",
+      "passwordMinLength": "يجب أن تكون كلمة المرور من 8 أحرف على الأقل",
+      "passwordMismatch": "كلمات المرور غير متطابقة",
+      "passwordUpdatedSuccess": "تم تحديث كلمة المرور بنجاح!",
+      "failedUpdatePassword": "فشل تحديث كلمة المرور.",
+      "saving": "جاري الحفظ..."
     }
   },
   "footer": {

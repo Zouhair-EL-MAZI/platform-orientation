@@ -777,6 +777,7 @@
     "questions": "questions",
     "resume": "reprendre",
     "retake": "Repasser",
+    "retakeAll": "Tout repasser",
     "continue": "Continuer",
     "start": "Commencer",
     "lockedTitle": "Recommandations IA verrouillées",
@@ -1070,6 +1071,26 @@
         "dangerZoneDesc": "Actions irréversibles. Procéder avec une extrême prudence.",
         "clearTestData": "Effacer toutes les données de test"
       }
+    },
+    "profile": {
+      "title": "Paramètres du profil",
+      "subtitle": "Gérer votre compte administrateur",
+      "changeName": "Changer le nom",
+      "name": "Nom",
+      "saveChanges": "Enregistrer les modifications",
+      "changePas": "Changer le mot de passe",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "nameRequired": "Le nom est requis",
+      "nameUpdatedSuccess": "Nom mis à jour avec succès !",
+      "failedUpdateName": "Erreur lors de la mise à jour du nom.",
+      "allFieldsRequired": "Tous les champs sont requis",
+      "passwordMinLength": "Le mot de passe doit contenir au moins 8 caractères",
+      "passwordMismatch": "Les mots de passe ne correspondent pas",
+      "passwordUpdatedSuccess": "Mot de passe mis à jour avec succès !",
+      "failedUpdatePassword": "Erreur lors de la mise à jour du mot de passe.",
+      "saving": "Enregistrement..."
     }
   },
   "footer": {

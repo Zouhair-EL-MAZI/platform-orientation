@@ -84,27 +84,14 @@ const AdminRecommendationsPage = () => {
             {t("admin.recommendations.subtitle")}
           </p>
         </div>
-        <button
-          onClick={handleRegenerate}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white"
-          style={{
-            background: "linear-gradient(135deg, #1D4ED8, #0E7490)",
-            border: "1px solid rgba(34,211,238,0.25)",
-            boxShadow: "0 4px 16px rgba(14,116,144,0.20)",
-          }}
-          disabled={regenLoading}
-        >
-          <RefreshCw size={14} />
-          {regenLoading ? t("admin.saving") : t("admin.recommendations.regenerateAll")}
-        </button>
+        {/* "Regenerate All" button removed from frontend as requested */}
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {[
           { label: t("admin.recommendations.summary.totalGenerated"), value: totalGenerated, color: "#34D399" },
           { label: t("admin.recommendations.summary.pendingGeneration"), value: pending, color: "#FBBF24" },
-          { label: t("admin.recommendations.summary.adminReviewed"), value: reviewedCount, color: "var(--ms-accent-cyan)" },
           { label: t("admin.recommendations.summary.avgTopScore"), value: `${avgTop}%`, color: "var(--ms-accent-sky)" },
         ].map((s) => (
           <div
@@ -125,13 +112,7 @@ const AdminRecommendationsPage = () => {
           <Search size={13} className="text-muted-foreground" />
           <input type="text" placeholder={t("admin.recommendations.searchPlaceholder")} value={search} onChange={(e) => setSearch(e.target.value)} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
         </div>
-        <div className="flex items-center gap-1">
-          {(["all", "reviewed", "unreviewed"] as const).map((f) => (
-            <button key={f} onClick={() => setFilterReviewed(f)} className="px-3 py-1.5 rounded-lg text-xs font-bold transition-all capitalize" style={filterReviewed === f ? { background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-glow)", color: "var(--ms-accent-sky)" } : { background: "transparent", border: "1px solid transparent", color: "hsl(var(--muted-foreground))" }}>
-              {t(`admin.recommendations.filters.${f}`)}
-            </button>
-          ))}
-        </div>
+        {/* Filters removed per request: Tous / Revu / Non revu */}
       </div>
 
       {/* Recommendations Table */}
@@ -140,9 +121,9 @@ const AdminRecommendationsPage = () => {
           <table className="w-full text-sm">
             <thead>
               <tr style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
-                {[t("admin.recommendations.table.student"), t("admin.recommendations.table.topRecommendations"), t("admin.recommendations.table.topScore"), t("admin.recommendations.table.testDate"), t("admin.recommendations.table.status"), t("admin.recommendations.table.reviewed"), ""].map((h, i) => (
-                  <th key={i} className="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider" style={{ color: "var(--ms-accent-cyan)", opacity: 0.65 }}>{h}</th>
-                ))}
+                {[t("admin.recommendations.table.student"), t("admin.recommendations.table.topRecommendations"), t("admin.recommendations.table.topScore"), t("admin.recommendations.table.testDate"), t("admin.recommendations.table.status"), "Actions"].map((h, i) => (
+                      <th key={i} className="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider" style={{ color: "var(--ms-accent-cyan)", opacity: 0.65 }}>{h}</th>
+                    ))}
               </tr>
             </thead>
             <tbody>
@@ -174,9 +155,8 @@ const AdminRecommendationsPage = () => {
                     </div>
                   </td>
                   <td className="px-5 py-3 text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>{r.created_at || r.testDate || "-"}</td>
-                  <td className="px-5 py-3"><span className="text-xs font-bold px-2.5 py-1 rounded-full" style={statusStyle(r.status)}>{t(`admin.recommendations.status.${(r.status || "").toString().toLowerCase()}`, r.status)}</span></td>
-                  <td className="px-5 py-3">{r.reviewed ? <CheckCircle size={16} style={{ color: "#34D399" }} /> : <AlertCircle size={16} style={{ color: "#FBBF24" }} />}</td>
-                  <td className="px-5 py-3">
+                      <td className="px-5 py-3"><span className="text-xs font-bold px-2.5 py-1 rounded-full" style={statusStyle(r.status)}>{t(`admin.recommendations.status.${(r.status || "").toString().toLowerCase()}`, r.status)}</span></td>
+                      <td className="px-5 py-3">
                     <div className="flex items-center gap-1">
                       <button onClick={() => setViewingRec(r)} className="p-1.5 rounded-lg hover:text-[var(--ms-accent-cyan)]" style={{ color: "hsl(var(--muted-foreground))" }} title={t("admin.recommendations.view")}>
                         <Eye size={14} />

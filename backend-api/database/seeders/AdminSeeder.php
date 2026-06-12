@@ -14,14 +14,42 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
+        $admins = [
+            [
             'name' => 'Zouhair El Mazi',
-            'email' => 'zouhairmazi@gmail.com',
-            // 'password' => bcrypt('password12345'),
-            'password' => Hash::make('password12345'),
+            'email' => 'rajao7002@gmail.com',
+            'password' =>'Zouhair12345',
             'role' => 'admin',
             'status' => 'active'
-            
-        ]);
+            ],
+
+            [
+                'name' => 'Aymane El asri',
+                'email' => 'Aymaneboss6@gmail.com',
+                'password' => 'Aymane1234',
+                'role' => 'admin',
+                'status' => 'active',
+            ],
+            [
+            'name' => 'Aziz Bouzrour',
+            'email' => 'abdobzrr234@gmail.com',
+
+            'password' => 'Aziz12345',
+            'role' => 'admin',
+            'status' => 'active',
+            ],
+        ];
+
+        foreach ($admins as $admin) {
+            User::updateOrCreate(
+                ['email' => trim($admin['email'])],
+                [
+                    'name' => trim($admin['name']),
+                    'password' => Hash::make($admin['password']),
+                    'role' => $admin['role'],
+                    'status' => $admin['status'],
+                ]
+            );
+        }
     }
 }

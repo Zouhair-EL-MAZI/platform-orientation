@@ -132,7 +132,7 @@ const AdminDashboardPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.recent_users.map(u => (
+                {data.recent_users.filter(u => u.role !== "admin").map(u => (
                   <tr key={u.id} style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
                     <td className="px-6 py-3 font-semibold text-sm">{u.name}</td>
                     <td className="px-6 py-3 text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>{u.email}</td>

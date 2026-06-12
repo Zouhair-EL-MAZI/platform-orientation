@@ -3,7 +3,7 @@ import * as XLSX from "xlsx";
 import { useTranslation } from "react-i18next";
 import {
   Users, Search, Filter, UserCheck,
-  UserX, Trash2, Edit, Eye, UserPlus, Download, X, Save, AlertCircle,
+  UserX, Trash2, Edit, Eye, UserPlus, Download, X, Save, AlertCircle, Shield,
 } from "lucide-react";
 import {
   Pagination,
@@ -402,6 +402,7 @@ const EditUserModal = ({ user, onClose, onSave, loading }: { user: AdminUser | n
 };
 
 const AdminUsersPage = () => {
+  const [activeTab, setActiveTab] = useState<"students" | "admins">("students");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterStatus>("all");
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -452,11 +453,12 @@ const AdminUsersPage = () => {
   }, []);
 
   const filtered = users.filter((u) => {
+    const matchRole = activeTab === "admins" ? u.role === "admin" : u.role !== "admin";
     const matchSearch =
       u.name.toLowerCase().includes(search.toLowerCase()) ||
       u.email.toLowerCase().includes(search.toLowerCase());
     const matchFilter = filter === "all" || u.status === filter;
-    return matchSearch && matchFilter;
+    return matchRole && matchSearch && matchFilter;
   });
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
@@ -464,7 +466,8 @@ const AdminUsersPage = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [search, filter, users]);
+    setSelectedIds([]);
+  }, [search, filter, users, activeTab]);
 
   const toggleSelect = (id: number) =>
     setSelectedIds((prev) =>
@@ -660,6 +663,25 @@ const AdminUsersPage = () => {
         </div>
       )}
 
+      {/* Tabs */}
+      <div className="flex gap-1 p-1 rounded-xl w-fit" style={{ background: "var(--ms-bg-layer3)", border: "1px solid var(--ms-border-subtle)" }}>
+        {(["students", "admins"] as const).map((tab) => {
+          const count = users.filter(u => tab === "admins" ? u.role === "admin" : u.role !== "admin").length;
+          return (
+            <button key={tab} onClick={() => setActiveTab(tab)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all"
+              style={activeTab === tab
+                ? { background: tab === "admins" ? "rgba(167,139,250,0.15)" : "var(--ms-accent-glow)", color: tab === "admins" ? "#A78BFA" : "var(--ms-accent-sky)", border: `1px solid ${tab === "admins" ? "rgba(167,139,250,0.30)" : "var(--ms-border-glow)"}` }
+                : { background: "transparent", color: "hsl(var(--muted-foreground))", border: "1px solid transparent" }
+              }>
+              {tab === "admins" ? <Shield size={13} /> : <Users size={13} />}
+              {tab === "admins" ? t("admin.users.roleAdmin") : t("admin.users.roleStudent")}
+              <span className="px-1.5 py-0.5 rounded-full text-[10px] font-extrabold" style={{ background: "var(--ms-bg-layer2)" }}>{count}</span>
+            </button>
+          );
+        })}
+      </div>
+
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
@@ -794,12 +816,14 @@ const AdminUsersPage = () => {
             <thead>
               <tr style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
                 <th className="px-5 py-3 w-10">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.length === paginated.length && paginated.length > 0}
-                    onChange={toggleAll}
-                    className="rounded"
-                  />
+                  {activeTab !== "admins" && (
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.length === paginated.length && paginated.length > 0}
+                      onChange={toggleAll}
+                      className="rounded"
+                    />
+                  )}
                 </th>
                 {[
                   t("admin.users.columns.user"),
@@ -832,12 +856,14 @@ const AdminUsersPage = () => {
                   }}
                 >
                   <td className="px-5 py-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.includes(u.id)}
-                      onChange={() => toggleSelect(u.id)}
-                      className="rounded"
-                    />
+                    {activeTab !== "admins" && (
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(u.id)}
+                        onChange={() => toggleSelect(u.id)}
+                        className="rounded"
+                      />
+                    )}
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
@@ -912,23 +938,27 @@ const AdminUsersPage = () => {
                       >
                         <Eye size={14} />
                       </button>
-                      <button
-                        onClick={() => handleEditUser(u.id)}
-                        className="p-1.5 rounded-lg transition-all hover:text-[var(--ms-accent-sky)]"
-                        style={{ color: "hsl(var(--muted-foreground))" }}
-                        title={t("admin.edit")}
-                      >
-                        <Edit size={14} />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteUser(u.id)}
-                        disabled={deleteLoading === u.id}
-                        className="p-1.5 rounded-lg transition-all hover:text-[#F87171]"
-                        style={{ color: "hsl(var(--muted-foreground))" }}
-                        title={t("admin.delete")}
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                      {activeTab !== "admins" && (
+                        <>
+                          <button
+                            onClick={() => handleEditUser(u.id)}
+                            className="p-1.5 rounded-lg transition-all hover:text-[var(--ms-accent-sky)]"
+                            style={{ color: "hsl(var(--muted-foreground))" }}
+                            title={t("admin.edit")}
+                          >
+                            <Edit size={14} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteUser(u.id)}
+                            disabled={deleteLoading === u.id}
+                            className="p-1.5 rounded-lg transition-all hover:text-[#F87171]"
+                            style={{ color: "hsl(var(--muted-foreground))" }}
+                            title={t("admin.delete")}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

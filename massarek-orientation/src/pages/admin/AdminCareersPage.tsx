@@ -1,481 +1,367 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Briefcase, Plus, Edit, Trash2, Search, TrendingUp, X, Save, AlertCircle } from "lucide-react";
 import {
-  getAdminCareers, getAdminCareerCategories, createAdminCareer, updateAdminCareer, deleteAdminCareer,
-  AdminCareer,
+  Briefcase, Plus, Search, Edit2, Trash2, X, Save,
+  Tag, ChevronLeft, ChevronRight, AlertCircle, TrendingUp,
+} from "lucide-react";
+import {
+  getAdminCareers, createAdminCareer, updateAdminCareer, deleteAdminCareer,
+  getAdminCareerCategories, AdminCareer, AdminCareerCategory,
 } from "@/services/adminApi";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 
-const DEMAND_LEVELS = ["High", "Very High", "Growing", "Stable", "Low"];
-
-const demandStyle = (demand: string) => {
-  if (demand === "Very High") return { color: "#34D399", background: "rgba(52,211,153,0.10)", border: "1px solid rgba(52,211,153,0.20)" };
-  if (demand === "High") return { color: "var(--ms-accent-sky)", background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-glow)" };
-  if (demand === "Growing") return { color: "#FBBF24", background: "rgba(251,191,36,0.10)", border: "1px solid rgba(251,191,36,0.20)" };
-  return { color: "hsl(var(--muted-foreground))", background: "var(--ms-bg-layer3)", border: "1px solid var(--ms-border-subtle)" };
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+const DEMAND_STYLE: Record<string, { color: string; bg: string }> = {
+  very_high: { color: "#34D399", bg: "rgba(52,211,153,0.10)" },
+  high:      { color: "var(--ms-accent-sky)", bg: "rgba(14,165,233,0.10)" },
+  medium:    { color: "#FBBF24", bg: "rgba(251,191,36,0.10)" },
+  low:       { color: "hsl(var(--muted-foreground))", bg: "var(--ms-bg-layer2)" },
 };
 
-const CareerModal = ({ career, categories, onClose, onSave, loading, serverError }: {
-  career: AdminCareer | null;
-  categories: { id: number; name: string }[];
-  onClose: () => void;
-  onSave: (data: Partial<AdminCareer>) => void;
-  loading: boolean;
-  serverError?: string | null;
-}) => {
-  const [title, setTitle] = useState(career?.title ?? "");
-  const [description, setDescription] = useState(career?.description ?? "");
-  const [categoryId, setCategoryId] = useState<number>(career?.category_id ?? categories[0]?.id ?? 0);
-  const [salaryRange, setSalaryRange] = useState(career?.salary_range ?? "");
-  const [demandLevel, setDemandLevel] = useState(career?.demand_level ?? "High");
-  const [futureScope, setFutureScope] = useState(career?.future_scope ?? "");
-  const [skills, setSkills] = useState((career?.required_skills ?? []).join(", "));
-  const [error, setError] = useState<string | null>(null);
+function DemandBadge({ level }: { level?: string }) {
+  const key  = (level ?? "medium").toLowerCase();
+  const s    = DEMAND_STYLE[key] ?? DEMAND_STYLE.medium;
+  return (
+    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full capitalize"
+      style={{ background: s.bg, color: s.color, border: `1px solid ${s.color}30` }}>
+      {key.replace("_", " ")}
+    </span>
+  );
+}
+
+function inputCls() {
+  return "w-full mt-1 px-3 py-2 rounded-xl text-sm outline-none transition-all bg-gray-50 dark:bg-slate-700";
+}
+function inputStyle() {
+  return { border: "1px solid var(--ms-border-subtle)", color: "inherit" };
+}
+
+// ─── Career Modal ─────────────────────────────────────────────────────────────
+function CareerModal({ career, categories, onClose, onSaved }: {
+  career: AdminCareer | null; categories: AdminCareerCategory[];
+  onClose: () => void; onSaved: () => void;
+}) {
   const { t } = useTranslation();
+  const isEdit = !!career;
+  const [title,       setTitle]       = useState(career?.title ?? "");
+  const [description, setDescription] = useState(career?.description ?? "");
+  const [catId,       setCatId]       = useState(String(career?.category_id ?? categories[0]?.id ?? ""));
+  const [salary,      setSalary]      = useState(career?.salary_range ?? "");
+  const [skills,      setSkills]      = useState((career?.required_skills ?? []).join(", "));
+  const [futureScope, setFutureScope] = useState(career?.future_scope ?? "");
+  const [moroccan,    setMoroccan]    = useState(career?.moroccan_context ?? "");
+  const [demand,      setDemand]      = useState(career?.demand_level ?? "medium");
+  const [saving,      setSaving]      = useState(false);
+  const [error,       setError]       = useState("");
 
-  const handleSave = () => {
-    if (!title.trim()) {
-      setError(t("admin.careers.titleRequired"));
-      return;
-    }
-
-    if (!categoryId) {
-      setError(t("admin.careers.categoryRequired"));
-      return;
-    }
-
-    onSave({
-      title,
-      description,
-      category_id: categoryId,
-      salary_range: salaryRange,
-      demand_level: demandLevel,
-      future_scope: futureScope,
+  const handleSave = async () => {
+    if (!title.trim()) { setError(t("admin.careers.titleRequired")); return; }
+    if (!catId)        { setError(t("admin.careers.categoryRequired")); return; }
+    setSaving(true); setError("");
+    const payload = {
+      title, description, category_id: Number(catId), salary_range: salary,
       required_skills: skills.split(",").map((s) => s.trim()).filter(Boolean),
-    });
+      future_scope: futureScope, moroccan_context: moroccan, demand_level: demand,
+    };
+    try {
+      if (isEdit) await updateAdminCareer(career!.id, payload);
+      else await createAdminCareer(payload);
+      onSaved();
+    } catch (e: any) {
+      setError(e?.response?.data?.message ?? t("admin.careers.failedSave"));
+    } finally { setSaving(false); }
   };
 
   return (
-    <div className="fixed inset-0 bg-transparent backdrop-blur-md flex items-center justify-center z-50 p-4">
-      <div className="rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col" style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", backdropFilter: "blur(12px)" }} onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-5 border-b" style={{ borderColor: "var(--ms-border-subtle)" }}>
-          <h2 className="text-lg font-bold flex items-center gap-2">
-            <Briefcase size={18} style={{ color: "var(--ms-accent-sky)" }} />
-            {career ? t("admin.careers.editCareerTitle") : t("admin.careers.addCareerTitle")}
-          </h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-accent" style={{ color: "hsl(var(--muted-foreground))" }} disabled={loading}><X size={16} /></button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4  " onClick={onClose}>
+      <div className="w-full max-w-xl bg-white dark:bg-[#131c35] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 max-h-[90vh] flex flex-col overflow-hidden relative z-10" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-bold">{isEdit ? t("admin.careers.editCareerTitle") : t("admin.careers.addCareerTitle")}</h2>
+          <button onClick={onClose} className="p-1.5 rounded-lg text-slate-600 hover:text-red-500 dark:text-slate-300 dark:hover:text-red-400 transition-colors" style={{ border: "1px solid var(--ms-border-subtle)" }}><X size={14} /></button>
         </div>
 
-        <div className="flex-1 min-h-0 overflow-y-auto p-5 space-y-4">
-          {(error || serverError) && (
-            <div className="rounded-lg p-3 flex items-start gap-2" style={{ background: "rgba(248,113,113,0.06)", border: "1px solid rgba(248,113,113,0.15)" }}>
-              <AlertCircle size={14} style={{ color: "#F87171", flexShrink: 0, marginTop: 2 }} />
-              <p className="text-xs" style={{ color: "#F87171" }}>{error || serverError}</p>
-            </div>
-          )}
+        {error && (
+          <div className="flex items-center gap-2 rounded-xl px-3 py-2 mt-3 text-xs font-medium"
+            style={{ background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.18)", color: "#F87171" }}>
+            <AlertCircle size={13} /> {error}
+          </div>
+        )}
 
-          {[
-            { label: t("admin.careers.labelTitle"), val: title, setter: setTitle, type: "text", placeholder: t("admin.careers.titleExample") },
-            { label: t("admin.careers.labelSalary"), val: salaryRange, setter: setSalaryRange, type: "text", placeholder: t("admin.careers.salaryExample") },
-          ].map(({ label, val, setter, type, placeholder }) => (
-            <div key={label}>
-              <label className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--ms-accent-cyan)", opacity: 0.65 }}>{label}</label>
-              <input
-                type={type}
-                value={val}
-                onChange={(e) => setter(e.target.value)}
-                placeholder={placeholder}
-                className="w-full mt-1 px-3 py-2 rounded-lg bg-transparent text-sm outline-none"
-                style={{ border: "1px solid var(--ms-border-subtle)", color: "inherit" }}
-                onFocus={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-active)")}
-                onBlur={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-subtle)")}
-                disabled={loading}
-              />
-            </div>
-          ))}
-
+        <div className="flex-1 overflow-y-auto pr-1 space-y-4 my-4">
+          <div>
+            <label className="text-xs font-semibold" style={{ color: "hsl(var(--muted-foreground))" }}>{t("admin.careers.labelTitle")} *</label>
+            <input value={title} onChange={(e) => setTitle(e.target.value)} className={inputCls()} style={inputStyle()} disabled={saving} placeholder={t("admin.careers.titleExample")} />
+          </div>
+          <div>
+            <label className="text-xs font-semibold" style={{ color: "hsl(var(--muted-foreground))" }}>{t("admin.careers.labelDescription")}</label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} className={inputCls() + " resize-none"} style={inputStyle()} disabled={saving} />
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--ms-accent-cyan)", opacity: 0.65 }}>{t("admin.careers.labelCategory")}</label>
-              <select
-                value={categoryId}
-                onChange={(e) => setCategoryId(Number(e.target.value))}
-                className="w-full mt-1 px-3 py-2 rounded-lg bg-transparent text-sm outline-none cursor-pointer"
-                style={{ border: "1px solid var(--ms-border-subtle)", color: "inherit" }}
-                onFocus={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-active)")}
-                onBlur={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-subtle)")}
-                disabled={loading}
-              >
+              <label className="text-xs font-semibold" style={{ color: "hsl(var(--muted-foreground))" }}>{t("admin.careers.labelCategory")} *</label>
+              <select value={catId} onChange={(e) => setCatId(e.target.value)} className={inputCls()} style={inputStyle()} disabled={saving}>
                 {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
-
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--ms-accent-cyan)", opacity: 0.65 }}>{t("admin.careers.labelDemand")}</label>
-              <select
-                value={demandLevel}
-                onChange={(e) => setDemandLevel(e.target.value)}
-                className="w-full mt-1 px-3 py-2 rounded-lg bg-transparent text-sm outline-none cursor-pointer"
-                style={{ border: "1px solid var(--ms-border-subtle)", color: "inherit" }}
-                onFocus={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-active)")}
-                onBlur={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-subtle)")}
-                disabled={loading}
-              >
-                {DEMAND_LEVELS.map((d) => <option key={d} value={d}>{d}</option>)}
+              <label className="text-xs font-semibold" style={{ color: "hsl(var(--muted-foreground))" }}>{t("admin.careers.labelDemand")}</label>
+              <select value={demand} onChange={(e) => setDemand(e.target.value)} className={inputCls()} style={inputStyle()} disabled={saving}>
+                {["low","medium","high","very_high"].map((d) => <option key={d} value={d}>{d.replace("_"," ")}</option>)}
               </select>
             </div>
           </div>
-
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--ms-accent-cyan)", opacity: 0.65 }}>{t("admin.careers.labelDescription")}</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-              className="w-full mt-1 px-3 py-2 rounded-lg bg-transparent text-sm outline-none resize-none"
-              style={{ border: "1px solid var(--ms-border-subtle)", color: "inherit" }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-active)")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-subtle)")}
-              disabled={loading}
-            />
+            <label className="text-xs font-semibold" style={{ color: "hsl(var(--muted-foreground))" }}>{t("admin.careers.labelSalary")}</label>
+            <input value={salary} onChange={(e) => setSalary(e.target.value)} className={inputCls()} style={inputStyle()} disabled={saving} placeholder={t("admin.careers.salaryExample")} />
           </div>
-
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--ms-accent-cyan)", opacity: 0.65 }}>
-              {t("admin.careers.labelSkills")} <span style={{ opacity: 0.5 }}>{t("admin.careers.labelSkillsHint")}</span>
-            </label>
-            <input
-              type="text"
-              value={skills}
-              onChange={(e) => setSkills(e.target.value)}
-              placeholder={t("admin.careers.skillsExample")}
-              className="w-full mt-1 px-3 py-2 rounded-lg bg-transparent text-sm outline-none"
-              style={{ border: "1px solid var(--ms-border-subtle)", color: "inherit" }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-active)")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-subtle)")}
-              disabled={loading}
-            />
+            <label className="text-xs font-semibold" style={{ color: "hsl(var(--muted-foreground))" }}>{t("admin.careers.labelSkills")} <span className="font-normal opacity-60">{t("admin.careers.labelSkillsHint")}</span></label>
+            <input value={skills} onChange={(e) => setSkills(e.target.value)} className={inputCls()} style={inputStyle()} disabled={saving} placeholder={t("admin.careers.skillsExample")} />
           </div>
-
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--ms-accent-cyan)", opacity: 0.65 }}>{t("admin.careers.labelFutureScope")}</label>
-            <textarea
-              value={futureScope}
-              onChange={(e) => setFutureScope(e.target.value)}
-              rows={2}
-              className="w-full mt-1 px-3 py-2 rounded-lg bg-transparent text-sm outline-none resize-none"
-              style={{ border: "1px solid var(--ms-border-subtle)", color: "inherit" }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-active)")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-subtle)")}
-              disabled={loading}
-            />
+            <label className="text-xs font-semibold" style={{ color: "hsl(var(--muted-foreground))" }}>{t("admin.careers.labelFutureScope")}</label>
+            <textarea value={futureScope} onChange={(e) => setFutureScope(e.target.value)} rows={2} className={inputCls() + " resize-none"} style={inputStyle()} disabled={saving} />
+          </div>
+          <div>
+            <label className="text-xs font-semibold" style={{ color: "hsl(var(--muted-foreground))" }}>Moroccan Context</label>
+            <textarea value={moroccan} onChange={(e) => setMoroccan(e.target.value)} rows={2} className={inputCls() + " resize-none"} style={inputStyle()} disabled={saving} />
           </div>
         </div>
 
-        <div className="flex gap-2 p-5 border-t" style={{ borderColor: "var(--ms-border-subtle)" }}>
-          <button
-            onClick={onClose}
-            className="flex-1 px-4 py-2 rounded-xl text-xs font-bold"
-            style={{ background: "var(--ms-bg-layer2)", border: "1px solid var(--ms-border-subtle)", color: "hsl(var(--muted-foreground))" }}
-            disabled={loading}
-          >
+        <div className="flex gap-3 mt-3">
+          <button onClick={onClose} className="flex-1 py-2 rounded-xl text-sm font-semibold" style={{ background: "var(--ms-bg-layer2)", border: "1px solid var(--ms-border-subtle)" }}>
             {t("admin.cancel")}
           </button>
-          <button
-            onClick={handleSave}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white"
-            style={{ background: "linear-gradient(135deg, #1D4ED8, #0E7490)", border: "1px solid rgba(34,211,238,0.25)" }}
-            disabled={loading}
-          >
-            <Save size={12} />{loading ? t("admin.saving") : t("admin.save")}
+          <button onClick={handleSave} disabled={saving} className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-semibold text-white disabled:opacity-50" style={{ background: "linear-gradient(135deg,#1D4ED8,#0E7490)" }}>
+            <Save size={14} /> {saving ? t("admin.saving") : t("admin.save")}
           </button>
         </div>
       </div>
     </div>
   );
-};
+}
 
+// ─── Delete confirm ───────────────────────────────────────────────────────────
+function DeleteModal({ career, onClose, onDeleted }: { career: AdminCareer; onClose: () => void; onDeleted: () => void }) {
+  const { t } = useTranslation();
+  const [deleting, setDeleting] = useState(false);
+  const confirm = async () => {
+    setDeleting(true);
+    try { await deleteAdminCareer(career.id); onDeleted(); }
+    catch { setDeleting(false); }
+  };
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center  " onClick={onClose}>
+      <div className="bg-white dark:bg-[#131c35] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-md shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <h2 className="text-base font-bold mb-2">{t("admin.careers.confirmDelete")}</h2>
+        <p className="text-sm mb-5" style={{ color: "hsl(var(--muted-foreground))" }}>Delete <strong>{career.title}</strong>?</p>
+        <div className="flex gap-3">
+          <button onClick={onClose} className="flex-1 py-2 rounded-xl text-sm font-semibold" style={{ background: "var(--ms-bg-layer2)", border: "1px solid var(--ms-border-subtle)" }}>{t("admin.cancel")}</button>
+          <button onClick={confirm} disabled={deleting} className="flex-1 py-2 rounded-xl text-sm font-semibold text-white disabled:opacity-50" style={{ background: "linear-gradient(135deg,#DC2626,#EF4444)" }}>
+            {deleting ? "Deleting…" : t("admin.delete")}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
 const AdminCareersPage = () => {
   const { t } = useTranslation();
-  const [search, setSearch] = useState("");
-  const [activeField, setActiveField] = useState("All");
-  const [careers, setCareers] = useState<AdminCareer[]>([]);
-  const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [modal, setModal] = useState<{ open: boolean; career: AdminCareer | null }>({ open: false, career: null });
-  const [modalLoading, setModalLoading] = useState(false);
-  const [modalError, setModalError] = useState<string | null>(null);
-  const PAGE_SIZE = 10;
+  const [careers,     setCareers]    = useState<AdminCareer[]>([]);
+  const [categories,  setCategories] = useState<AdminCareerCategory[]>([]);
+  const [loading,     setLoading]    = useState(true);
+  const [error,       setError]      = useState("");
+  const [searchInput, setSearchInput]= useState("");
+  const [search,      setSearch]     = useState("");
+  const [catFilter,   setCatFilter]  = useState(0);
+  const [page,        setPage]       = useState(1);
+  const [lastPage,    setLastPage]   = useState(1);
+  const [total,       setTotal]      = useState(0);
+  const [modal,       setModal]      = useState<AdminCareer | null | "new">(null);
+  const [toDelete,    setToDelete]   = useState<AdminCareer | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const showSuccess = (msg: string) => { setSuccessMessage(msg); setTimeout(() => setSuccessMessage(null), 3000); };
-
-  const load = async () => {
-    setLoading(true);
+  const load = useCallback(async () => {
+    setLoading(true); setError("");
     try {
-      const [cRes, catRes] = await Promise.all([getAdminCareers(), getAdminCareerCategories()]);
-      setCareers(cRes.data.data);
-      setCategories(catRes.data.data);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+      const [cRes, catRes] = await Promise.all([
+        getAdminCareers({ search, category_id: catFilter || undefined, page, per_page: 12 }),
+        categories.length === 0 ? getAdminCareerCategories() : Promise.resolve(null),
+      ]);
+      const d = cRes.data as any;
+      setCareers(d.data ?? []);
+      setLastPage(d.meta?.last_page ?? d.last_page ?? 1);
+      setTotal(d.meta?.total ?? d.total ?? 0);
+      if (catRes) setCategories((catRes.data as any).data ?? []);
+    } catch { setError("Failed to load careers."); }
+    finally { setLoading(false); }
+  }, [search, catFilter, page]);
 
-  useEffect(() => { load(); }, []);
-
-  const fields = [
-    { label: t("admin.careers.filterAll"), value: "All" },
-    ...Array.from(new Set(categories.map((c) => c.name))).map((name) => ({ label: name, value: name })),
-  ];
-
-  const filtered = careers.filter((c) => {
-    const matchSearch = c.title.toLowerCase().includes(search.toLowerCase());
-    const matchField = activeField === "All" || c.category?.name === activeField;
-    return matchSearch && matchField;
-  });
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  useEffect(() => { load(); }, [load]);
 
   useEffect(() => {
-    setPage(1);
-  }, [search, activeField, careers]);
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => { setSearch(searchInput); setPage(1); }, 350);
+    return () => { if (timer.current) clearTimeout(timer.current); };
+  }, [searchInput]);
 
-  const handleSave = async (data: Partial<AdminCareer>) => {
-    setModalLoading(true);
-    setModalError(null);
-    try {
-      if (modal.career) {
-        const res = await updateAdminCareer(modal.career.id, data);
-        setCareers((prev) => prev.map((c) => c.id === modal.career!.id ? res.data.data : c));
-        showSuccess(t("admin.careers.updatedSuccess"));
-      } else {
-        const res = await createAdminCareer(data);
-        setCareers((prev) => [...prev, res.data.data]);
-        showSuccess(t("admin.careers.addedSuccess"));
-      }
-      setModal({ open: false, career: null });
-    } catch (error: unknown) {
-      const e = error as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } } | null;
-      const msg = e?.response?.data?.message || e?.response?.data?.errors
-        ? Object.values(e.response?.data?.errors ?? {}).flat().join(", ")
-        : t("admin.careers.failedSave");
-      setModalError(typeof msg === "string" ? msg : t("admin.careers.failedSave"));
-    } finally {
-      setModalLoading(false);
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    if (!confirm(t("admin.careers.confirmDelete"))) return;
-    try {
-      await deleteAdminCareer(id);
-      setCareers((prev) => prev.filter((c) => c.id !== id));
-      showSuccess(t("admin.careers.deletedSuccess"));
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const demandColor = (d?: string) => DEMAND_STYLE[(d ?? "").toLowerCase()]?.color ?? "hsl(var(--muted-foreground))";
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 animate-fade-in">
-      {successMessage && (
-        <div className="rounded-xl px-4 py-3 text-sm font-semibold flex items-center gap-2" style={{ background: "rgba(52,211,153,0.10)", border: "1px solid rgba(52,211,153,0.20)", color: "#34D399" }}>
-          ✓ {successMessage}
-        </div>
-      )}
+    <div className="max-w-7xl mx-auto space-y-5 animate-fade-in">
 
-      <div className="flex items-center justify-between flex-wrap gap-4">
+      {/* Header */}
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Briefcase size={22} style={{ color: "var(--ms-accent-cyan)" }} />{t("admin.careers.title")}
-          </h1>
-          <p className="text-sm mt-1" style={{ color: "hsl(var(--muted-foreground))" }}>
-            {careers.length} {t("admin.careers.careerPaths")}
+          <h1 className="text-xl font-bold">{t("admin.careers.title")}</h1>
+          <p className="text-sm mt-0.5" style={{ color: "hsl(var(--muted-foreground))" }}>
+            {total} {t("admin.careers.careerPaths")} · {categories.length} {t("admin.careers.categories")}
           </p>
         </div>
-        <button
-          onClick={() => setModal({ open: true, career: null })}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white"
-          style={{ background: "linear-gradient(135deg, #1D4ED8, #0E7490)", border: "1px solid rgba(34,211,238,0.25)", boxShadow: "0 4px 16px rgba(14,116,144,0.20)" }}
-        >
-          <Plus size={14} />{t("admin.careers.addCareer")}
+        <button onClick={() => setModal("new")}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
+          style={{ background: "linear-gradient(135deg,#1D4ED8,#0E7490)", boxShadow: "0 4px 14px rgba(14,116,144,0.25)" }}>
+          <Plus size={14} /> {t("admin.careers.addCareer")}
         </button>
       </div>
 
-      <div className="rounded-2xl p-4 flex flex-wrap gap-3 items-center" style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", backdropFilter: "blur(12px)" }}>
-        <div className="relative flex items-center gap-2 flex-1 min-w-[200px] max-w-sm rounded-xl h-9 px-3" style={{ background: "var(--ms-bg-layer2)", border: "1px solid var(--ms-border-subtle)" }}>
-          <Search size={13} className="text-muted-foreground" />
-          <input
-            type="text"
-            placeholder={t("admin.careers.searchPlaceholder")}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-          />
-        </div>
-
-        <div className="flex flex-wrap items-center gap-1">
-          {fields.map((f) => (
-            <button
-              key={f.value}
-              onClick={() => setActiveField(f.value)}
-              className="px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
-              style={activeField === f.value
-                ? { background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-glow)", color: "var(--ms-accent-sky)" }
-                : { background: "transparent", border: "1px solid transparent", color: "hsl(var(--muted-foreground))" }}
-            >
-              {f.label}
+      {/* Stats per category */}
+      {categories.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          <button onClick={() => { setCatFilter(0); setPage(1); }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
+            style={!catFilter
+              ? { background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-glow)", color: "var(--ms-accent-cyan)" }
+              : { background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", color: "hsl(var(--muted-foreground))" }
+            }>
+            <Tag size={11} /> {t("admin.careers.filterAll")} ({total})
+          </button>
+          {categories.map((c) => (
+            <button key={c.id} onClick={() => { setCatFilter(c.id); setPage(1); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
+              style={catFilter === c.id
+                ? { background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-glow)", color: "var(--ms-accent-cyan)" }
+                : { background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", color: "hsl(var(--muted-foreground))" }
+              }>
+              {c.name} ({(c as any).careers_count ?? 0})
             </button>
           ))}
         </div>
+      )}
+
+      {/* Search */}
+      <div className="relative max-w-sm">
+        <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "hsl(var(--muted-foreground))" }} />
+        <input value={searchInput} onChange={(e) => setSearchInput(e.target.value)}
+          placeholder={t("admin.careers.searchPlaceholder")}
+          className="w-full pl-8 pr-3 py-2 text-sm rounded-xl outline-none"
+          style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", color: "inherit" }} />
       </div>
 
-      <div className="rounded-2xl overflow-hidden card-top-glow" style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", backdropFilter: "blur(12px)" }}>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
-                {[
-                  t("admin.careers.labelTitle"),
-                  t("admin.careers.labelCategory"),
-                  t("admin.careers.labelSalary"),
-                  t("admin.careers.labelDemand"),
-                  t("admin.careers.labelSkills"),
-                  "",
-                ].map((h) => (
-                  <th key={h} className="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider" style={{ color: "var(--ms-accent-cyan)", opacity: 0.65 }}>
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                [...Array(5)].map((_, i) => (
-                  <tr key={i}>
-                    {[...Array(6)].map((_, j) => (
-                      <td key={j} className="px-5 py-3"><div className="skeleton h-4 rounded" /></td>
-                    ))}
-                  </tr>
-                ))
-              ) : paginated.map((c) => (
-                <tr key={c.id} className="activity-hover" style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-glow)" }}>
-                        <Briefcase size={14} style={{ color: "var(--ms-accent-cyan)" }} />
-                      </div>
-                      <div>
-                        <div className="font-semibold">{c.title}</div>
-                        {c.description && (
-                          <div className="text-xs mt-0.5 line-clamp-1 max-w-[200px]" style={{ color: "hsl(var(--muted-foreground))" }}>{c.description}</div>
-                        )}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-5 py-3 text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>{c.category?.name}</td>
-                  <td className="px-5 py-3 text-xs font-medium">{c.salary_range || "—"}</td>
-                  <td className="px-5 py-3">
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={demandStyle(c.demand_level)}>{c.demand_level || "—"}</span>
-                  </td>
-                  <td className="px-5 py-3">
-                    <div className="flex flex-wrap gap-1">
-                      {(c.required_skills ?? []).slice(0, 3).map((s, i) => (
-                        <span key={i} className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "var(--ms-bg-layer3)", color: "hsl(var(--muted-foreground))", border: "1px solid var(--ms-border-subtle)" }}>
-                          {s}
-                        </span>
-                      ))}
-                      {(c.required_skills ?? []).length > 3 && (
-                        <span className="text-[10px]" style={{ color: "hsl(var(--muted-foreground))" }}>+{c.required_skills.length - 3}</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-1">
-                      <button onClick={() => setModal({ open: true, career: c })} className="p-1.5 rounded-lg transition-all hover:text-[var(--ms-accent-cyan)]" style={{ color: "hsl(var(--muted-foreground))" }}><Edit size={13} /></button>
-                      <button onClick={() => handleDelete(c.id)} className="p-1.5 rounded-lg transition-all hover:text-[#F87171]" style={{ color: "hsl(var(--muted-foreground))" }}><Trash2 size={13} /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {error && (
+        <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium"
+          style={{ background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.18)", color: "#F87171" }}>
+          <AlertCircle size={14} /> {error}
         </div>
+      )}
 
-        <div className="px-5 py-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs" style={{ borderTop: "1px solid var(--ms-border-subtle)", color: "hsl(var(--muted-foreground))" }}>
-          <span>
-            {t("admin.careers.showing")} {filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1}
-            {filtered.length > 0 && `–${Math.min(page * PAGE_SIZE, filtered.length)}`} {t("admin.careers.of")} {filtered.length} {t("admin.careers.careers")}
-          </span>
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="flex items-center gap-2">
-              <TrendingUp size={12} style={{ color: "var(--ms-accent-cyan)" }} />
-              <span style={{ color: "var(--ms-accent-sky)" }}>{categories.length} {t("admin.careers.categories")}</span>
+      {/* Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(6)].map((_, i) => <div key={i} className="rounded-2xl h-48 animate-pulse" style={{ background: "var(--ms-bg-card)" }} />)}
+        </div>
+      ) : careers.length === 0 ? (
+        <div className="text-center py-20">
+          <Briefcase size={32} className="mx-auto mb-3 opacity-20" />
+          <p className="text-sm" style={{ color: "hsl(var(--muted-foreground))" }}>No careers found.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {careers.map((c) => (
+            <div key={c.id} className="rounded-2xl p-5 flex flex-col gap-3 transition-all hover:scale-[1.01]"
+              style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", backdropFilter: "blur(12px)" }}>
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <h3 className="font-bold text-sm truncate">{c.title}</h3>
+                  <p className="text-[11px] font-medium mt-0.5" style={{ color: "var(--ms-accent-sky)" }}>
+                    {(c as any).category?.name ?? "—"}
+                  </p>
+                </div>
+                <div className="flex gap-1.5 flex-shrink-0">
+                  <button onClick={() => setModal(c)}
+                    className="p-1.5 rounded-lg transition-all hover:opacity-80"
+                    style={{ background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-glow)", color: "var(--ms-accent-sky)" }}>
+                    <Edit2 size={12} />
+                  </button>
+                  <button onClick={() => setToDelete(c)}
+                    className="p-1.5 rounded-lg transition-all hover:opacity-80"
+                    style={{ background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.18)", color: "#F87171" }}>
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              </div>
+
+              {c.description && (
+                <p className="text-xs leading-relaxed line-clamp-2" style={{ color: "hsl(var(--muted-foreground))" }}>{c.description}</p>
+              )}
+
+              <div className="flex items-center gap-2 flex-wrap">
+                <DemandBadge level={c.demand_level} />
+                {c.salary_range && (
+                  <span className="text-[10px] font-medium" style={{ color: "hsl(var(--muted-foreground))" }}>{c.salary_range}</span>
+                )}
+                {(c as any).recommendations_count > 0 && (
+                  <span className="text-[10px] font-bold ml-auto" style={{ color: "#A78BFA" }}>
+                    <TrendingUp size={10} className="inline mr-0.5" />{(c as any).recommendations_count}
+                  </span>
+                )}
+              </div>
+
+              {(c.required_skills ?? []).length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {(c.required_skills ?? []).slice(0, 3).map((s) => (
+                    <span key={s} className="text-[10px] font-medium px-2 py-0.5 rounded-full"
+                      style={{ background: "var(--ms-accent-glow)", color: "var(--ms-accent-sky)", border: "1px solid var(--ms-border-glow)" }}>
+                      {s}
+                    </span>
+                  ))}
+                  {(c.required_skills ?? []).length > 3 && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ color: "hsl(var(--muted-foreground))" }}>
+                      +{(c.required_skills ?? []).length - 3}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
-            {totalPages > 1 && (
-              <Pagination className="mt-2 sm:mt-0">
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (page > 1) setPage((prev) => Math.max(1, prev - 1));
-                  }}
-                  className={page === 1 ? "pointer-events-none opacity-50" : undefined}
-                />
-                <PaginationContent>
-                  {Array.from({ length: totalPages }, (_, index) => {
-                    const pageNumber = index + 1;
-                    return (
-                      <PaginationItem key={pageNumber}>
-                        <PaginationLink
-                          href="#"
-                          isActive={page === pageNumber}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setPage(pageNumber);
-                          }}
-                        >
-                          {pageNumber}
-                        </PaginationLink>
-                      </PaginationItem>
-                    );
-                  })}
-                </PaginationContent>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (page < totalPages) setPage((prev) => Math.min(totalPages, prev + 1));
-                  }}
-                  className={page === totalPages ? "pointer-events-none opacity-50" : undefined}
-                />
-              </Pagination>
-            )}
-          </div>
+          ))}
         </div>
-      </div>
+      )}
 
-      {modal.open && (
-        <CareerModal
-          career={modal.career}
-          categories={categories}
-          onClose={() => { setModal({ open: false, career: null }); setModalError(null); }}
-          onSave={handleSave}
-          loading={modalLoading}
-          serverError={modalError}
-        />
+      {/* Pagination */}
+      {lastPage > 1 && (
+        <div className="flex items-center justify-center gap-3">
+          <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}
+            className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg disabled:opacity-40"
+            style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)" }}>
+            <ChevronLeft size={13} /> Prev
+          </button>
+          <span className="text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>{page} / {lastPage}</span>
+          <button onClick={() => setPage((p) => Math.min(lastPage, p + 1))} disabled={page === lastPage}
+            className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg disabled:opacity-40"
+            style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)" }}>
+            Next <ChevronRight size={13} />
+          </button>
+        </div>
+      )}
+
+      {modal !== null && (
+        <CareerModal career={modal === "new" ? null : modal} categories={categories}
+          onClose={() => setModal(null)} onSaved={() => { setModal(null); load(); }} />
+      )}
+      {toDelete && (
+        <DeleteModal career={toDelete} onClose={() => setToDelete(null)}
+          onDeleted={() => { setToDelete(null); load(); }} />
       )}
     </div>
   );

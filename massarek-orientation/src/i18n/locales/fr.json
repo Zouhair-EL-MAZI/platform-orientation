@@ -31,12 +31,12 @@
   "navbar": {
     "searchPlaceholder": "Rechercher..."
   },
-    "errors": {
-      "tooManyRequests": "Trop de requêtes. Veuillez patienter un instant.",
-      "requestTimedOut": "La requête a expiré. Veuillez réessayer.",
-      "networkError": "Erreur réseau. Vérifiez votre connexion.",
-      "unexpected": "Une erreur inattendue est survenue."
-    },
+  "errors": {
+    "tooManyRequests": "Trop de requêtes. Veuillez patienter un instant.",
+    "requestTimedOut": "La requête a expiré. Veuillez réessayer.",
+    "networkError": "Erreur réseau. Vérifiez votre connexion.",
+    "unexpected": "Une erreur inattendue est survenue."
+  },
   "landing": {
     "hero": {
       "label": "Propulsé par l'IA",
@@ -696,10 +696,19 @@
   },
   "chatbot": {
     "title": "Assistant IA",
-    "subtitle": "Propulsé par l'IA",
-    "initialMessage": "Bonjour ! Je suis Massarek AI, votre conseiller d'orientation. 🎓\nJe suis là pour vous aider à :\n• Choisir votre filière d'études\n• Explorer des carrières professionnelles\n• Découvrir des universités et programmes\n• Développer vos compétences\nComment puis-je vous aider aujourd'hui ?",
-    "responseMessage": "C'est une excellente question ! D'après votre profil et vos résultats, je vous recommanderais d'explorer des domaines qui combinent vos compétences analytiques et vos intérêts créatifs. Voulez-vous des détails sur des programmes spécifiques ?",
-    "inputPlaceholder": "Demandez des informations sur les carrières, les domaines ou vos résultats..."
+    "subtitle": "Conseiller d'orientation · Propulsé par Gemini",
+    "initialMessage": "Bonjour ! Je suis **Massarek AI**, votre conseiller d'orientation. 🎓\n\nJe suis là pour vous aider à :\n- Choisir votre filière d'études\n- Explorer des carrières professionnelles\n- Découvrir des universités et programmes\n- Développer vos compétences\n\nComment puis-je vous aider aujourd'hui ?",
+    "suggestedQuestions": [
+      "Quelles filières correspondent à un profil scientifique ?",
+      "Comment choisir entre ingénierie et médecine ?",
+      "Quelles universités recommandes-tu au Maroc ?",
+      "Quelles compétences faut-il pour travailler en informatique ?"
+    ],
+    "inputPlaceholder": "Posez votre question sur l'orientation…",
+    "clearTitle": "Effacer la conversation",
+    "newChat": "Nouveau chat",
+    "note": "Massarek AI répond uniquement aux questions d'orientation scolaire et professionnelle.",
+    "serviceUnavailable": "Service temporairement indisponible. Veuillez réessayer."
   },
   "recommendations": {
     "title": "Recommandations IA",
@@ -826,7 +835,7 @@
   },
   "admin": {
     "title": "Tableau de bord Admin",
-    "welcomeAdmin": "Bienvenue, Administrateur 🛡️",
+    "welcomeAdmin": "Bon retour",
     "welcomeSubtitle": "Surveiller l'activité de la plateforme, gérer les utilisateurs et le contenu.",
     "recentUsers": "Utilisateurs récents",
     "viewAll": "Voir tout →",
@@ -852,16 +861,16 @@
     "edit": "Modifier",
     "close": "Fermer",
     "users": {
-      "title": "Gestion des utilisateurs",
-      "addUser": "Ajouter un utilisateur",
+      "title": "Gestion des étudiants",
+      "addUser": "Ajouter un étudiant",
       "export": "Exporter",
-      "searchPlaceholder": "Rechercher des utilisateurs...",
-      "totalUsers": "utilisateurs au total",
+      "searchPlaceholder": "Rechercher des étudiants...",
+      "totalUsers": "étudiants au total",
       "active": "actifs",
       "selected": "sélectionné(s)",
       "showing": "Affichage",
       "of": "sur",
-      "users": "utilisateurs",
+      "users": "étudiants",
       "allFieldsRequired": "Tous les champs sont requis",
       "passwordMinLength": "Le mot de passe doit contenir au moins 8 caractères",
       "nameEmailRequired": "Le nom et l'email sont requis",
@@ -900,7 +909,10 @@
       "labelName": "Nom",
       "labelEmail": "Email",
       "labelPassword": "Mot de passe",
-      "labelRole": "Rôle"
+      "labelRole": "Rôle",
+      "noUsers": "Aucun utilisateur",
+      "noResults": "Aucun utilisateur ne correspond",
+      "loadError": "Impossible de charger les utilisateurs."
     },
     "tests": {
       "title": "Gestion des tests",
@@ -913,7 +925,7 @@
       "labelTitle": "Titre",
       "labelDescription": "Description",
       "labelCategory": "Catégorie",
-      "labelDuration": "Durée (min)",
+      "labelDuration": "Durée",
       "filterAll": "Tous",
       "category": {
         "personality": "Personnalité",
@@ -938,7 +950,14 @@
       "confirmDeleteQuestion": "Supprimer cette question ?",
       "deactivate": "Désactiver",
       "activate": "Activer",
-      "manageQuestions": "Gérer les questions"
+      "manageQuestions": "Gérer les questions",
+      "submissions": "soumissions",
+      "points": "pts",
+      "avgQuestions": "Moy. questions",
+      "noQuestionsWarning": "Aucune question ajoutée",
+      "noQuestionsToActivate": "Ajoutez des questions avant d'activer",
+      "noTests": "Aucun test",
+      "noResults": "Aucun test ne correspond"
     },
     "careers": {
       "title": "Gestion des carrières",
@@ -969,7 +988,29 @@
       "addedSuccess": "Carrière ajoutée avec succès !",
       "deletedSuccess": "Carrière supprimée avec succès !",
       "confirmDelete": "Supprimer cette carrière ?",
-      "failedSave": "Échec de l'enregistrement de la carrière."
+      "failedSave": "Échec de l'enregistrement de la carrière.",
+      "table": {
+        "career": "Carrière",
+        "category": "Catégorie",
+        "demand": "Demande",
+        "salary": "Salaire",
+        "skills": "Compétences"
+      },
+      "totalCareers": "Total Carrières",
+      "totalCategories": "Catégories",
+      "highDemand": "Forte demande",
+      "avgSkills": "Comp. moy./carrière",
+      "careersByCategory": "Carrières par catégorie",
+      "allDemand": "Toute demande",
+      "results": "résultats",
+      "noCareers": "Aucune carrière",
+      "noResults": "Aucune carrière ne correspond",
+      "loadError": "Échec du chargement",
+      "saveFailed": "Échec de l'enregistrement",
+      "createdSuccess": "Carrière créée avec succès !",
+      "deleteFailed": "Échec de la suppression",
+      "skillsHint": "Entrée pour ajouter",
+      "skillsPlaceholder": "Tapez une compétence et appuyez sur Entrée…"
     },
     "recommendations": {
       "title": "Recommandations IA",
@@ -989,7 +1030,10 @@
       },
       "table": {
         "student": "Étudiant",
-        "topRecommendations": "Principales recommandations",
+        "career": "Carrière",
+        "matchScore": "Score de correspondance",
+        "generatedDate": "Générée le",
+        "topRecommendations": "Meilleures recommandations",
         "topScore": "Score max",
         "testDate": "Date du test",
         "status": "Statut",
@@ -1004,7 +1048,13 @@
       "viewDetails": "Détails de la recommandation",
       "editDetails": "Modifier la recommandation",
       "markReviewed": "Marquer comme examiné",
-      "failedLoad": "Échec du chargement des recommandations."
+      "failedLoad": "Échec du chargement des recommandations.",
+      "highMatch": "Correspondance élevée (≥80%)",
+      "topCareers": "Carrières les plus recommandées",
+      "scoreDistribution": "Distribution des scores",
+      "results": "enregistrements",
+      "noResults": "Aucune recommandation ne correspond",
+      "noData": "Aucune recommandation"
     },
     "analytics": {
       "title": "Statistiques et analyses",
@@ -1070,7 +1120,22 @@
         "dangerZone": "Zone dangereuse",
         "dangerZoneDesc": "Actions irréversibles. Procéder avec une extrême prudence.",
         "clearTestData": "Effacer toutes les données de test"
-      }
+      },
+      "platformInfo": "Informations sur la plateforme",
+      "platformInfoSub": "Détails de votre compte",
+      "changeNameSub": "Mettre à jour votre nom affiché",
+      "passwordSub": "Utilisez un mot de passe fort d'au moins 8 caractères",
+      "appearance": "Apparence",
+      "appearanceSub": "Choisissez votre thème de couleur",
+      "theme": "Thème",
+      "themeSub": "Basculer entre le mode clair et sombre",
+      "language": "Langue",
+      "languageSub": "Définissez la langue de l'interface",
+      "interfaceLanguage": "Langue de l'interface",
+      "languageNote": "Appliqué immédiatement dans tout le panneau admin",
+      "pwWeak": "Faible",
+      "pwFair": "Moyen",
+      "pwStrong": "Fort"
     },
     "profile": {
       "title": "Paramètres du profil",
@@ -1090,8 +1155,14 @@
       "passwordMismatch": "Les mots de passe ne correspondent pas",
       "passwordUpdatedSuccess": "Mot de passe mis à jour avec succès !",
       "failedUpdatePassword": "Erreur lors de la mise à jour du mot de passe.",
-      "saving": "Enregistrement..."
-    }
+      "saving": "Enregistrement...",
+      "namePlaceholder": "Votre nom complet",
+      "changePassword": "Changer le mot de passe"
+    },
+    "platformOverview": "Vue d'ensemble",
+    "verificationRate": "Taux de vérification",
+    "acrossRecommendations": "sur toutes les recommandations",
+    "noRecentUsers": "Aucun utilisateur récent"
   },
   "footer": {
     "quickLinks": "Liens rapides",
@@ -1132,7 +1203,7 @@
     "management": "Gestion",
     "system": "Système",
     "dashboard": "Tableau de bord",
-    "users": "Utilisateurs",
+    "users": "Étudiants",
     "tests": "Tests",
     "careers": "Carrières",
     "recommendations": "Recommandations",
@@ -1142,26 +1213,11 @@
     "signOut": "Se déconnecter"
   },
   "adminNavbar": {
-    "adminPanel": "Panneau Admin"
-  }
-  ,
-  "chatbot": {
-    "title": "Assistant IA",
-    "subtitle": "Conseiller d'orientation · Propulsé par Gemini",
-    "initialMessage": "Bonjour ! Je suis **Massarek AI**, votre conseiller d'orientation. 🎓\n\nJe suis là pour vous aider à :\n- Choisir votre filière d'études\n- Explorer des carrières professionnelles\n- Découvrir des universités et programmes\n- Développer vos compétences\n\nComment puis-je vous aider aujourd'hui ?",
-    "suggestedQuestions": [
-      "Quelles filières correspondent à un profil scientifique ?",
-      "Comment choisir entre ingénierie et médecine ?",
-      "Quelles universités recommandes-tu au Maroc ?",
-      "Quelles compétences faut-il pour travailler en informatique ?"
-    ],
-    "inputPlaceholder": "Posez votre question sur l'orientation…",
-    "clearTitle": "Effacer la conversation",
-    "newChat": "Nouveau chat",
-    "note": "Massarek AI répond uniquement aux questions d'orientation scolaire et professionnelle.",
-    "serviceUnavailable": "Service temporairement indisponible. Veuillez réessayer."
-  }
-  ,
+    "adminPanel": "Panneau Admin",
+    "search": "Rechercher…",
+    "searchPlaceholder": "Rechercher des pages…",
+    "noResults": "Aucun résultat"
+  },
   "career": {
     "title": "Explorateur de carrières",
     "subtitle": "Découvrez les parcours professionnels dans les principaux secteurs du Maroc.",

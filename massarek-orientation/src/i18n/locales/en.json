@@ -424,10 +424,26 @@
     "errorTitle": "Could not load dashboard",
     "tryAgain": "Try again",
     "quickActions": [
-      { "title": "Take Test", "desc": "Start orientation", "to": "/test" },
-      { "title": "AI Results", "desc": "View recommendations", "to": "/recommendations" },
-      { "title": "Careers", "desc": "Explore paths", "to": "/careers" },
-      { "title": "AI Chatbot", "desc": "Ask anything", "to": "/chatbot" }
+      {
+        "title": "Take Test",
+        "desc": "Start orientation",
+        "to": "/test"
+      },
+      {
+        "title": "AI Results",
+        "desc": "View recommendations",
+        "to": "/recommendations"
+      },
+      {
+        "title": "Careers",
+        "desc": "Explore paths",
+        "to": "/careers"
+      },
+      {
+        "title": "AI Chatbot",
+        "desc": "Ask anything",
+        "to": "/chatbot"
+      }
     ],
     "stats": {
       "profile": "Profile",
@@ -826,7 +842,7 @@
   },
   "admin": {
     "title": "Admin Dashboard",
-    "welcomeAdmin": "Welcome, Administrator 🛡️",
+    "welcomeAdmin": "Welcome back",
     "welcomeSubtitle": "Monitor platform activity, manage users and content.",
     "recentUsers": "Recent Users",
     "viewAll": "View all →",
@@ -852,16 +868,16 @@
     "edit": "Edit",
     "close": "Close",
     "users": {
-      "title": "Users Management",
-      "addUser": "Add User",
+      "title": "Students Management",
+      "addUser": "Add Student",
       "export": "Export",
-      "searchPlaceholder": "Search users...",
-      "totalUsers": "total users",
+      "searchPlaceholder": "Search students...",
+      "totalUsers": "total students",
       "active": "active",
       "selected": "selected",
       "showing": "Showing",
       "of": "of",
-      "users": "users",
+      "users": "students",
       "allFieldsRequired": "All fields are required",
       "passwordMinLength": "Password must be at least 8 characters",
       "nameEmailRequired": "Name and email are required",
@@ -900,7 +916,10 @@
       "labelName": "Name",
       "labelEmail": "Email",
       "labelPassword": "Password",
-      "labelRole": "Role"
+      "labelRole": "Role",
+      "noUsers": "No users yet",
+      "noResults": "No users match your search",
+      "loadError": "Failed to load users."
     },
     "tests": {
       "title": "Tests Management",
@@ -913,7 +932,7 @@
       "labelTitle": "Title",
       "labelDescription": "Description",
       "labelCategory": "Category",
-      "labelDuration": "Duration (min)",
+      "labelDuration": "Duration",
       "filterAll": "All",
       "category": {
         "personality": "Personality",
@@ -938,18 +957,25 @@
       "confirmDeleteQuestion": "Delete this question?",
       "deactivate": "Deactivate",
       "activate": "Activate",
-      "manageQuestions": "Manage Questions"
+      "manageQuestions": "Manage Questions",
+      "submissions": "submissions",
+      "points": "pts",
+      "avgQuestions": "Avg Questions",
+      "noQuestionsWarning": "No questions added",
+      "noQuestionsToActivate": "Add questions before activating",
+      "noTests": "No tests yet",
+      "noResults": "No tests match your search"
     },
     "careers": {
       "title": "Careers Management",
       "addCareer": "Add Career",
       "searchPlaceholder": "Search careers...",
-        "filterAll": "All",
+      "filterAll": "All",
       "careerPaths": "career paths",
       "categories": "categories",
-        "titleExample": "e.g. Software Engineering",
-        "salaryExample": "e.g. $80k–$130k",
-        "skillsExample": "e.g. Python, Data Analysis, SQL",
+      "titleExample": "e.g. Software Engineering",
+      "salaryExample": "e.g. $80k–$130k",
+      "skillsExample": "e.g. Python, Data Analysis, SQL",
       "showing": "Showing",
       "of": "of",
       "careers": "careers",
@@ -969,7 +995,29 @@
       "addedSuccess": "Career added successfully!",
       "deletedSuccess": "Career deleted successfully!",
       "confirmDelete": "Delete this career?",
-      "failedSave": "Failed to save career."
+      "failedSave": "Failed to save career.",
+      "table": {
+        "career": "Career",
+        "category": "Category",
+        "demand": "Demand",
+        "salary": "Salary",
+        "skills": "Skills"
+      },
+      "totalCareers": "Total Careers",
+      "totalCategories": "Categories",
+      "highDemand": "High Demand",
+      "avgSkills": "Avg Skills/Career",
+      "careersByCategory": "Careers by Category",
+      "allDemand": "All Demand",
+      "results": "results",
+      "noCareers": "No careers yet",
+      "noResults": "No careers match your search",
+      "loadError": "Failed to load careers",
+      "saveFailed": "Failed to save career",
+      "createdSuccess": "Career created successfully!",
+      "deleteFailed": "Failed to delete career",
+      "skillsHint": "Enter to add",
+      "skillsPlaceholder": "Type a skill and press Enter…"
     },
     "recommendations": {
       "title": "AI Recommendations",
@@ -989,6 +1037,9 @@
       },
       "table": {
         "student": "Student",
+        "career": "Career",
+        "matchScore": "Match Score",
+        "generatedDate": "Generated",
         "topRecommendations": "Top Recommendations",
         "topScore": "Top Score",
         "testDate": "Test Date",
@@ -1004,7 +1055,13 @@
       "viewDetails": "Recommendation Details",
       "editDetails": "Edit Recommendation",
       "markReviewed": "Mark as reviewed",
-      "failedLoad": "Failed to load recommendations."
+      "failedLoad": "Failed to load recommendations.",
+      "highMatch": "High Match (≥80%)",
+      "topCareers": "Most Recommended Careers",
+      "scoreDistribution": "Score Distribution",
+      "results": "records",
+      "noResults": "No recommendations match your search",
+      "noData": "No recommendations yet"
     },
     "analytics": {
       "title": "Analytics & Statistics",
@@ -1070,7 +1127,22 @@
         "dangerZone": "Danger Zone",
         "dangerZoneDesc": "Irreversible actions. Proceed with extreme caution.",
         "clearTestData": "Clear All Test Data"
-      }
+      },
+      "platformInfo": "Platform Information",
+      "platformInfoSub": "Your account details",
+      "changeNameSub": "Update your display name",
+      "passwordSub": "Use a strong password of at least 8 characters",
+      "appearance": "Appearance",
+      "appearanceSub": "Choose your preferred color scheme",
+      "theme": "Theme",
+      "themeSub": "Toggle between light and dark mode",
+      "language": "Language",
+      "languageSub": "Set your preferred interface language",
+      "interfaceLanguage": "Interface Language",
+      "languageNote": "Applied immediately across the entire admin panel",
+      "pwWeak": "Weak",
+      "pwFair": "Fair",
+      "pwStrong": "Strong"
     },
     "profile": {
       "title": "Profile Settings",
@@ -1090,8 +1162,13 @@
       "passwordMismatch": "Passwords do not match",
       "passwordUpdatedSuccess": "Password updated successfully!",
       "failedUpdatePassword": "Failed to update password.",
-      "saving": "Saving..."
-    }
+      "saving": "Saving...",
+      "namePlaceholder": "Your full name"
+    },
+    "platformOverview": "Platform Overview",
+    "verificationRate": "Verification Rate",
+    "acrossRecommendations": "across all recommendations",
+    "noRecentUsers": "No recent users"
   },
   "footer": {
     "quickLinks": "Quick links",
@@ -1132,7 +1209,7 @@
     "management": "Management",
     "system": "System",
     "dashboard": "Dashboard",
-    "users": "Users",
+    "users": "Students",
     "tests": "Tests",
     "careers": "Careers",
     "recommendations": "Recommendations",
@@ -1142,6 +1219,9 @@
     "signOut": "Sign Out"
   },
   "adminNavbar": {
-    "adminPanel": "Admin Panel"
+    "adminPanel": "Admin Panel",
+    "search": "Search…",
+    "searchPlaceholder": "Search pages…",
+    "noResults": "No results found"
   }
 }

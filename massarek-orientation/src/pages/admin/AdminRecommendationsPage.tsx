@@ -1,254 +1,239 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Sparkles, Search, RefreshCw, CheckCircle, AlertCircle, Eye, User, X } from "lucide-react";
-import { getAdminRecommendations, regenerateAdminRecommendations, AdminRecommendation } from "@/services/adminApi";
+import {
+  Sparkles, Search, ChevronLeft, ChevronRight, TrendingUp, BarChart3,
+} from "lucide-react";
+import { getAdminRecommendations } from "@/services/adminApi";
 
-const statusStyle = (s: string) => {
-  if (s === "Generated")
-    return { background: "rgba(52,211,153,0.12)", color: "#34D399", border: "1px solid rgba(52,211,153,0.24)" };
-  return { background: "rgba(251,191,36,0.20)", color: "#FBBF24", border: "1px solid rgba(251,191,36,0.30)" };
-};
+// ─── Types ────────────────────────────────────────────────────────────────────
+interface Rec {
+  id: number;
+  user: { name: string; email: string };
+  career: string;
+  category: string;
+  match_score: number;
+  created_at: string;
+  created_human: string;
+}
+interface Analytics {
+  total: number;
+  avg_score: number;
+  top_careers: { career: string; count: number; avg_score: number }[];
+}
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function Avatar({ name }: { name: string }) {
+  return (
+    <div className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0"
+      style={{ background: "linear-gradient(135deg,#1D4ED8,#0E7490)" }}>
+      {name?.charAt(0)?.toUpperCase() ?? "?"}
+    </div>
+  );
+}
+
+function ScoreBar({ score }: { score: number }) {
+  const n = Number(score);
+  const color = n >= 80 ? "#34D399" : n >= 60 ? "var(--ms-accent-sky)" : "#FBBF24";
+  return (
+    <div className="flex items-center gap-2">
+      <div className="w-16 h-1.5 rounded-full overflow-hidden" style={{ background: "var(--ms-border-subtle)" }}>
+        <div className="h-full rounded-full" style={{ width: `${Math.min(n, 100)}%`, background: color }} />
+      </div>
+      <span className="text-xs font-bold tabular-nums" style={{ color }}>{n}%</span>
+    </div>
+  );
+}
+
+function HBar({ label, value, max, color, sub }: { label: string; value: number; max: number; color: string; sub?: string }) {
+  const pct = max > 0 ? (value / max) * 100 : 0;
+  return (
+    <div className="flex items-center gap-3">
+      <div className="w-32 flex-shrink-0 min-w-0">
+        <p className="text-xs font-medium truncate">{label}</p>
+        {sub && <p className="text-[10px]" style={{ color: "hsl(var(--muted-foreground))" }}>{sub}</p>}
+      </div>
+      <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: "var(--ms-border-subtle)" }}>
+        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: color }} />
+      </div>
+      <span className="text-xs font-bold tabular-nums w-8 text-right">{value}</span>
+    </div>
+  );
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
 const AdminRecommendationsPage = () => {
   const { t } = useTranslation();
-  const [search, setSearch] = useState("");
-  const [filterReviewed, setFilterReviewed] = useState<"all" | "reviewed" | "unreviewed">("all");
-  const [recs, setRecs] = useState<AdminRecommendation[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [regenLoading, setRegenLoading] = useState(false);
-  const [viewingRec, setViewingRec] = useState<any>(null);
-  const [editingRec, setEditingRec] = useState<any>(null);
+  const [recs,      setRecs]      = useState<Rec[]>([]);
+  const [analytics, setAnalytics] = useState<Analytics | null>(null);
+  const [loading,   setLoading]   = useState(true);
+  const [error,     setError]     = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [search,    setSearch]    = useState("");
+  const [page,      setPage]      = useState(1);
+  const [lastPage,  setLastPage]  = useState(1);
+  const [total,     setTotal]     = useState(0);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const load = async () => {
-    setLoading(true);
+  const load = useCallback(async () => {
+    setLoading(true); setError("");
     try {
-      const res = await getAdminRecommendations();
-      setRecs(res.data.data || []);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+      const r = await getAdminRecommendations({ search, page, per_page: 15 });
+      const d = r.data as any;
+      setRecs(d.data ?? []);
+      setAnalytics(d.analytics ?? null);
+      setLastPage(d.meta?.last_page ?? 1);
+      setTotal(d.meta?.total ?? 0);
+    } catch { setError(t("admin.recommendations.failedLoad")); }
+    finally { setLoading(false); }
+  }, [search, page, t]);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
-  const handleRegenerate = async () => {
-    setRegenLoading(true);
-    try {
-      await regenerateAdminRecommendations();
-      await load();
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setRegenLoading(false);
-    }
-  };
+  useEffect(() => {
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => { setSearch(searchInput); setPage(1); }, 350);
+    return () => { if (timer.current) clearTimeout(timer.current); };
+  }, [searchInput]);
 
-  const normalized = recs.map(r => ({
-    ...r,
-    userName: typeof r.user === "string" ? r.user : (r.user?.name || ""),
-    userEmail: typeof r.user === "object" ? r.user?.email : (r.email || ""),
-    recommendations: Array.isArray(r.recommendations) ? r.recommendations : (r.career ? [r.career] : []),
-    topScore: r.topScore || r.match_score || 0,
-    status: r.status || "Generated",
-    reviewed: r.reviewed ?? false,
-  }));
-
-  const filtered = normalized.filter((r) => {
-    const q = search.toLowerCase();
-    const matchSearch = r.userName.toLowerCase().includes(q) || r.userEmail.toLowerCase().includes(q);
-    const matchReview =
-      filterReviewed === "all" ||
-      (filterReviewed === "reviewed" && r.reviewed) ||
-      (filterReviewed === "unreviewed" && !r.reviewed);
-    return matchSearch && matchReview;
-  });
-
-  const totalGenerated = normalized.filter(r => r.status === "Generated").length;
-  const pending = normalized.filter(r => r.status === "Pending").length;
-  const reviewedCount = normalized.filter(r => r.reviewed).length;
-  const avgTop = normalized.length ? Math.round(normalized.reduce((a, b) => a + b.topScore, 0) / normalized.length) : 0;
+  const maxCareer = Math.max(...(analytics?.top_careers ?? []).map((c) => c.count), 1);
 
   return (
-    <>
-    <div className="max-w-7xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-7xl mx-auto space-y-5 animate-fade-in">
+
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles size={22} style={{ color: "var(--ms-accent-cyan)" }} />
-            {t("admin.recommendations.title")}
-          </h1>
-          <p className="text-sm mt-1" style={{ color: "hsl(var(--muted-foreground))" }}>
-            {t("admin.recommendations.subtitle")}
-          </p>
-        </div>
-        {/* "Regenerate All" button removed from frontend as requested */}
+      <div>
+        <h1 className="text-xl font-bold flex items-center gap-2">
+          <Sparkles size={18} style={{ color: "#A78BFA" }} />
+          {t("admin.recommendations.title")}
+        </h1>
+        <p className="text-sm mt-0.5" style={{ color: "hsl(var(--muted-foreground))" }}>
+          {t("admin.recommendations.subtitle")}
+        </p>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Summary strip */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {[
-          { label: t("admin.recommendations.summary.totalGenerated"), value: totalGenerated, color: "#34D399" },
-          { label: t("admin.recommendations.summary.pendingGeneration"), value: pending, color: "#FBBF24" },
-          { label: t("admin.recommendations.summary.avgTopScore"), value: `${avgTop}%`, color: "var(--ms-accent-sky)" },
+          { label: t("admin.recommendations.summary.totalGenerated"), value: analytics?.total ?? 0,     color: "#A78BFA", icon: Sparkles },
+          { label: t("admin.recommendations.summary.avgTopScore"),    value: `${analytics?.avg_score ?? 0}%`, color: "#34D399", icon: TrendingUp },
+          { label: "Unique Careers",                                   value: analytics?.top_careers.length ?? 0, color: "var(--ms-accent-sky)", icon: BarChart3 },
         ].map((s) => (
-          <div
-            key={s.label}
-            className="rounded-2xl p-5 card-top-glow"
-            style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", backdropFilter: "blur(12px)" }}
-          >
-            <div className="absolute top-0 left-0 right-0 h-[2px] rounded-t-2xl" style={{ background: `linear-gradient(90deg, transparent, ${s.color}, transparent)` }} />
-            <div className="text-2xl font-bold mb-1" style={{ color: s.color }}>{s.value}</div>
-            <div className="text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>{s.label}</div>
+          <div key={s.label} className="rounded-xl px-4 py-3 flex items-center gap-3"
+            style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)" }}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${s.color}18` }}>
+              <s.icon size={15} style={{ color: s.color }} />
+            </div>
+            <div>
+              <p className="text-base font-bold tabular-nums">{typeof s.value === "number" ? s.value.toLocaleString() : s.value}</p>
+              <p className="text-[10px]" style={{ color: "hsl(var(--muted-foreground))" }}>{s.label}</p>
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Toolbar */}
-      <div className="rounded-2xl p-4 flex flex-wrap gap-3 items-center" style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", backdropFilter: "blur(12px)" }}>
-        <div className="relative flex items-center gap-2 flex-1 min-w-[200px] max-w-sm rounded-xl h-9 px-3" style={{ background: "var(--ms-bg-layer2)", border: "1px solid var(--ms-border-subtle)" }}>
-          <Search size={13} className="text-muted-foreground" />
-          <input type="text" placeholder={t("admin.recommendations.searchPlaceholder")} value={search} onChange={(e) => setSearch(e.target.value)} className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
-        </div>
-        {/* Filters removed per request: Tous / Revu / Non revu */}
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-      {/* Recommendations Table */}
-      <div className="rounded-2xl overflow-hidden card-top-glow" style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", backdropFilter: "blur(12px)" }}>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
-                {[t("admin.recommendations.table.student"), t("admin.recommendations.table.topRecommendations"), t("admin.recommendations.table.topScore"), t("admin.recommendations.table.testDate"), t("admin.recommendations.table.status"), "Actions"].map((h, i) => (
-                      <th key={i} className="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider" style={{ color: "var(--ms-accent-cyan)", opacity: 0.65 }}>{h}</th>
+        {/* Table */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="relative max-w-sm">
+            <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "hsl(var(--muted-foreground))" }} />
+            <input value={searchInput} onChange={(e) => setSearchInput(e.target.value)}
+              placeholder={t("admin.recommendations.searchPlaceholder")}
+              className="w-full pl-8 pr-3 py-2 text-sm rounded-xl outline-none"
+              style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", color: "inherit" }} />
+          </div>
+
+          <div className="rounded-2xl overflow-hidden"
+            style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)" }}>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
+                    {[t("admin.recommendations.table.student"), "Career", "Score", "Date"].map((h) => (
+                      <th key={h} className="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider"
+                        style={{ color: "hsl(var(--muted-foreground))" }}>{h}</th>
                     ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((r) => (
-                <tr key={r.id} className="activity-hover" style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style={{ background: "linear-gradient(135deg, #1D4ED8, #0E7490)" }}>{r.userName.charAt(0) || "?"}</div>
-                      <div>
-                        <div className="font-semibold text-xs">{r.userName}</div>
-                        <div className="text-[10px]" style={{ color: "hsl(var(--muted-foreground))" }}>{r.userEmail}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-5 py-3">
-                    <div className="flex flex-wrap gap-1">
-                      {r.recommendations.slice(0, 2).map((rec) => (
-                        <span key={rec} className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "var(--ms-accent-glow)", color: "var(--ms-accent-sky)", border: "1px solid var(--ms-border-glow)" }}>{rec}</span>
-                      ))}
-                      {r.recommendations.length > 2 && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ color: "hsl(var(--muted-foreground))" }}>+{r.recommendations.length - 2}</span>}
-                    </div>
-                  </td>
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-2">
-                      <div className="h-1.5 w-12 rounded-full overflow-hidden" style={{ background: "var(--ms-bg-layer3)" }}>
-                        <div className="h-full progress-fill-glow" style={{ width: `${r.topScore}%` }} />
-                      </div>
-                      <span className="text-xs font-bold" style={{ color: "var(--ms-accent-sky)" }}>{r.topScore}%</span>
-                    </div>
-                  </td>
-                  <td className="px-5 py-3 text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>{r.created_at || r.testDate || "-"}</td>
-                      <td className="px-5 py-3"><span className="text-xs font-bold px-2.5 py-1 rounded-full" style={statusStyle(r.status)}>{t(`admin.recommendations.status.${(r.status || "").toString().toLowerCase()}`, r.status)}</span></td>
-                      <td className="px-5 py-3">
-                    <div className="flex items-center gap-1">
-                      <button onClick={() => setViewingRec(r)} className="p-1.5 rounded-lg hover:text-[var(--ms-accent-cyan)]" style={{ color: "hsl(var(--muted-foreground))" }} title={t("admin.recommendations.view")}>
-                        <Eye size={14} />
-                      </button>
-                      <button onClick={() => setEditingRec(r)} className="p-1.5 rounded-lg hover:text-[var(--ms-accent-sky)]" style={{ color: "hsl(var(--muted-foreground))" }} title={t("admin.recommendations.edit")}>
-                        <User size={14} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    [...Array(8)].map((_, i) => (
+                      <tr key={i}>
+                        {[120, 120, 80, 70].map((w, j) => (
+                          <td key={j} className="px-4 py-3">
+                            <div className="h-4 rounded animate-pulse" style={{ background: "var(--ms-border-subtle)", width: w }} />
+                          </td>
+                        ))}
+                      </tr>
+                    ))
+                  ) : recs.length === 0 ? (
+                    <tr><td colSpan={4} className="px-4 py-16 text-center text-sm" style={{ color: "hsl(var(--muted-foreground))" }}>No recommendations found.</td></tr>
+                  ) : recs.map((r) => (
+                    <tr key={r.id} className="transition-colors hover:bg-[var(--ms-accent-glow)]"
+                      style={{ borderTop: "1px solid var(--ms-border-subtle)" }}>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2.5">
+                          <Avatar name={r.user.name} />
+                          <div className="min-w-0">
+                            <p className="text-xs font-semibold truncate max-w-[100px]">{r.user.name}</p>
+                            <p className="text-[10px] truncate max-w-[100px]" style={{ color: "hsl(var(--muted-foreground))" }}>{r.user.email}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <p className="text-xs font-medium truncate max-w-[120px]">{r.career}</p>
+                        {r.category && <p className="text-[10px]" style={{ color: "hsl(var(--muted-foreground))" }}>{r.category}</p>}
+                      </td>
+                      <td className="px-4 py-3"><ScoreBar score={r.match_score} /></td>
+                      <td className="px-4 py-3 text-xs whitespace-nowrap" style={{ color: "hsl(var(--muted-foreground))" }}>{r.created_at}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {lastPage > 1 && (
+              <div className="flex items-center justify-between px-4 py-3" style={{ borderTop: "1px solid var(--ms-border-subtle)" }}>
+                <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}
+                  className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg disabled:opacity-40"
+                  style={{ background: "var(--ms-bg-layer2)", border: "1px solid var(--ms-border-subtle)" }}>
+                  <ChevronLeft size={13} /> Prev
+                </button>
+                <span className="text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>
+                  {page} / {lastPage} · {total} total
+                </span>
+                <button onClick={() => setPage((p) => Math.min(lastPage, p + 1))} disabled={page === lastPage}
+                  className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg disabled:opacity-40"
+                  style={{ background: "var(--ms-bg-layer2)", border: "1px solid var(--ms-border-subtle)" }}>
+                  Next <ChevronRight size={13} />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Top careers analytics */}
+        <div className="rounded-2xl p-5" style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)" }}>
+          <h2 className="text-sm font-bold mb-4 flex items-center gap-2">
+            <BarChart3 size={14} style={{ color: "#A78BFA" }} />
+            {t("admin.recommendations.summary.totalGenerated").replace("Total","Most")}
+          </h2>
+          {loading ? (
+            <div className="space-y-3">{[...Array(6)].map((_, i) => <div key={i} className="h-4 rounded animate-pulse" style={{ background: "var(--ms-border-subtle)" }} />)}</div>
+          ) : (analytics?.top_careers ?? []).length === 0 ? (
+            <p className="text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>No data yet.</p>
+          ) : (
+            <div className="space-y-4">
+              {(analytics?.top_careers ?? []).map((c, i) => (
+                <HBar key={i} label={c.career} value={c.count} max={maxCareer}
+                  sub={`avg ${c.avg_score}%`}
+                  color={i === 0 ? "#A78BFA" : i === 1 ? "var(--ms-accent-sky)" : "var(--ms-accent-cyan)"} />
               ))}
-            </tbody>
-          </table>
+            </div>
+          )}
         </div>
       </div>
-
     </div>
-
-      {/* View Modal */}
-      {viewingRec && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold">{t("admin.recommendations.viewDetails")}</h2>
-              <button onClick={() => setViewingRec(null)} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded">
-                <X size={20} />
-              </button>
-            </div>
-            <div className="space-y-3 text-sm">
-              <div>
-                <span className="font-semibold">{t("admin.recommendations.table.student")}:</span> {viewingRec.userName}
-              </div>
-              <div>
-                <span className="font-semibold">{t("admin.recommendations.table.topRecommendations")}:</span>
-                <div className="flex flex-wrap gap-2 mt-1">
-                  {viewingRec.recommendations.map((r: string) => (
-                    <span key={r} className="px-2 py-1 rounded-full text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100">{r}</span>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <span className="font-semibold">{t("admin.recommendations.table.topScore")}:</span> {viewingRec.topScore}%
-              </div>
-              <div>
-                <span className="font-semibold">{t("admin.recommendations.table.testDate")}:</span> {viewingRec.created_at || "-"}
-              </div>
-            </div>
-            <button onClick={() => setViewingRec(null)} className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700">
-              {t("admin.close")}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Modal */}
-      {editingRec && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold">{t("admin.recommendations.editDetails")}</h2>
-              <button onClick={() => setEditingRec(null)} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded">
-                <X size={20} />
-              </button>
-            </div>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-semibold mb-1">{t("admin.recommendations.table.student")}</label>
-                <input type="text" value={editingRec.userName} readOnly className="w-full px-3 py-2 border rounded-lg bg-slate-50 dark:bg-slate-800 text-sm" />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold mb-1">{t("admin.recommendations.table.topRecommendations")}</label>
-                <input type="text" value={editingRec.recommendations.join(", ")} readOnly className="w-full px-3 py-2 border rounded-lg bg-slate-50 dark:bg-slate-800 text-sm" />
-              </div>
-              <div>
-                <label className="flex items-center gap-2 text-sm font-semibold">
-                  <input type="checkbox" checked={editingRec.reviewed} onChange={(e) => setEditingRec({...editingRec, reviewed: e.target.checked})} className="rounded" />
-                  {t("admin.recommendations.markReviewed")}
-                </label>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <button onClick={() => setEditingRec(null)} className="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800">
-                {t("admin.cancel")}
-              </button>
-              <button onClick={() => { setEditingRec(null); }} className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700">
-                {t("admin.save")}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
   );
 };
 

@@ -101,12 +101,8 @@ const Navbar = () => {
           {/* Dropdown */}
           {open && (
             <div
-              className="absolute right-0 top-[calc(100%+8px)] w-52 rounded-2xl overflow-hidden z-50"
+              className="absolute right-0 top-[calc(100%+8px)] w-52 rounded-2xl overflow-hidden bg-white dark:bg-[#131c35] shadow-xl border border-slate-200 dark:border-slate-800 z-[999]"
               style={{
-                background:    "var(--ms-bg-card)",
-                border:        "1px solid var(--ms-border-subtle)",
-                backdropFilter:"blur(20px)",
-                boxShadow:     "0 16px 48px rgba(0,0,0,0.25)",
                 animation:     "ms-msg-in 0.15s ease-out both",
               }}
             >

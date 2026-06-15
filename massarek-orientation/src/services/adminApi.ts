@@ -7,9 +7,32 @@ export interface AdminUser {
   role: string;
   tests: number;
   status: string;
+  academic_level?: string | null;
   verified: boolean;
   joined: string;
+  joined_human?: string;
   lastActive: string;
+  profile?: {
+    age?: number | null;
+    city?: string | null;
+    education_level?: string | null;
+    academic_level?: string | null;
+    statut?: string | null;
+    bio?: string | null;
+    interests?: string[];
+    preferred_fields?: string[];
+    phone?: string | null;
+  };
+  completed_tests?: Array<{
+    title: string;
+    total_score: number | string;
+    completed_at: string;
+  }>;
+  recommendations?: Array<{
+    career: string;
+    match_score: number;
+    created_at: string;
+  }>;
 }
 
 export interface AdminTestRaw {
@@ -28,7 +51,7 @@ export interface AdminTest {
   title: string;
   description: string;
   questions: number;
-  duration: string;
+  duration: number;
   completions: number;
   active: boolean;
   category: string;
@@ -64,7 +87,7 @@ export const updateAdminCareer = (id: number, data: Partial<AdminCareer>) =>
 export const deleteAdminCareer = (id: number) =>
   api.delete<{ success: boolean }>(`/admin/careers/${id}`);
 
-export const getAdminUsers = (params?: { search?: string; page?: number }) =>
+export const getAdminUsers = (params?: { search?: string; role?: string; status?: string; academic_level?: string; page?: number; per_page?: number }) =>
   api.get<{ success: boolean; data: any }>("/admin/users", { params });
 
 export const getAdminUserById = (id: number) =>

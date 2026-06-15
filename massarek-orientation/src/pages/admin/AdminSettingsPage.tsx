@@ -1,135 +1,248 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Settings, Save, Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react";
+import { useTheme } from "next-themes";
+import {
+  Settings, Save, Eye, EyeOff, AlertCircle,
+  CheckCircle, Shield, Globe, Moon, Sun, Info,
+} from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 import api from "@/lib/api";
+import ThemeToggle from "@/components/ThemeToggle";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
-const inputClass = "w-full mt-1 px-3 py-2 rounded-lg bg-transparent text-sm outline-none transition-all";
-const inputStyle = { border: "1px solid var(--ms-border-subtle)", color: "inherit" };
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+const inputCls = "w-full mt-1 px-3 py-2 rounded-xl bg-transparent text-sm outline-none transition-all";
+const inputSty = { border: "1px solid var(--ms-border-subtle)", color: "inherit" };
 
+function SectionCard({ title, icon: Icon, color = "var(--ms-accent-cyan)", children }: {
+  title: string; icon: React.ElementType; color?: string; children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-2xl overflow-hidden"
+      style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", backdropFilter: "blur(12px)" }}>
+      <div className="flex items-center gap-2.5 px-5 py-4"
+        style={{ borderBottom: "1px solid var(--ms-border-subtle)" }}>
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: `${color}18` }}>
+          <Icon size={14} style={{ color }} />
+        </div>
+        <h2 className="text-sm font-bold">{title}</h2>
+      </div>
+      <div className="px-5 py-4 space-y-4">{children}</div>
+    </div>
+  );
+}
+
+function Row({ label, desc, children }: { label: string; desc?: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-4 py-1">
+      <div>
+        <p className="text-sm font-semibold">{label}</p>
+        {desc && <p className="text-xs mt-0.5" style={{ color: "hsl(var(--muted-foreground))" }}>{desc}</p>}
+      </div>
+      <div className="flex-shrink-0">{children}</div>
+    </div>
+  );
+}
+
+function FeedbackMsg({ msg }: { msg: { type: "success" | "error"; text: string } }) {
+  const ok = msg.type === "success";
+  return (
+    <div className="rounded-xl px-3 py-2 flex items-center gap-2"
+      style={{
+        background: ok ? "rgba(52,211,153,0.08)"  : "rgba(248,113,113,0.08)",
+        border:     ok ? "1px solid rgba(52,211,153,0.20)" : "1px solid rgba(248,113,113,0.18)",
+      }}>
+      {ok
+        ? <CheckCircle size={13} style={{ color: "#34D399", flexShrink: 0 }} />
+        : <AlertCircle size={13} style={{ color: "#F87171", flexShrink: 0 }} />}
+      <p className="text-xs font-medium" style={{ color: ok ? "#34D399" : "#F87171" }}>{msg.text}</p>
+    </div>
+  );
+}
+
+// ─── Password field with eye toggle ──────────────────────────────────────────
+function PwField({ label, value, onChange, disabled }: {
+  label: string; value: string; onChange: (v: string) => void; disabled: boolean;
+}) {
+  const [show, setShow] = useState(false);
+  return (
+    <div>
+      <label className="text-xs font-semibold" style={{ color: "hsl(var(--muted-foreground))" }}>{label}</label>
+      <div className="relative">
+        <input
+          type={show ? "text" : "password"}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className={inputCls + " pr-10"}
+          style={inputSty}
+          disabled={disabled}
+          onFocus={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-glow)")}
+          onBlur={(e)  => (e.currentTarget.style.borderColor = "var(--ms-border-subtle)")}
+        />
+        <button
+          type="button"
+          onClick={() => setShow((v) => !v)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 transition-opacity hover:opacity-70"
+          style={{ color: "hsl(var(--muted-foreground))" }}
+        >
+          {show ? <EyeOff size={13} /> : <Eye size={13} />}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
 const AdminSettingsPage = () => {
-  const { t } = useTranslation();
-  const stored = JSON.parse(localStorage.getItem("user") || "{}");
+  const { t }    = useTranslation();
+  const { user } = useAuth();           // ← use auth hook, not localStorage directly
+  const { theme } = useTheme();
 
-  const [name, setName] = useState(stored.name ?? "");
+  // ── Profile form ──────────────────────────────────────────────────────────
+  const [name,       setName]       = useState(user?.name ?? "");
   const [nameLoading, setNameLoading] = useState(false);
-  const [nameMsg, setNameMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
-
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showCurrent, setShowCurrent] = useState(false);
-  const [showNew, setShowNew] = useState(false);
-  const [pwLoading, setPwLoading] = useState(false);
-  const [pwMsg, setPwMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [nameMsg,    setNameMsg]    = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const handleSaveName = async () => {
-    if (!name.trim()) { setNameMsg({ type: "error", text: t("admin.profile.nameRequired") }); return; }
-    setNameLoading(true);
-    setNameMsg(null);
+    if (!name.trim()) { setNameMsg({ type: "error", text: t("admin.users.labelName") + " is required." }); return; }
+    setNameLoading(true); setNameMsg(null);
     try {
       await api.put("/student/profile", { name });
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
-      localStorage.setItem("user", JSON.stringify({ ...user, name }));
-      setNameMsg({ type: "success", text: t("admin.profile.nameUpdatedSuccess") });
+      // Keep localStorage in sync for other components that read it
+      const stored = JSON.parse(localStorage.getItem("user") || "{}");
+      localStorage.setItem("user", JSON.stringify({ ...stored, name }));
+      window.dispatchEvent(new Event("storage"));
+      setNameMsg({ type: "success", text: "Name updated successfully." });
     } catch (e: any) {
-      setNameMsg({ type: "error", text: e?.response?.data?.message ?? t("admin.profile.failedUpdateName") });
+      setNameMsg({ type: "error", text: e?.response?.data?.message ?? "Failed to update name." });
     } finally { setNameLoading(false); }
   };
 
+  // ── Password form ─────────────────────────────────────────────────────────
+  const [currentPw,  setCurrentPw]  = useState("");
+  const [newPw,      setNewPw]      = useState("");
+  const [confirmPw,  setConfirmPw]  = useState("");
+  const [pwLoading,  setPwLoading]  = useState(false);
+  const [pwMsg,      setPwMsg]      = useState<{ type: "success" | "error"; text: string } | null>(null);
+
   const handleSavePassword = async () => {
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      setPwMsg({ type: "error", text: t("admin.profile.allFieldsRequired") }); return;
+    if (!currentPw || !newPw || !confirmPw) {
+      setPwMsg({ type: "error", text: "All password fields are required." }); return;
     }
-    if (newPassword.length < 8) {
-      setPwMsg({ type: "error", text: t("admin.profile.passwordMinLength") }); return;
+    if (newPw.length < 8) {
+      setPwMsg({ type: "error", text: "Password must be at least 8 characters." }); return;
     }
-    if (newPassword !== confirmPassword) {
-      setPwMsg({ type: "error", text: t("admin.profile.passwordMismatch") }); return;
+    if (newPw !== confirmPw) {
+      setPwMsg({ type: "error", text: "Passwords do not match." }); return;
     }
-    setPwLoading(true);
-    setPwMsg(null);
+    setPwLoading(true); setPwMsg(null);
     try {
-      await api.put("/student/profile", { current_password: currentPassword, password: newPassword, password_confirmation: confirmPassword });
-      setPwMsg({ type: "success", text: t("admin.profile.passwordUpdatedSuccess") });
-      setCurrentPassword(""); setNewPassword(""); setConfirmPassword("");
+      await api.put("/student/profile", {
+        current_password: currentPw,
+        password: newPw,
+        password_confirmation: confirmPw,
+      });
+      setPwMsg({ type: "success", text: "Password updated successfully." });
+      setCurrentPw(""); setNewPw(""); setConfirmPw("");
     } catch (e: any) {
-      setPwMsg({ type: "error", text: e?.response?.data?.message ?? t("admin.profile.failedUpdatePassword") });
+      setPwMsg({ type: "error", text: e?.response?.data?.message ?? "Failed to update password." });
     } finally { setPwLoading(false); }
   };
 
-  const cardStyle = { background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)", backdropFilter: "blur(12px)" };
-  const labelStyle = { color: "var(--ms-accent-cyan)", opacity: 0.65 };
-
-  const Msg = ({ msg }: { msg: { type: "success" | "error"; text: string } }) => (
-    <div className="rounded-lg p-3 flex items-center gap-2 mt-3"
-      style={msg.type === "success"
-        ? { background: "rgba(52,211,153,0.08)", border: "1px solid rgba(52,211,153,0.20)" }
-        : { background: "rgba(248,113,113,0.06)", border: "1px solid rgba(248,113,113,0.15)" }}>
-      {msg.type === "success"
-        ? <CheckCircle size={14} style={{ color: "#34D399", flexShrink: 0 }} />
-        : <AlertCircle size={14} style={{ color: "#F87171", flexShrink: 0 }} />}
-      <p className="text-xs font-medium" style={{ color: msg.type === "success" ? "#34D399" : "#F87171" }}>{msg.text}</p>
-    </div>
-  );
-
   return (
-    <div className="max-w-xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-xl mx-auto space-y-5 animate-fade-in">
+
+      {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Settings size={22} style={{ color: "var(--ms-accent-cyan)" }} />
-          {t("admin.profile.title")}
+        <h1 className="text-xl font-bold flex items-center gap-2">
+          <Settings size={18} style={{ color: "var(--ms-accent-cyan)" }} />
+          {t("adminSidebar.settings")}
         </h1>
-        <p className="text-sm mt-1" style={{ color: "hsl(var(--muted-foreground))" }}>{t("admin.profile.subtitle")}</p>
+        <p className="text-sm mt-0.5" style={{ color: "hsl(var(--muted-foreground))" }}>
+          Manage your admin account and platform preferences
+        </p>
       </div>
 
-      {/* Change Name */}
-      <div className="rounded-2xl p-6 space-y-4" style={cardStyle}>
-        <h2 className="text-sm font-bold" style={{ color: "var(--ms-accent-sky)" }}>{t("admin.profile.changeName")}</h2>
-        <div>
-          <label className="text-xs font-bold uppercase tracking-wider" style={labelStyle}>{t("admin.profile.name")}</label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)}
-            className={inputClass} style={inputStyle}
-            onFocus={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-active)")}
-            onBlur={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-subtle)")}
-            disabled={nameLoading} />
-        </div>
-        {nameMsg && <Msg msg={nameMsg} />}
-        <button onClick={handleSaveName} disabled={nameLoading}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all"
-          style={{ background: "linear-gradient(135deg, #1D4ED8, #0E7490)", border: "1px solid rgba(34,211,238,0.25)" }}>
-          <Save size={12} />{nameLoading ? t("admin.profile.saving") : t("admin.profile.saveChanges")}
-        </button>
-      </div>
-
-      {/* Change Password */}
-      <div className="rounded-2xl p-6 space-y-4" style={cardStyle}>
-        <h2 className="text-sm font-bold" style={{ color: "var(--ms-accent-sky)" }}>{t("admin.profile.changePassword")}</h2>
-        {[
-          { label: t("admin.profile.currentPassword"), val: currentPassword, setter: setCurrentPassword, show: showCurrent, toggle: () => setShowCurrent((v) => !v) },
-          { label: t("admin.profile.newPassword"), val: newPassword, setter: setNewPassword, show: showNew, toggle: () => setShowNew((v) => !v) },
-          { label: t("admin.profile.confirmPassword"), val: confirmPassword, setter: setConfirmPassword, show: showNew, toggle: () => setShowNew((v) => !v) },
-        ].map(({ label, val, setter, show, toggle }) => (
-          <div key={label}>
-            <label className="text-xs font-bold uppercase tracking-wider" style={labelStyle}>{label}</label>
-            <div className="relative">
-              <input type={show ? "text" : "password"} value={val} onChange={(e) => setter(e.target.value)}
-                className={inputClass + " pr-9"} style={inputStyle}
-                onFocus={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-active)")}
-                onBlur={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-subtle)")}
-                disabled={pwLoading} />
-              <button type="button" onClick={toggle} className="absolute right-2 top-1/2 -translate-y-1/2 p-1" style={{ color: "hsl(var(--muted-foreground))" }}>
-                {show ? <EyeOff size={13} /> : <Eye size={13} />}
-              </button>
+      {/* Platform info */}
+      <SectionCard title="Platform Information" icon={Info} color="var(--ms-accent-sky)">
+        <div className="space-y-2.5">
+          {[
+            ["Platform",  "Massarek Premium"],
+            ["Version",   "1.0.0"],
+            ["Your role", user?.role ?? "admin"],
+            ["Email",     user?.email ?? "—"],
+          ].map(([k, v]) => (
+            <div key={k} className="flex items-center justify-between text-sm">
+              <span style={{ color: "hsl(var(--muted-foreground))" }}>{k}</span>
+              <span className="font-semibold">{v}</span>
             </div>
+          ))}
+          <div className="flex items-center justify-between text-sm">
+            <span style={{ color: "hsl(var(--muted-foreground))" }}>Auth</span>
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full"
+              style={{ background: "rgba(167,139,250,0.10)", color: "#A78BFA", border: "1px solid rgba(167,139,250,0.22)" }}>
+              <Shield size={9} className="inline mr-1" />Sanctum Token
+            </span>
           </div>
-        ))}
-        {pwMsg && <Msg msg={pwMsg} />}
-        <button onClick={handleSavePassword} disabled={pwLoading}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all"
-          style={{ background: "linear-gradient(135deg, #1D4ED8, #0E7490)", border: "1px solid rgba(34,211,238,0.25)" }}>
-          <Save size={12} />{pwLoading ? t("admin.profile.saving") : t("admin.profile.saveChanges")}
+        </div>
+      </SectionCard>
+
+      {/* Appearance */}
+      <SectionCard title="Appearance" icon={theme === "dark" ? Moon : Sun} color="#A78BFA">
+        <Row label="Theme" desc="Toggle between dark and light mode">
+          <ThemeToggle />
+        </Row>
+        <Row label="Language" desc="Change the interface language">
+          <LanguageSwitcher />
+        </Row>
+      </SectionCard>
+
+      {/* Update name */}
+      <SectionCard title="Display Name" icon={Settings} color="var(--ms-accent-cyan)">
+        <div>
+          <label className="text-xs font-semibold" style={{ color: "hsl(var(--muted-foreground))" }}>
+            {t("admin.users.labelName")}
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className={inputCls}
+            style={inputSty}
+            disabled={nameLoading}
+            onFocus={(e) => (e.currentTarget.style.borderColor = "var(--ms-border-glow)")}
+            onBlur={(e)  => (e.currentTarget.style.borderColor = "var(--ms-border-subtle)")}
+          />
+        </div>
+        {nameMsg && <FeedbackMsg msg={nameMsg} />}
+        <button
+          onClick={handleSaveName}
+          disabled={nameLoading}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50"
+          style={{ background: "linear-gradient(135deg,#1D4ED8,#0E7490)", boxShadow: "0 4px 14px rgba(14,116,144,0.22)" }}
+        >
+          <Save size={13} />
+          {nameLoading ? t("admin.saving") : t("admin.save") + " Name"}
         </button>
-      </div>
+      </SectionCard>
+
+      {/* Change password */}
+      <SectionCard title="Change Password" icon={Shield} color="#F59E0B">
+        <PwField label="Current Password" value={currentPw} onChange={setCurrentPw} disabled={pwLoading} />
+        <PwField label="New Password"     value={newPw}     onChange={setNewPw}     disabled={pwLoading} />
+        <PwField label="Confirm Password" value={confirmPw} onChange={setConfirmPw} disabled={pwLoading} />
+        {pwMsg && <FeedbackMsg msg={pwMsg} />}
+        <button
+          onClick={handleSavePassword}
+          disabled={pwLoading}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50"
+          style={{ background: "linear-gradient(135deg,#D97706,#F59E0B)", boxShadow: "0 4px 14px rgba(245,158,11,0.22)" }}
+        >
+          <Save size={13} />
+          {pwLoading ? t("admin.saving") : "Update Password"}
+        </button>
+      </SectionCard>
+
     </div>
   );
 };

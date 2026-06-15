@@ -101,6 +101,7 @@ export function AdminSidebar() {
         to={item.url}
         end
         title={tooltip}
+        aria-label={tooltip ?? item.title}
         className={`flex items-center ${collapsed ? "justify-center" : ""} px-3 py-2 text-sm font-semibold text-muted-foreground relative ${hoverClass}`}
         activeClassName=""
         style={isActive(item.url) ? activeStyle : {}}
@@ -122,7 +123,7 @@ export function AdminSidebar() {
       side={isRtl ? "right" : "left"}
       collapsible="icon"
       style={{
-        "--sidebar-width": "15rem",
+        "--sidebar-width": "16rem",
         background: "var(--ms-bg-sidebar)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",

@@ -1,10 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, ArrowLeft, Sparkles } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft, Sparkles, AlertTriangle } from "lucide-react";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import MassarekLogo from "@/components/MassarekLogo";
 import GoogleButton from "@/components/GoogleButton";
@@ -19,9 +19,19 @@ const Login = () => {
   const [showPass, setShowPass]  = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [loginError, setLoginError] = useState("");
   const [verificationError, setVerificationError] = useState("");
   const [resendVerificationLoading, setResendVerificationLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const error = params.get("error");
+    if (error === "inactive") {
+      setLoginError("Votre compte est inactif. Veuillez contacter l'administrateur.");
+    }
+  }, [location.search]);
 
   /* ── logic unchanged ── */
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,6 +40,7 @@ const Login = () => {
       toast({ title: t("auth.login.errorEmpty","Error"), description: t("auth.login.errorEmpty"), variant:"destructive" });
       return;
     }
+    setLoginError("");
     setVerificationError("");
     setIsLoading(true);
     try {
@@ -63,7 +74,7 @@ const Login = () => {
     } catch (error: unknown) {
       console.error("Login error:", error);
       if (axios.isAxiosError(error) && error.response?.status === 403) {
-        setVerificationError(error.response?.data?.message || "Please verify your email before logging in");
+        setLoginError(error.response?.data?.message || "Votre compte هو غير نشط. Veuillez contacter l'administrateur.");
       } else {
         const message = axios.isAxiosError(error) ? error.response?.data?.message : undefined;
         toast({ title: t("auth.login.failedTitle"), description: message || t("auth.login.failedMessage"), variant:"destructive" });
@@ -109,11 +120,15 @@ const Login = () => {
       }
     } catch (error: any) {
       console.error("Google login error:", error);
-      toast({
-        title: t("auth.login.failedTitle"),
-        description: axios.isAxiosError(error) ? error.response?.data?.message : t("auth.login.failedMessage"),
-        variant: "destructive",
-      });
+      if (axios.isAxiosError(error) && error.response?.status === 403) {
+        setLoginError(error.response?.data?.message || "Votre compte est inactif. Veuillez contacter l'administrateur.");
+      } else {
+        toast({
+          title: t("auth.login.failedTitle"),
+          description: axios.isAxiosError(error) ? error.response?.data?.message : t("auth.login.failedMessage"),
+          variant: "destructive",
+        });
+      }
     } finally {
       setGoogleLoading(false);
     }
@@ -263,13 +278,20 @@ const Login = () => {
             {/* form */}
             <form onSubmit={handleSubmit} className="space-y-3">
 
+              {loginError && (
+                <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-900/20 dark:border-red-500/20 dark:text-red-200 flex items-start gap-2">
+                  <AlertTriangle size={16} className="mt-0.5" />
+                  <div>{loginError}</div>
+                </div>
+              )}
+
               <div>
                 <label className="block mb-2 text-sm font-bold uppercase tracking-widest"
                   style={{ color:"hsl(var(--muted-foreground))" }}>
                   {t("auth.login.emailLabel")}
                 </label>
                 <input type="email" value={email}
-                  onChange={e => { setEmail(e.target.value); setVerificationError(""); }}
+                  onChange={e => { setEmail(e.target.value); setLoginError(""); setVerificationError(""); }}
                   placeholder={t("auth.login.emailPlaceholder")} required
                   style={iS} onFocus={iF} onBlur={iB}
                 />
@@ -279,7 +301,7 @@ const Login = () => {
                 </label>
                 <div className="relative">
                   <input type={showPass ? "text" : "password"} value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={e => { setPassword(e.target.value); setLoginError(""); setVerificationError(""); }}
                     placeholder={t("auth.login.passwordPlaceholder")} required
                     style={{ ...iS, paddingRight: 44 }} onFocus={iF} onBlur={iB} />
                   <button type="button" onClick={()=>setShowPass(p=>!p)}

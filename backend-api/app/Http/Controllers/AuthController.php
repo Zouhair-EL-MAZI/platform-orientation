@@ -113,6 +113,13 @@ class AuthController extends Controller
             ], 401);
         }
 
+        if (strtolower($user->status) === 'inactive') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Votre compte est inactif. Veuillez contacter l\'administrateur.'
+            ], 403);
+        }
+
         // Revoke old tokens for security
         $user->tokens()->delete();
 
@@ -358,6 +365,13 @@ class AuthController extends Controller
         // Case-insensitive lookup to match existing users regardless of email casing
         $user = User::whereRaw('LOWER(email) = ?', [$email])->first();
 
+        if ($user && strtolower($user->status) === 'inactive') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Votre compte est inactif. Veuillez contacter l\'administrateur.'
+            ], 403);
+        }
+
         if (!$user) {
             // Auto-create account for new Google users
             $user = User::create([
@@ -437,6 +451,10 @@ class AuthController extends Controller
         }
 
         $user = User::whereRaw('LOWER(email) = ?', [$email])->first();
+
+        if ($user && strtolower($user->status) === 'inactive') {
+            return redirect()->away(rtrim(env('FRONTEND_URL', config('app.url')), '/') . '/login?error=inactive');
+        }
 
         if (!$user || ($user->role ?? 'student') !== 'admin') {
             return redirect()->away(rtrim(env('FRONTEND_URL', config('app.url')), '/') . '/login')

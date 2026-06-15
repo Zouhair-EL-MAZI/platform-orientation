@@ -126,7 +126,16 @@ function SkeletonDashboard() {
   return (
     <div className="max-w-6xl mx-auto space-y-5">
       {/* Banner */}
-              className="rounded-2xl p-12 flex flex-col items-center text-center gap-4"
+      <div
+        className="rounded-2xl p-12 flex flex-col items-center text-center gap-4"
+        style={{
+          background: "var(--ms-bg-card)",
+          border: "1px solid var(--ms-border-subtle)",
+        }}
+      >
+        <Bone className="h-6 w-48 rounded-full" />
+        <Bone className="h-3 w-28 rounded-full mt-4" />
+      </div>
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[0, 1, 2, 3].map((i) => (
@@ -240,20 +249,10 @@ function ProgressBar({
   }, [pct, delay]);
 
   return (
-    <div
-      className="h-[6px] rounded-full overflow-hidden"
-      style={{ background: "var(--ms-bg-layer3)" }}
-    >
+    <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/20 overflow-hidden">
       <div
-        className="h-full rounded-full"
-        style={{
-          width: `${width}%`,
-          background:
-            color ??
-            "linear-gradient(90deg,var(--ms-accent-blue),var(--ms-accent-cyan))",
-          boxShadow: "0 0 8px var(--ms-accent-glow-strong)",
-          transition: "width 0.9s cubic-bezier(0.4,0,0.2,1)",
-        }}
+        className="h-full rounded-full bg-gradient-to-r from-blue-600 via-indigo-500 to-sky-400 dark:from-blue-500 dark:via-purple-500 dark:to-cyan-400 shadow-[0_0_12px_rgba(56,189,248,0.3)] transition-all duration-500"
+        style={{ width: `${width}%` }}
       />
     </div>
   );
@@ -677,8 +676,7 @@ const Dashboard = () => {
               <RadialRing value={profilePct} color="var(--ms-accent-cyan)" />
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <span
-                  className="text-[11px] font-extrabold tabular-nums"
-                  style={{ color: "var(--ms-accent-cyan)" }}
+                  className="text-xs font-bold text-blue-600 dark:text-cyan-400 bg-blue-50 dark:bg-cyan-950/40 px-1.5 py-0.5 rounded-md tabular-nums"
                 >
                   {profilePct}%
                 </span>

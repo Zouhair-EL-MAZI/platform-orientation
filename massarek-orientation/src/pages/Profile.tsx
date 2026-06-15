@@ -5,7 +5,7 @@ import {
   User, Mail, BookOpen, Star, Save, Camera,
   Phone, MapPin, FileText, Heart, Briefcase,
   CheckCircle, RefreshCw, AlertCircle, Edit2, X,
-  Shield, TrendingUp, Award, ChevronRight, Sparkles,
+  Shield, TrendingUp, ChevronRight, Sparkles, ChevronDown,
 } from "lucide-react";
 import {
   getProfile, updateProfile, uploadAvatar,
@@ -382,11 +382,15 @@ const Profile = () => {
             </div>
             <div className="sm:col-span-2">
               <label className="text-[10px] font-bold uppercase tracking-widest mb-1.5 block" style={{ color: "hsl(var(--muted-foreground))" }}>{t("profile.labels.educationLevel")}</label>
-              <select value={field("education_level")} onChange={e => setField("education_level", e.target.value)}
-                style={{ ...inputBase, color: "hsl(var(--foreground))" }} onFocus={onFocus} onBlur={onBlur}>
-                <option value="">{t("profile.placeholders.selectEducationLevel")}</option>
-                {educationLevels.map(l => <option key={l} value={l}>{l}</option>)}
-              </select>
+              <div className="relative w-full">
+                <select value={field("education_level")} onChange={e => setField("education_level", e.target.value)}
+                  className="w-full h-10 px-3 bg-slate-50 dark:bg-[#131c35] text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700/50 rounded-lg text-sm appearance-none pr-10 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                  style={inputBase} onFocus={onFocus} onBlur={onBlur}>
+                  <option className="bg-white dark:bg-[#131c35]" value="">{t("profile.placeholders.selectEducationLevel")}</option>
+                  {educationLevels.map(l => <option key={l} className="bg-white dark:bg-[#131c35]" value={l}>{l}</option>)}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
+              </div>
             </div>
             <div className="sm:col-span-2">
               <label className="text-[10px] font-bold uppercase tracking-widest mb-1.5 flex items-center justify-between" style={{ color: "hsl(var(--muted-foreground))" }}>
@@ -451,27 +455,6 @@ const Profile = () => {
             </div>
           </div>
         )}
-      </Section>
-
-      {/* Orientation Summary */}
-      <Section title={t("profile.titles.orientationSummary")} icon={Award} iconColor="#10B981">
-        <div className="flex flex-col items-center py-4 text-center gap-3">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
-            style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)" }}>
-            <Award size={22} style={{ color: "#10B981" }} />
-          </div>
-          <div>
-            <p className="text-sm font-semibold mb-1">{t("profile.orientation.noResultsTitle")}</p>
-            <p className="text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>
-              {t("profile.orientation.noResultsDesc")}
-            </p>
-          </div>
-          <a href="/test"
-            className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-xl transition-all"
-            style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.25)", color: "#10B981" }}>
-            {t("profile.orientation.action")} <ChevronRight size={12} />
-          </a>
-        </div>
       </Section>
 
       {/* Profile Completion */}

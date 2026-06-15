@@ -282,9 +282,9 @@ function UserViewModal({ userId, onClose }: { userId: number; onClose: () => voi
   })();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6 pt-6">
       <div className="absolute inset-0 bg-transparent" onClick={onClose} />
-      <div className="relative w-full max-w-3xl overflow-hidden rounded-[20px] bg-white shadow-2xl dark:bg-[#131c35] border border-slate-200 dark:border-slate-800 transform transition-all duration-300 ease-out">
+      <div className="relative w-full max-w-3xl mt-[90px] max-h-[90vh] overflow-y-auto rounded-[20px] bg-white shadow-2xl dark:bg-[#131c35] border border-slate-200 dark:border-slate-800 transform transition-all duration-300 ease-out">
         <div className="flex items-center justify-between gap-4 border-b border-slate-200 px-6 py-4 dark:border-slate-800">
           <div>
             <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Student Details</h2>

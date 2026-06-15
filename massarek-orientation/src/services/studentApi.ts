@@ -140,6 +140,9 @@ export const submitTest = (id: number, answers: SubmitAnswerPayload[]) =>
 export const getTestResults = (id: number) =>
   api.get(`/student/tests/${id}/results`);
 
+export const resetTests = () =>
+  api.post<{ success: boolean; message: string }>("/student/tests/reset");
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Recommendations
 // ─────────────────────────────────────────────────────────────────────────────

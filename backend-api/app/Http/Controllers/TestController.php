@@ -264,6 +264,19 @@ class TestController extends Controller
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // POST /api/student/tests/reset
+    // ─────────────────────────────────────────────────────────────────────────
+    public function reset(Request $request)
+    {
+        $user = $request->user();
+        $testIds = OrientationTest::where('status', 'active')->pluck('id');
+        $questionIds = TestQuestion::whereIn('test_id', $testIds)->pluck('id');
+        TestAnswer::where('user_id', $user->id)->whereIn('question_id', $questionIds)->delete();
+        TestSubmission::where('user_id', $user->id)->whereIn('test_id', $testIds)->delete();
+        return response()->json(['success' => true, 'message' => 'Tests reset successfully']);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // Private: scoring (unchanged logic from original)
     // ─────────────────────────────────────────────────────────────────────────
     private function calculateScore(TestQuestion $question, string $answer): int

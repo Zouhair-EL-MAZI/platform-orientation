@@ -615,6 +615,58 @@
     },
     "saveProfile": "حفظ الملف الشخصي"
   },
+  "career": {
+    "title": "مستكشف المهن",
+    "subtitle": "اكتشف المسارات المهنية التي تتناسب مع مهاراتك واهتماماتك.",
+    "searchPlaceholder": "ابحث عن مهن...",
+    "all": "الكل",
+    "retry": "إعادة المحاولة",
+    "clearFilters": "مسح الفلاتير",
+    "saved": "المحفوظة ({{count}})",
+    "save": {
+      "add": "حفظ المهنة",
+      "remove": "إزالة من المحفوظات"
+    },
+    "toast": {
+      "saved": "تم حفظ المهنة!",
+      "removed": "تم إزالة المهنة."
+    },
+    "card": {
+      "clickToExplore": "اضغط للاستكشاف",
+      "details": "التفاصيل ←"
+    },
+    "modal": {
+      "tab": {
+        "overview": "نظرة عامة",
+        "morocco": "المغرب",
+        "skills": "مهارات ودراسة"
+      },
+      "careerProspects": "آفاق المهنة",
+      "moroccanContext": "السياق المغربي",
+      "recommendedSchools": "المدارس الموصى بها",
+      "requiredSkills": "المهارات المطلوبة",
+      "studyPaths": "مسارات الدراسة"
+    },
+    "results": {
+      "showing": "عرض",
+      "careers": "مهنة",
+      "careers_plural": "مهنة",
+      "in": "في",
+      "matching": "يتطابق مع",
+      "saved": "(محفوظة)"
+    },
+    "pagination": {
+      "prev": "السابق",
+      "next": "التالي",
+      "page": "صفحة"
+    },
+    "empty": {
+      "savedTitle": "لا توجد مهن محفوظة",
+      "savedDesc": "اضغط على أيقونة القلب لحفظ مهنة.",
+      "noResultsTitle": "لا توجد مهن مطابقة",
+      "noResultsDesc": "جرب تعديل بحثك أو فلاتيرك."
+    }
+  },
   "careerExplorer": {
     "title": "مستكشف الوظائف",
     "subtitle": "اكتشف المسارات المهنية التي تتناسب مع مهاراتك واهتماماتك.",

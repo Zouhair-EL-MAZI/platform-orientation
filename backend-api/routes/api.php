@@ -44,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index']);
 
         // Orientation Tests
+        Route::post('/tests/reset', [TestController::class, 'reset']);
         Route::get('/tests', [TestController::class, 'index']);
         Route::get('/tests/{id}', [TestController::class, 'show']);
         Route::post('/tests/{id}/submit', [TestController::class, 'submit']);

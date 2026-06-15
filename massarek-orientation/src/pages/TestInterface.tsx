@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import {
-  getTests, getTest, submitTest,
+  getTests, getTest, submitTest, resetTests,
   type OrientationTest, type TestQuestion, type SubmitAnswerPayload,
 } from "@/services/studentApi";
 
@@ -82,7 +82,7 @@ function StatusBadge({ test }: { test: OrientationTest }) {
 // ─────────────────────────────────────────────────────────────────────────────
 // TestList — overview of all 3 tests
 // ─────────────────────────────────────────────────────────────────────────────
-function TestList({ onSelect }: { onSelect: (test: OrientationTest) => void }) {
+function TestList({ onSelect, onRetakeAll }: { onSelect: (test: OrientationTest) => void; onRetakeAll: () => void }) {
   const { t, i18n } = useTranslation();
   const dir = i18n.language?.startsWith("ar") ? "rtl" : "ltr";
   const [tests, setTests]     = useState<OrientationTest[]>([]);
@@ -224,7 +224,7 @@ function TestList({ onSelect }: { onSelect: (test: OrientationTest) => void }) {
       {allDone && (
         <div className="flex gap-2">
           <button
-            onClick={() => { const first = tests[0]; if (first) onSelect(first); }}
+            onClick={onRetakeAll}
             className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-105"
             style={{ background: "rgba(16,185,129,0.10)", border: "1px solid rgba(16,185,129,0.25)", color: "#059669" }}>
             <RefreshCw size={13} /> {t("test.retakeAll")}
@@ -916,6 +916,14 @@ const TestInterface = () => {
   const [selectedTestId, setSelectedTestId] = useState<number | null>(null);
   const [key, setKey] = useState(0);
 
+  const handleRetakeAll = async () => {
+    try {
+      await resetTests();
+      setSelectedTestId(null);
+      setKey(k => k + 1);
+    } catch { toast.error("Failed to reset tests"); }
+  };
+
   if (selectedTestId !== null) {
     return (
       <TestTaker
@@ -924,7 +932,7 @@ const TestInterface = () => {
       />
     );
   }
-  return <TestList key={key} onSelect={t => setSelectedTestId(t.id)} />;
+  return <TestList key={key} onSelect={t => setSelectedTestId(t.id)} onRetakeAll={handleRetakeAll} />;
 };
 
 export default TestInterface;

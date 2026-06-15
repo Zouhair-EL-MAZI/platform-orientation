@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Sparkles, RefreshCw, AlertCircle, Briefcase, TrendingUp,
@@ -11,7 +11,7 @@ import {
 } from "recharts";
 import i18n from "i18next";
 import {
-  getRecommendations, generateRecommendations, getTests,
+  getRecommendations, generateRecommendations, getTests, resetTests,
   type Recommendation, type OrientationTest,
 } from "@/services/studentApi";
 import { toast } from "sonner";
@@ -219,19 +219,19 @@ function RecommendationCard({ rec, index, expanded, onToggle }: {
                 style={{ background: `${CHART_COLORS[index % CHART_COLORS.length]}22`, color: CHART_COLORS[index % CHART_COLORS.length], border: `1px solid ${CHART_COLORS[index % CHART_COLORS.length]}44` }}>
                 {index + 1}
               </span>
-              <h3 className="text-base md:text-lg font-bold leading-tight">{rec.career.title}</h3>
+              <h3 className="text-sm md:text-base font-bold leading-tight min-w-0">{rec.career.title}</h3>
             </div>
-            <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full"
-              style={{ background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-glow)", color: "var(--ms-accent-sky)" }}>
+            <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full break-words"
+              style={{ background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-glow)", color: "var(--ms-accent-sky)", maxWidth: "100%", whiteSpace: "normal", lineHeight: "1.4" }}>
               {rec.career.category}
             </span>
           </div>
-          <div className="flex flex-col items-center flex-shrink-0">
+          <div className="flex flex-col items-center flex-shrink-0 w-[68px] gap-1.5">
             <div className="w-14 h-14 rounded-xl flex items-center justify-center font-extrabold text-base tabular-nums"
               style={{ background: `${sColor}15`, border: `2px solid ${sColor}50`, color: sColor, boxShadow: `0 0 14px ${sColor}20` }}>
               {score}%
             </div>
-            <span className="text-[9px] font-bold mt-1 text-center leading-tight" style={{ color: sColor }}>{sLabel}</span>
+            <span className="text-[9px] font-bold text-center leading-tight w-full" style={{ color: sColor }}>{sLabel}</span>
           </div>
         </div>
 
@@ -389,7 +389,9 @@ const Recommendations = () => {
   const { t, i18n } = useTranslation();
   const dir = i18n.language?.startsWith("ar") ? "rtl" : "ltr";
   const location = useLocation();
+  const navigate = useNavigate();
   const autoGenTriggered = useRef(false);
+  const [resetting, setResetting] = useState(false);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const recs = recommendations;
   const setRecs = setRecommendations;
@@ -458,7 +460,7 @@ const Recommendations = () => {
   }, [loading, locked, location.state, generate]);
 
   const chartData = recs.map((r, i) => ({
-    name:  r.career.title.length > 22 ? r.career.title.slice(0, 22) + "…" : r.career.title,
+    name:  r.career.title,
     value: Math.round(r.match_score),
     fill:  CHART_COLORS[i % CHART_COLORS.length],
   }));
@@ -498,7 +500,7 @@ const Recommendations = () => {
   if (locked) return <LockedGate tests={tests} />;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-5 ms-page-enter" dir={dir}>
+    <div className="max-w-6xl mx-auto space-y-5 ms-page-enter" dir={dir}>
 
       {/* Header */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
@@ -519,11 +521,22 @@ const Recommendations = () => {
           </button>
         )}
         {(recs.length > 0) && !canRegenerate && (
-          <Link to="/test" state={{ returnTo: "/recommendations", autoGenerate: true }}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold flex-shrink-0 transition-all hover:opacity-90"
+          <button
+            disabled={resetting}
+            onClick={async () => {
+              setResetting(true);
+              try {
+                await resetTests();
+                clearCache();
+                navigate("/test", { state: { returnTo: "/recommendations", autoGenerate: true } });
+              } catch { toast.error("Failed to reset tests"); }
+              finally { setResetting(false); }
+            }}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold flex-shrink-0 transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-glow)", color: "var(--ms-accent-sky)" }}>
-            <RefreshCw size={15} /> {t("recommendations.retakeTests")}
-          </Link>
+            <RefreshCw size={15} className={resetting ? "animate-spin" : ""} />
+            {resetting ? "..." : "Retake All"}
+          </button>
         )}
       </div>
 
@@ -578,9 +591,9 @@ const Recommendations = () => {
               </h2>
               <div style={{ height: Math.max(120, recs.length * 52) }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} layout="vertical" margin={{ left: 8, right: 20, top: 4, bottom: 4 }}>
+                  <BarChart data={chartData} layout="vertical" margin={{ left: 0, right: 20, top: 4, bottom: 4 }}>
                     <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} tickFormatter={v => `${v}%`} stroke="hsl(var(--muted-foreground))" />
-                    <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={130} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis type="category" dataKey="name" tick={{ fontSize: 11, width: 160 }} width={180} stroke="hsl(var(--muted-foreground))" />
                     <Tooltip formatter={(v: number) => [`${v}%`, t("recommendations.compatibility")]}
                       contentStyle={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-glow)", borderRadius: 10, color: "hsl(var(--foreground))", boxShadow: "0 8px 24px rgba(0,0,0,0.15)" }}
                       cursor={{ fill: "rgba(255,255,255,0.04)" }} />

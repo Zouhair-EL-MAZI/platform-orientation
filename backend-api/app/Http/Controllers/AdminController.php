@@ -104,6 +104,7 @@ class AdminController extends Controller
             'success' => true,
             'data' => [
                 'stats' => [
+                    'total_users'          => $totalStudents ,
                     'total_students'       => $totalStudents,
                     'total_admins'         => $totalAdmins,
                     'active_users'         => $activeUsers,

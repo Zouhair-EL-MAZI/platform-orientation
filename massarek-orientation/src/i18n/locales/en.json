@@ -621,6 +621,58 @@
     },
     "saveProfile": "Save Profile"
   },
+  "career": {
+    "title": "Career Explorer",
+    "subtitle": "Discover career paths that match your skills and interests.",
+    "searchPlaceholder": "Search careers...",
+    "all": "All",
+    "retry": "Retry",
+    "clearFilters": "Clear filters",
+    "saved": "Saved ({{count}})",
+    "save": {
+      "add": "Save career",
+      "remove": "Remove from saved"
+    },
+    "toast": {
+      "saved": "Career saved!",
+      "removed": "Career removed."
+    },
+    "card": {
+      "clickToExplore": "Click to explore",
+      "details": "Details →"
+    },
+    "modal": {
+      "tab": {
+        "overview": "Overview",
+        "morocco": "Morocco",
+        "skills": "Skills & Study"
+      },
+      "careerProspects": "Career Prospects",
+      "moroccanContext": "Moroccan Context",
+      "recommendedSchools": "Recommended Schools",
+      "requiredSkills": "Required Skills",
+      "studyPaths": "Study Paths"
+    },
+    "results": {
+      "showing": "Showing",
+      "careers": "career",
+      "careers_plural": "careers",
+      "in": "in",
+      "matching": "matching",
+      "saved": "(saved)"
+    },
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Page"
+    },
+    "empty": {
+      "savedTitle": "No saved careers yet",
+      "savedDesc": "Click the heart icon on any career card to save it here.",
+      "noResultsTitle": "No careers found",
+      "noResultsDesc": "Try adjusting your search or filters."
+    }
+  },
   "careerExplorer": {
     "title": "Career Explorer",
     "subtitle": "Discover career paths that match your skills and interests.",

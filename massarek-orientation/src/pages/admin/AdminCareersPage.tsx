@@ -35,10 +35,11 @@ function inputStyle() {
   return { border: "1px solid var(--ms-border-subtle)", color: "inherit" };
 }
 
-// ─── Career Modal ─────────────────────────────────────────────────────────────
-function CareerModal({ career, categories, onClose, onSaved }: {
+// ─── Career Modal (Position Dynamique) ───────────────────────────────────────
+function CareerModal({ career, categories, isOpen, onOpenChange, onSaved, position }: {
   career: AdminCareer | null; categories: AdminCareerCategory[];
-  onClose: () => void; onSaved: () => void;
+  isOpen: boolean; onOpenChange: (open: boolean) => void; onSaved: () => void;
+  position: { top: number; left: number };
 }) {
   const { t } = useTranslation();
   const isEdit = !!career;
@@ -52,6 +53,22 @@ function CareerModal({ career, categories, onClose, onSaved }: {
   const [demand,      setDemand]      = useState(career?.demand_level ?? "medium");
   const [saving,      setSaving]      = useState(false);
   const [error,       setError]       = useState("");
+  const [adjustedPos, setAdjustedPos] = useState(position);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen || !modalRef.current) {
+      setAdjustedPos(position);
+      return;
+    }
+    
+    // Centrer le modal à l'écran
+    const modalWidth = 520; // max-w-xl
+    const left = (window.innerWidth - modalWidth) / 2;
+    const top = Math.max(16, window.scrollY + 80);
+    
+    setAdjustedPos({ top, left });
+  }, [isOpen, position]);
 
   const handleSave = async () => {
     if (!title.trim()) { setError(t("admin.careers.titleRequired")); return; }
@@ -66,27 +83,48 @@ function CareerModal({ career, categories, onClose, onSaved }: {
       if (isEdit) await updateAdminCareer(career!.id, payload);
       else await createAdminCareer(payload);
       onSaved();
+      onOpenChange(false);
     } catch (e: any) {
       setError(e?.response?.data?.message ?? t("admin.careers.failedSave"));
     } finally { setSaving(false); }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4  " onClick={onClose}>
-      <div className="w-full max-w-xl bg-white dark:bg-[#131c35] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 max-h-[90vh] flex flex-col overflow-hidden relative z-10" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between">
+    <>
+      {/* Backdrop avec blur léger */}
+      <div 
+        className="fixed inset-0 z-40 backdrop-blur-sm"
+        onClick={() => onOpenChange(false)}
+        style={{ pointerEvents: "auto" }}
+      />
+      
+      {/* Modal centré */}
+      <div 
+        ref={modalRef}
+        className="fixed w-full max-w-xl bg-white dark:bg-[#131c35] rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 flex flex-col z-50 left-1/2"
+        style={{ 
+          top: `${adjustedPos.top}px`, 
+          transform: "translateX(-50%)",
+          maxHeight: "calc(100vh - 2rem)",
+          pointerEvents: "auto"
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-3">
           <h2 className="text-base font-bold">{isEdit ? t("admin.careers.editCareerTitle") : t("admin.careers.addCareerTitle")}</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-slate-600 hover:text-red-500 dark:text-slate-300 dark:hover:text-red-400 transition-colors" style={{ border: "1px solid var(--ms-border-subtle)" }}><X size={14} /></button>
+          <button onClick={() => onOpenChange(false)} className="p-1.5 rounded-lg text-slate-600 hover:text-red-500 dark:text-slate-300 dark:hover:text-red-400 transition-colors" style={{ border: "1px solid var(--ms-border-subtle)" }}><X size={14} /></button>
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 rounded-xl px-3 py-2 mt-3 text-xs font-medium"
+          <div className="flex items-center gap-2 rounded-xl px-3 py-2 mb-3 text-xs font-medium"
             style={{ background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.18)", color: "#F87171" }}>
             <AlertCircle size={13} /> {error}
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto pr-1 space-y-4 my-4">
+        <div className="flex-1 overflow-y-auto pr-2 space-y-4 mb-4">
           <div>
             <label className="text-xs font-semibold" style={{ color: "hsl(var(--muted-foreground))" }}>{t("admin.careers.labelTitle")} *</label>
             <input value={title} onChange={(e) => setTitle(e.target.value)} className={inputCls()} style={inputStyle()} disabled={saving} placeholder={t("admin.careers.titleExample")} />
@@ -128,7 +166,7 @@ function CareerModal({ career, categories, onClose, onSaved }: {
         </div>
 
         <div className="flex gap-3 mt-3">
-          <button onClick={onClose} className="flex-1 py-2 rounded-xl text-sm font-semibold" style={{ background: "var(--ms-bg-layer2)", border: "1px solid var(--ms-border-subtle)" }}>
+          <button onClick={() => onOpenChange(false)} className="flex-1 py-2 rounded-xl text-sm font-semibold" style={{ background: "var(--ms-bg-layer2)", border: "1px solid var(--ms-border-subtle)" }}>
             {t("admin.cancel")}
           </button>
           <button onClick={handleSave} disabled={saving} className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-semibold text-white disabled:opacity-50" style={{ background: "linear-gradient(135deg,#1D4ED8,#0E7490)" }}>
@@ -136,7 +174,7 @@ function CareerModal({ career, categories, onClose, onSaved }: {
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -178,8 +216,10 @@ const AdminCareersPage = () => {
   const [page,        setPage]       = useState(1);
   const [lastPage,    setLastPage]   = useState(1);
   const [total,       setTotal]      = useState(0);
-  const [modal,       setModal]      = useState<AdminCareer | null | "new">(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentCareer, setCurrentCareer] = useState<AdminCareer | null | "new">(null);
   const [toDelete,    setToDelete]   = useState<AdminCareer | null>(null);
+  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const load = useCallback(async () => {
@@ -219,7 +259,14 @@ const AdminCareersPage = () => {
             {total} {t("admin.careers.careerPaths")} · {categories.length} {t("admin.careers.categories")}
           </p>
         </div>
-        <button onClick={() => setModal("new")}
+        <button onClick={(e) => {
+          const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+          const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+          const scrollTop = window.scrollY || document.documentElement.scrollTop;
+          setModalPosition({ top: rect.top + scrollTop, left: rect.left + scrollLeft });
+          setCurrentCareer("new");
+          setIsModalOpen(true);
+        }}
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
           style={{ background: "linear-gradient(135deg,#1D4ED8,#0E7490)", boxShadow: "0 4px 14px rgba(14,116,144,0.25)" }}>
           <Plus size={14} /> {t("admin.careers.addCareer")}
@@ -289,7 +336,15 @@ const AdminCareersPage = () => {
                   </p>
                 </div>
                 <div className="flex gap-1.5 flex-shrink-0">
-                  <button onClick={() => setModal(c)}
+                  <button 
+                    onClick={(e) => {
+                      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                      const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+                      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                      setModalPosition({ top: rect.top + scrollTop, left: rect.left + scrollLeft });
+                      setCurrentCareer(c);
+                      setIsModalOpen(true);
+                    }}
                     className="p-1.5 rounded-lg transition-all hover:opacity-80"
                     style={{ background: "var(--ms-accent-glow)", border: "1px solid var(--ms-border-glow)", color: "var(--ms-accent-sky)" }}>
                     <Edit2 size={12} />
@@ -355,10 +410,9 @@ const AdminCareersPage = () => {
         </div>
       )}
 
-      {modal !== null && (
-        <CareerModal career={modal === "new" ? null : modal} categories={categories}
-          onClose={() => setModal(null)} onSaved={() => { setModal(null); load(); }} />
-      )}
+      <CareerModal career={currentCareer === "new" ? null : (currentCareer as AdminCareer)} categories={categories}
+        isOpen={isModalOpen} onOpenChange={setIsModalOpen} 
+        position={modalPosition} onSaved={() => { setIsModalOpen(false); setCurrentCareer(null); load(); }} />
       {toDelete && (
         <DeleteModal career={toDelete} onClose={() => setToDelete(null)}
           onDeleted={() => { setToDelete(null); load(); }} />

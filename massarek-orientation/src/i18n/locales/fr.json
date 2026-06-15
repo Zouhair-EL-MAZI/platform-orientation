@@ -621,6 +621,58 @@
     },
     "saveProfile": "Enregistrer le profil"
   },
+  "career": {
+    "title": "Explorateur de carrières",
+    "subtitle": "Découvrez des parcours professionnels qui correspondent à vos compétences et intérêts.",
+    "searchPlaceholder": "Rechercher des carrières...",
+    "all": "Toutes",
+    "retry": "Réessayer",
+    "clearFilters": "Effacer les filtres",
+    "saved": "Sauvegardées ({{count}})",
+    "save": {
+      "add": "Sauvegarder",
+      "remove": "Retirer"
+    },
+    "toast": {
+      "saved": "Carrière sauvegardée !",
+      "removed": "Carrière retirée."
+    },
+    "card": {
+      "clickToExplore": "Cliquer pour explorer",
+      "details": "Détails →"
+    },
+    "modal": {
+      "tab": {
+        "overview": "Aperçu",
+        "morocco": "Maroc",
+        "skills": "Compétences & Études"
+      },
+      "careerProspects": "Perspectives de carrière",
+      "moroccanContext": "Contexte marocain",
+      "recommendedSchools": "Écoles recommandées",
+      "requiredSkills": "Compétences requises",
+      "studyPaths": "Parcours d'études"
+    },
+    "results": {
+      "showing": "Affichage de",
+      "careers": "carrière",
+      "careers_plural": "carrières",
+      "in": "dans",
+      "matching": "correspondant à",
+      "saved": "(sauvegardées)"
+    },
+    "pagination": {
+      "prev": "Précédent",
+      "next": "Suivant",
+      "page": "Page"
+    },
+    "empty": {
+      "savedTitle": "Aucune carrière sauvegardée",
+      "savedDesc": "Cliquez sur le cœur d'une carte pour la sauvegarder.",
+      "noResultsTitle": "Aucune carrière trouvée",
+      "noResultsDesc": "Essayez d'ajuster votre recherche ou vos filtres."
+    }
+  },
   "careerExplorer": {
     "title": "Explorateur de carrière",
     "subtitle": "Découvrez des parcours professionnels qui correspondent à vos compétences et intérêts.",

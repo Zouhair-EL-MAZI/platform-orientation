@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Users, FileQuestion, Briefcase, TrendingUp, Sparkles,
-  Activity, ArrowUpRight, CheckCircle, UserCheck, Clock,
+  Activity, ArrowUpRight, Clock,
   BarChart2,
 } from "lucide-react";
 import {
@@ -100,14 +100,6 @@ const AdminDashboardPage = () => {
           to: "/admin/users",
         },
         {
-          label: t("admin.statVerifiedUsers"),
-          value: data.stats.total_verified_users,
-          icon: CheckCircle,
-          color: "#34D399",
-          glow: "rgba(52,211,153,0.15)",
-          to: "/admin/users",
-        },
-        {
           label: t("admin.statSubmissions"),
           value: data.stats.total_submissions,
           icon: FileQuestion,
@@ -169,11 +161,6 @@ const AdminDashboardPage = () => {
       ]
     : [];
 
-  // Verification breakdown for the donut-style bar
-  const verifiedPct = data
-    ? Math.round((data.stats.total_verified_users / Math.max(data.stats.total_users, 1)) * 100)
-    : 0;
-
   // Recent users excluding admins
   const recentStudents = (data?.recent_users ?? []).filter((u) => u.role !== "admin").slice(0, 5);
 
@@ -209,17 +196,7 @@ const AdminDashboardPage = () => {
             </h1>
             <p className="text-white/65 text-sm">{t("admin.welcomeSubtitle")}</p>
           </div>
-          <div className="flex items-center gap-3 flex-wrap">
-            {data && (
-              <div
-                className="px-4 py-2 rounded-xl text-sm font-bold text-white"
-                style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.18)" }}
-              >
-                <span className="opacity-70 text-xs mr-1">{t("admin.statVerifiedUsers")}:</span>
-                {verifiedPct}%
-              </div>
-            )}
-          </div>
+
         </div>
       </div>
 
@@ -313,37 +290,7 @@ const AdminDashboardPage = () => {
 
           {/* Verification card + quick stats */}
           <div className="lg:col-span-2 space-y-4">
-            {/* User verification rate */}
-            <div
-              className="rounded-2xl p-5"
-              style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)" }}
-            >
-              <h2 className="font-bold text-sm mb-3 flex items-center gap-2">
-                <UserCheck size={15} style={{ color: "#34D399" }} />
-                {t("admin.verificationRate", "Verification Rate")}
-              </h2>
-              <div className="text-3xl font-bold mb-2" style={{ color: "#34D399" }}>
-                {verifiedPct}%
-              </div>
-              <div
-                className="h-2 rounded-full overflow-hidden"
-                style={{ background: "var(--ms-bg-layer3)" }}
-              >
-                <div
-                  className="h-full rounded-full transition-all duration-1000"
-                  style={{
-                    width: `${verifiedPct}%`,
-                    background: "linear-gradient(90deg, #34D399, #10B981)",
-                  }}
-                />
-              </div>
-              <div className="flex justify-between text-xs mt-1" style={{ color: "hsl(var(--muted-foreground))" }}>
-                <span>{data.stats.total_verified_users} {t("admin.statVerifiedUsers", "verified")}</span>
-                <span>{data.stats.total_users} {t("admin.statTotalUsers", "total")}</span>
-              </div>
-            </div>
-
-            {/* Avg match score */}
+              {/* Avg match score */}
             <div
               className="rounded-2xl p-5 relative overflow-hidden"
               style={{ background: "var(--ms-bg-card)", border: "1px solid var(--ms-border-subtle)" }}
@@ -459,7 +406,6 @@ const AdminDashboardPage = () => {
                     {[
                       t("admin.users.columns.name"),
                       t("common.email", "Email"),
-                      t("admin.users.columns.tests"),
                       t("admin.users.columns.status"),
                       t("admin.users.columns.joined"),
                     ].map((h) => (
@@ -496,9 +442,6 @@ const AdminDashboardPage = () => {
                       </td>
                       <td className="px-6 py-3 text-xs" style={{ color: "hsl(var(--muted-foreground))" }}>
                         {u.email}
-                      </td>
-                      <td className="px-6 py-3 font-bold text-sm" style={{ color: "var(--ms-accent-sky)" }}>
-                        {u.tests}
                       </td>
                       <td className="px-6 py-3">
                         <span
